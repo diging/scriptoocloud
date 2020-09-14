@@ -1,0 +1,21 @@
+<html layout:decorate="~{layouts/main}">
+  <head>
+    <title>Authority Matcher</title>
+  </head>
+  <body>
+  <div layout:fragment="content">
+  <h2>Reset Account</h2>
+  
+	<form action="#" th:action="@{/reset/request}" method="POST" th:object="${user}">
+		
+		<label>Email:</label>
+		<input th:field="*{email}" class="form-control input-sm"></input>
+		<p class="text-danger"><th:errors path="email"/></p>
+		
+		<div style="padding-top: 20px;">
+		<button class="btn btn-sm btn-primary pull-right">Reset Password</button>
+	</form>
+
+</div>
+</body>
+</html>

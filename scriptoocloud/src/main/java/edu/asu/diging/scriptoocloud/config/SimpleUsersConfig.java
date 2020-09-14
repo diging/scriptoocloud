@@ -9,6 +9,7 @@ public class SimpleUsersConfig implements SimpleUsersConfiguration {
 
     @Override
     public void configure(SimpleUsers simpleUsers) {
-        
+     simpleUsers.resetRequestSentEndpoint("/reset/sent");
     }
+    
 }
