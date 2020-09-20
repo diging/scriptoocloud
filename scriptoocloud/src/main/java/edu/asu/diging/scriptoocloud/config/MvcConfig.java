@@ -3,7 +3,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ComponentScan("edu.asu.diging.simpleusers.web")
+@ComponentScan("edu.asu.diging.simpleusers.web") //scan simple user conrollers
 public class MvcConfig {
 
 }
