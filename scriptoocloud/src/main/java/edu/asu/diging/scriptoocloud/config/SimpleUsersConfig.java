@@ -9,6 +9,19 @@ public class SimpleUsersConfig implements SimpleUsersConfiguration {
 
     @Override
     public void configure(SimpleUsers simpleUsers) {
-        
+    /*
+         simpleUsers.emailUsername("");
+         simpleUsers.emailPassword("");
+         simpleUsers.emailServerHost("");
+         simpleUsers.emailServerPort("");
+  		 simpleUsers.emailFrom("");
+  		 simpleUsers.instanceUrl(""); 
+         simpleUsers.appName("");
+     */
+     
+     simpleUsers.resetRequestSentEndpoint("/reset/sent");
+    
     }
+    
+    
 }

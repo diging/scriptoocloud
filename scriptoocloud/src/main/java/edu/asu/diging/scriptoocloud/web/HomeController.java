@@ -15,10 +15,8 @@ import edu.asu.diging.simpleusers.web.forms.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
  
 @Controller
-public class HomeController extends ResetPasswordInitiatedController {
+public class HomeController {
 
-
- 
     @RequestMapping(value = "/")
     public String home(Model model) {
     	return "home";
