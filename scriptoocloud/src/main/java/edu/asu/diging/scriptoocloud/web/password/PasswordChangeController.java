@@ -13,7 +13,7 @@ public class PasswordChangeController{
  	@RequestMapping(value = "/password/change", method=RequestMethod.GET)
     public String get(Model model) {
 		model.addAttribute("user", new UserForm());
-		return "/reset/change";	
+		return "/password/change";	
     }   
 
 }
