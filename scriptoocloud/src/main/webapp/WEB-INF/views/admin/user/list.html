@@ -24,6 +24,14 @@
 			<form th:if="${user.admin}" th:action="@{|/admin/user/${user.username}/admin/remove|}" method="POST">
 				<button style="padding:0px" class="btn btn-link"><i class="fas fa-user"></i> Remove Admin Role</button>
 			</form>
+
+			<form th:if="${not user.getRoles().toString().contains('ROLE_MANAGER')}" th:action="@{|/admin/user/${user.username}/role/add?roles=ROLE_MANAGER|}" method="POST">
+				<button style="padding:0" class="btn btn-link"><i class="fas fa-user-tie"></i> Make Manager</button>
+			</form>
+
+			<form th:if="${user.getRoles().toString().contains('ROLE_MANAGER')}" th:action="@{|/admin/user/${user.username}/role/remove?roles=ROLE_MANAGER|}" method="POST">
+				<button style="padding:0" class="btn btn-link"><i class="fas fa-user-tie"></i> Remove Manager Role</button>
+			</form>
 		
 			<form th:action="@{|/admin/user/${user.username}/disable|}" method="POST">
 				<button style="padding:0px" class="btn btn-link"><i class="fas fa-user-slash"></i> Deactivate User</button>
