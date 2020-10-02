@@ -25,11 +25,13 @@
 				<button style="padding:0px" class="btn btn-link"><i class="fas fa-user"></i> Remove Admin Role</button>
 			</form>
 
-			<form th:if="${not user.getRoles().toString().contains('ROLE_MANAGER')}" th:action="@{|/admin/user/${user.username}/role/add?roles=ROLE_MANAGER|}" method="POST">
+			<form th:if="${not #lists.contains(user.getRoles(), new org.springframework.security.core.authority.SimpleGrantedAuthority('ROLE_MANAGER'))}"
+                  th:action="@{|/admin/user/${user.username}/role/add?roles=ROLE_MANAGER|}" method="POST">
 				<button style="padding:0" class="btn btn-link"><i class="fas fa-user-tie"></i> Make Manager</button>
 			</form>
 
-			<form th:if="${user.getRoles().toString().contains('ROLE_MANAGER')}" th:action="@{|/admin/user/${user.username}/role/remove?roles=ROLE_MANAGER|}" method="POST">
+			<form th:if="${#lists.contains(user.getRoles(), new org.springframework.security.core.authority.SimpleGrantedAuthority('ROLE_MANAGER'))}"
+                  th:action="@{|/admin/user/${user.username}/role/remove?roles=ROLE_MANAGER|}" method="POST">
 				<button style="padding:0" class="btn btn-link"><i class="fas fa-user-tie"></i> Remove Manager Role</button>
 			</form>
 		
