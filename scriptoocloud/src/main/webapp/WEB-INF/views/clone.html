@@ -1,0 +1,25 @@
+<html layout:decorate="~{layouts/main}">
+  <head>
+    <title>Authority Matcher</title>
+  </head>
+  <body>
+   <div layout:fragment="content">
+      <div class="jumbotron col-md-12">
+
+	   <h1>Clone a github repo to the server</h1>
+	   <form action="#" th:action="@{/clone}" method="POST">
+	   <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+
+	   <label>Github Repository URL</label>
+	   <input type="text" th:name = "repoURL" class="form-control input-sm"></password>
+	   <p class="text-danger"><th:errors path="repoURl"/></p>
+
+	   <div style="padding-top: 20px;">
+	   <button class="btn btn-sm btn-primary pull-right">Upload</button>
+	   </div>
+	</form>
+
+      </div>
+   </div>
+  </body>
+</html>
