@@ -1,37 +1,93 @@
-<html layout:decorate="~{layouts/main}">
-  <head>
-    <title>Authority Matcher</title>
-  </head>
-  <body>
-   <div layout:fragment="content">
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout=xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/admin/main}">
+<head>
 
-<h2>Users</h2>
-<ul class="list-group">
-	<li th:each="user : ${users}" class="list-group-item clearfix">
-		<span th:if="${not user.enabled}" class="label label-default">Account Deactivated</span>
-		<span th:if="${user.admin}" class="label label-warning">Admin User</span>
-		<span th:text="${user.username}" th:remove="tag"></span> (<span th:text="${user.firstName}" th:remove="tag"></span> <span th:text="${user.lastName}" th:remove="tag"></span>)
-		<div class="pull-right text-right">
-		<form th:if="${not user.enabled}" th:action="@{|/admin/user/${user.username}/approve|}" method="POST">
-			<button style="padding:0px" class="btn btn-link"><i class="fas fa-user-check"></i> Activate</button>
-		</form>
-		
-		<span th:if="${user.enabled}">
-			<form th:if="${not user.admin}" th:action="@{|/admin/user/${user.username}/admin|}" method="POST">
-				<button style="padding:0px" class="btn btn-link"><i class="fas fa-user-tie"></i> Make Admin</button>
-			</form>	
-			
-			<form th:if="${user.admin}" th:action="@{|/admin/user/${user.username}/admin/remove|}" method="POST">
-				<button style="padding:0px" class="btn btn-link"><i class="fas fa-user"></i> Remove Admin Role</button>
-			</form>
-		
-			<form th:action="@{|/admin/user/${user.username}/disable|}" method="POST">
-				<button style="padding:0px" class="btn btn-link"><i class="fas fa-user-slash"></i> Deactivate User</button>
-			</form>
-		</span>
-		</div>
-	</li>
-</ul>
-   </div>
-  </body>
+    <title>Authority Matcher</title>
+</head>
+<body>
+<div layout:fragment="content">
+
+    <div class="container">
+
+        <table class="index_table index table table-hover">
+            <thead>
+            <tr>
+                <th>Username</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Roles</th>
+                <th>Notes</th>
+                <th>Account</th>
+                <th>Add/Remove Roles</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user : ${users}">
+                <td th:text="${user.username}"></td>
+                <td th:text="${user.firstName}"></td>
+                <td th:text="${user.lastName}"></td>
+                <td th:text="${user.email}"></td>
+                <td>
+                    <span th:each="role : ${user.roles}" class="role"
+                          th:text="${#strings.substringAfter(role.getAuthority(),'ROLE_')}"></span>
+                </td>
+
+                <td>
+                    <button type="button" class="btn btn-admin">Add Notes</button>
+                </td>
+
+                <td>
+                    <form th:if="${not user.enabled}"
+                          th:action="@{|/admin/user/${user.username}/approve|}" method="POST">
+                        <button class="btn btn-admin">Activate User</button>
+                    </form>
+
+                    <form th:if="${user.enabled}"
+                          th:action="@{|/admin/user/${user.username}/disable|}" method="POST">
+                        <button class="btn btn-admin">Deactivate User</button>
+                    </form>
+                </td>
+
+                <td th:if="${user.enabled}">
+
+                    <form
+                        th:if="${#lists.contains(user.getRoles(), new org.springframework.security.core.authority.SimpleGrantedAuthority('ROLE_MANAGER'))}"
+                        th:action="@{|/admin/user/${user.username}/role/remove?roles=ROLE_MANAGER|}" method="POST">
+                        <button type="submit" class="btn btn-admin">Remove Manager Role</button>
+                    </form>
+
+                    <form
+                        th:if="${not #lists.contains(user.getRoles(), new org.springframework.security.core.authority.SimpleGrantedAuthority('ROLE_MANAGER'))}"
+                        th:action="@{|/admin/user/${user.username}/role/add?roles=ROLE_MANAGER|}" method="POST">
+                        <button type="submit" class="btn btn-admin">Add Manager Role</button>
+                    </form>
+
+                    <form th:if="${user.admin}"
+                          th:action="@{|/admin/user/${user.username}/admin/remove|}"
+                          method="POST">
+                        <button class="btn btn-admin">Remove Admin Role</button>
+                    </form>
+
+                    <form th:if="${not user.admin}"
+                          th:action="@{|/admin/user/${user.username}/admin|}"
+                          method="POST">
+                        <button class="btn btn-admin">Make Admin</button>
+                    </form>
+
+                </td>
+                <td th:if="${not user.enabled}"></td>
+                <td>
+                    <button type="button" class="btn btn-admin">View User</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
 </html>
