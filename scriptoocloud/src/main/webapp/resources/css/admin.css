@@ -112,8 +112,7 @@ button.btn.btn-admin:active {
     min-height: 20px;
 }
 
-div.navbar-header a.navbar-brand,
-ul.nav.navbar-nav li a {
+div.navbar-header a.navbar-brand, ul.nav.navbar-nav li a {
     padding: 6px 10px 2px 10px;
 }
 
