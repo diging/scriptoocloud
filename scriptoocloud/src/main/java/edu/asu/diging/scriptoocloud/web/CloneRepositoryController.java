@@ -12,7 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import edu.asu.diging.scriptoocloud.core.service.CloneRepositoryService;
+import edu.asu.diging.scriptoocloud.core.service.CloneRepository;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -22,18 +22,21 @@ import java.net.MalformedURLException;
 @Controller
 public class CloneRepositoryController {
 
-    @Autowired
-    CloneRepositoryService cloneService;
-
+    //@Autowired
+    //CloneRepository cloneService;
+ 
+    /*
     @RequestMapping(value = "/clone", method = RequestMethod.GET)
     public String clone(Model model) {
         return "clone";
     }
-    
+    */
+    /*
     @RequestMapping(value = "/clone", method = RequestMethod.POST)
     public String cloneURL(HttpServletRequest request, HttpServletResponse response) 
      throws MalformedURLException, InvalidRemoteException, TransportException, GitAPIException{
         return cloneService.cloneRepo(request.getParameter("repoURL"));
     }
+    */
     
 }
