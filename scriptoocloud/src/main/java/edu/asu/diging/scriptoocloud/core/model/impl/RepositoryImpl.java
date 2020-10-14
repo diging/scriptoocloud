@@ -6,6 +6,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotEmpty;
+
+import org.hibernate.validator.constraints.NotBlank;
 
 import edu.asu.diging.scriptoocloud.core.model.Repository;
 
@@ -14,11 +17,30 @@ public class RepositoryImpl implements Repository {
 
     @Id
     @GeneratedValue(strategy=GenerationType.SEQUENCE)
+    
+    @NotEmpty(message = "Host name required")
+    private String host;
+
+    @NotEmpty(message = "Repository owner and name required")
     private String owner;
+    
+    @NotEmpty(message = "Repository name required")
     private String repo;
+    
     private String path;
     private ZonedDateTime creationDate;
     private String Requester;
+    
+    
+    @Override
+    public String getHost() {
+        return host;
+    }
+    
+    @Override
+    public void setHost(String host) {
+        this.host = host;
+    }
     
     @Override
     public String getOwner() {

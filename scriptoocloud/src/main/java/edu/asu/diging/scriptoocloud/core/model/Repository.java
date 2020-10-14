@@ -24,4 +24,8 @@ public interface Repository {
 
     void setRequester(String requester);
 
+    String getHost();
+
+    void setHost(String host);
+
 }

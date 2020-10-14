@@ -1,26 +1,73 @@
 <html layout:decorate="~{layouts/main}">
   <head>
     <title>Authority Matcher</title>
+    
+    <script>
+    function validate()
+    {   
+    	let form = document.getElementById("repoForm");
+       	        
+         try{
+         	let url = new URL(form.url.value)
+         	form.host.value = url.hostname;
+         	let path = url.pathname.split("/");
+         	form.owner.value = path[1];
+         	form.repo.value = path[2];
+            form.submit();
+            }
+             catch(err){
+             	console.log("err")
+                document.getElementById("errorWindow")
+                	.textContent = 
+                    	"URL must be of the format https://host.domain/owner/repo"
+             }
+    }       
+    </script>
+       
   </head>
   <body>
    <div layout:fragment="content">
       <div class="jumbotron col-md-12">
 
 	   <h1>Clone a github repo to the server</h1>
-	   <form action="#" th:action="@{/clone}" method="POST">
-	   <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+       
 
-	   <label>Github Repository URL</label>
-	   <input type="text" th:name = "repoURL" class="form-control input-sm"></password>
-	   <p class="text-danger"><th:errors path="repoURl"/></p>
+       
+<form action="#" id = "repoForm" th:action="@{/clone}" method="POST" th:object="${clone}">
+		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+		
+        <p class="text-danger" id = "errorWindow"></p>
+        
+		<label>URL:</label>
+        <p class="text-danger" th:if="${#fields.hasErrors('owner')}" th:errors="*{owner}">URL Required</p>
+		<input path="url" th:field="*{url}" class="form-control input-sm"></input>
+        <p class="text-danger"><th:errors path="url"/></p>
+	
+		
+        <p class="text-danger" th:if="${#fields.hasErrors('host')}" th:errors="*{host}">Host Required</p>
+		<input  th:field="*{host}" class="form-control input-sm"></input>
 
-	   <div style="padding-top: 20px;">
-	   <button class="btn btn-sm btn-primary pull-right">Upload</button>
-	   </div>
+    
+		
+		<label>Owner:</label>
+        <p class="text-danger" th:if="${#fields.hasErrors('owner')}" th:errors="*{owner}">Owner Required</p>
+		<input th:field="*{owner}" class="form-control input-sm"></input>
+
+		
+		<label>Repo:</label>
+        <p class="text-danger" th:if="${#fields.hasErrors('repo')}" th:errors="*{repo}">Repo Required</p>
+		<input th:field="*{repo}" class="form-control input-sm"></input>
+
+	
+		<div style="padding-top: 20px;">
+    <button class="btn btn-sm btn-primary pull-right">Create Account</button>
+		</div>
 	</form>
+            <button class="btn btn-sm btn-primary pull-right" onclick="validate()">Upload</button>
+                
 
+    
 
-    <script>alert("s")</script>
 
       </div>
    </div>
