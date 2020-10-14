@@ -28,4 +28,8 @@ public interface Repository {
 
     void setHost(String host);
 
+    long getId();
+
+    void setId(long id);
+
 }

@@ -45,12 +45,13 @@ public class CloneRepositoryImpl implements CloneRepository{
     
     
     @Override
-    public String cloneRepo(CloneForm cloneForm) throws InvalidRemoteException, 
+    public String cloneRepo(String url) throws InvalidRemoteException, 
         TransportException, GitAPIException, MalformedURLException, NoSuchElementException {    
 
-        URL repoURL = new URL(cloneForm.url);     
+        URL repoURL = new URL(url);     
         String fullPath = repoURL.getPath();
         scanner = new Scanner(fullPath).useDelimiter("/");
+        path = "";
         
         host = repoURL.getHost();
         owner = scanner.next();
@@ -63,7 +64,7 @@ public class CloneRepositoryImpl implements CloneRepository{
                              
         creationDate = ZonedDateTime.now();
                                    
-
+                                   
         RepositoryImpl repository = new RepositoryImpl();
         repository.setHost(host);
         repository.setOwner(owner);
@@ -72,23 +73,14 @@ public class CloneRepositoryImpl implements CloneRepository{
         repository.setRequester(requester);
         repository.setCreationDate(creationDate);
         
-        if(clonedRepository.findByPath(path) != null){
-              return "redirect:clone" + "?repoAlreadyExists";   
+        if(clonedRepository.findByRepo(repo) != null && clonedRepository.findByPath(path) != null){
+            return "redirect:clone" + "?AlreadyExists";
         }
         
         
-        //new file is making a new dir every time
-        //find out how to open a dir file into memory
-        //Git.cloneRepository().setURI(url).setDirectory(new File(dir)).call();
-        
-   
-        
+        Git.cloneRepository().setURI(url).setDirectory(new File(dir)).call();
         clonedRepository.save(repository);
         
         return "redirect:clone" + "?success";
     }
-    
-
-
-    
 }

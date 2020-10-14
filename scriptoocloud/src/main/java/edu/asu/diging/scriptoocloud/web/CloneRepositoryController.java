@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import edu.asu.diging.scriptoocloud.core.forms.CloneForm;
 import edu.asu.diging.scriptoocloud.core.model.Repository;
 import edu.asu.diging.scriptoocloud.core.service.CloneRepository;
+import edu.asu.diging.scriptoocloud.core.service.impl.CloneRepositoryImpl;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -28,7 +29,7 @@ import java.util.NoSuchElementException;
 @Controller
 public class CloneRepositoryController {
 
-    //@Autowired
+    @Autowired
     CloneRepository cloneService;
  
   
@@ -40,13 +41,16 @@ public class CloneRepositoryController {
   
 
     @RequestMapping(value = "/clone", method = RequestMethod.POST)
-    public String clone(@ModelAttribute("clone") CloneForm cloneForm) 
+    public String clone(@Valid @ModelAttribute("clone") CloneForm cloneForm, BindingResult result, Model model) 
                              throws InvalidRemoteException, TransportException, 
                                 MalformedURLException, NoSuchElementException, GitAPIException {
-  
-                           
-        cloneService.cloneRepo(cloneForm);                      
-        return "home";
+                                                       
+        if(result.hasErrors()){
+            model.addAttribute("clone", new CloneForm());
+            return "clone";
+        }                 
+                          
+        return cloneService.cloneRepo(cloneForm.getUrl());               
     }
     
     

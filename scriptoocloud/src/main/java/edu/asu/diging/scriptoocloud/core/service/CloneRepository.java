@@ -11,7 +11,7 @@ import edu.asu.diging.scriptoocloud.core.forms.CloneForm;
 
 public interface CloneRepository {
 
-    String cloneRepo(CloneForm cloneForm) throws InvalidRemoteException, TransportException, GitAPIException,
+    String cloneRepo(String url) throws InvalidRemoteException, TransportException, GitAPIException,
             MalformedURLException, NoSuchElementException;
 
 }

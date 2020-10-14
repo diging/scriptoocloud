@@ -17,6 +17,7 @@ public class RepositoryImpl implements Repository {
 
     @Id
     @GeneratedValue(strategy=GenerationType.SEQUENCE)
+    private long id;
     
     @NotEmpty(message = "Host name required")
     private String host;
@@ -31,7 +32,16 @@ public class RepositoryImpl implements Repository {
     private ZonedDateTime creationDate;
     private String Requester;
     
-    
+    @Override
+    public long getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(long id) {
+        this.id = id;
+    }
+
     @Override
     public String getHost() {
         return host;

@@ -39,24 +39,23 @@
         <p class="text-danger" id = "errorWindow"></p>
         
 		<label>URL:</label>
-        <p class="text-danger" th:if="${#fields.hasErrors('owner')}" th:errors="*{owner}">URL Required</p>
 		<input path="url" th:field="*{url}" class="form-control input-sm"></input>
         <p class="text-danger"><th:errors path="url"/></p>
 	
 		
         <p class="text-danger" th:if="${#fields.hasErrors('host')}" th:errors="*{host}">Host Required</p>
-		<input  th:field="*{host}" class="form-control input-sm"></input>
+		<input type="hidden" th:field="*{host}" class="form-control input-sm"></input>
 
     
 		
-		<label>Owner:</label>
+	
         <p class="text-danger" th:if="${#fields.hasErrors('owner')}" th:errors="*{owner}">Owner Required</p>
-		<input th:field="*{owner}" class="form-control input-sm"></input>
+		<input type="hidden" th:field="*{owner}" class="form-control input-sm"></input>
 
 		
-		<label>Repo:</label>
+	
         <p class="text-danger" th:if="${#fields.hasErrors('repo')}" th:errors="*{repo}">Repo Required</p>
-		<input th:field="*{repo}" class="form-control input-sm"></input>
+		<input type="hidden" th:field="*{repo}" class="form-control input-sm"></input>
 
 	
 		<div style="padding-top: 20px;">
