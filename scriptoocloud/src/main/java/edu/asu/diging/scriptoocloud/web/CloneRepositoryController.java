@@ -33,24 +33,27 @@ public class CloneRepositoryController {
     CloneRepository cloneService;
  
   
+    @RequestMapping(value = "/listrepos", method = RequestMethod.GET)
+    public String getRepos(Model model) {
+        model.addAttribute("repo",cloneService.getRepos());
+        return  "github/ListRepos";
+    }
+  
     @RequestMapping(value = "/clone", method = RequestMethod.GET)
     public String clone(Model model) {
         model.addAttribute("clone", new CloneForm());
-        return "clone";
+        return "github/clone";
     }
   
-
     @RequestMapping(value = "/clone", method = RequestMethod.POST)
     public String clone(@Valid @ModelAttribute("clone") CloneForm cloneForm, BindingResult result, Model model) 
-                             throws InvalidRemoteException, TransportException, 
-                                MalformedURLException, NoSuchElementException, GitAPIException {
-                                                       
+                             throws GitAPIException {                                          
         if(result.hasErrors()){
             model.addAttribute("clone", new CloneForm());
-            return "clone";
+              return "redirect:github/clone" + "?BadForm";
         }                 
-                          
-        return cloneService.cloneRepo(cloneForm.getUrl());               
+        cloneService.cloneRepo(cloneForm);       
+        return "github/clone";       
     }
     
     

@@ -8,8 +8,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;
 
-import org.hibernate.validator.constraints.NotBlank;
-
 import edu.asu.diging.scriptoocloud.core.model.Repository;
 
 @Entity
@@ -28,7 +26,7 @@ public class RepositoryImpl implements Repository {
     @NotEmpty(message = "Repository name required")
     private String repo;
     
-    private String path;
+    private String url;
     private ZonedDateTime creationDate;
     private String Requester;
     
@@ -73,13 +71,13 @@ public class RepositoryImpl implements Repository {
     }
     
     @Override
-    public String getPath() {
-        return path;
+    public String getUrl() {
+        return url;
     }
     
     @Override
-    public void setPath(String path) {
-        this.path = path;
+    public void setUrl(String url) {
+        this.url = url;
     }
     
     @Override

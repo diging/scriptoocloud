@@ -10,15 +10,13 @@ public class CloneForm {
     @NotEmpty(message = "Host name required")
     private String host;
 
-    @NotEmpty(message = "Repository owner and name required")
+    @NotEmpty(message = "Repository owner required")
     private String owner;
     
     @NotEmpty(message = "Repository name required")
     private String repo;
    
-
-
-
+   
     public String getHost() {
         return host;
     }

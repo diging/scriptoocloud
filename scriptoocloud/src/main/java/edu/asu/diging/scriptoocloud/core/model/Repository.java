@@ -12,9 +12,9 @@ public interface Repository {
 
     void setRepo(String repo);
 
-    String getPath();
+    String getUrl();
 
-    void setPath(String path);
+    void setUrl(String url);
 
     ZonedDateTime getCreationDate();
 

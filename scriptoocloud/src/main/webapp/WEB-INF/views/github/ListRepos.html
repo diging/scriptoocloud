@@ -1,47 +1,29 @@
 <html layout:decorate="~{layouts/main}">
   <head>
     <title>Authority Matcher</title>
-    <script src='scripts/validator.js'></script>
   </head>
   <body>
    <div layout:fragment="content">
-      <div class="jumbotron col-md-12">
 
-	   <h1>Clone a github repo to the server</h1>
-       
-       
-    <form action="#" id = "repoForm" th:action="@{/clone}" method="POST" th:object="${clone}">
-		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-		
-        <p class="text-danger" id = "errorWindow"></p>
-        
-		<label>URL:</label>
-		<input path="url" th:field="*{url}" class="form-control input-sm"></input>
-        <p class="text-danger"><th:errors path="url"/></p>
-	
-		
-        <p class="text-danger" th:if="${#fields.hasErrors('host')}" th:errors="*{host}">Host Required</p>
-		<input type="hidden" th:field="*{host}" class="form-control input-sm"></input>
-
-    
-		
-	
-        <p class="text-danger" th:if="${#fields.hasErrors('owner')}" th:errors="*{owner}">Owner Required</p>
-		<input type="hidden" th:field="*{owner}" class="form-control input-sm"></input>
-
-		
-	
-        <p class="text-danger" th:if="${#fields.hasErrors('repo')}" th:errors="*{repo}">Repo Required</p>
-		<input type="hidden" th:field="*{repo}" class="form-control input-sm"></input>
-
-	
-		<div style="padding-top: 20px;">
-		</div>
-	</form>
-    
-    <button class="btn btn-sm btn-primary pull-right" onclick="validate()">Upload</button>
-               
-      </div>
+<h2>Users</h2>
+<ul class="list-group">
+ <li th:each="Repository : ${repo}"  class="list-group-item clearfix">
+    <label>Requester:</label>
+    <span th:text="${Repository.requester}" ></span> 
+    <label>Remote host:</label>   
+    <span th:text="${Repository.host}" ></span>   
+    <label>Owner:</label> 
+    <span th:text="${Repository.owner}" ></span>
+    <label>Name:</label>
+    <span th:text="${Repository.repo}" ></span> 
+    <label>Creation Date:</label>
+    <span th:text="${Repository.creationDate}" ></span>     
+    <span th:text="${Repository.url}" ></span>     
+                <form th:if="${not user.admin}" th:action="@{|/admin/user/${user.username}/admin|}" method="POST">
+                <button style="padding:0px" class="btn btn-link"><i class="fas fa-user-tie"></i> Make Admin</button>
+            </form> 
+    </li>
+</ul>
    </div>
   </body>
 </html>
