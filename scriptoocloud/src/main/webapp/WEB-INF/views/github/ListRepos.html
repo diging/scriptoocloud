@@ -8,20 +8,38 @@
 <h2>Users</h2>
 <ul class="list-group">
  <li th:each="Repository : ${repo}"  class="list-group-item clearfix">
-    <label>Requester:</label>
-    <span th:text="${Repository.requester}" ></span> 
-    <label>Remote host:</label>   
-    <span th:text="${Repository.host}" ></span>   
-    <label>Owner:</label> 
-    <span th:text="${Repository.owner}" ></span>
+    <ul class="list-group">
+   
+    <li class="list-group-item clearfix">
     <label>Name:</label>
     <span th:text="${Repository.repo}" ></span> 
+    </li>
+    
+    <li class="list-group-item clearfix">
+    <label>Owner:</label> 
+    <span th:text="${Repository.owner}" ></span>
+    </li>
+    
+    <li  class="list-group-item clearfix">
+    <label>Remote host:</label>   
+    <span th:text="${Repository.host}" ></span>   
+    </li>
+    
+    <li class="list-group-item clearfix">
     <label>Creation Date:</label>
     <span th:text="${Repository.creationDate}" ></span>     
-    <span th:text="${Repository.url}" ></span>     
-                <form th:if="${not user.admin}" th:action="@{|/admin/user/${user.username}/admin|}" method="POST">
-                <button style="padding:0px" class="btn btn-link"><i class="fas fa-user-tie"></i> Make Admin</button>
-            </form> 
+    </li>
+    
+    <li  class="list-group-item clearfix">
+    <label>Requester:</label>
+    <span th:text="${Repository.requester}" ></span> 
+    </li>
+    
+
+    <form th:action="@{|/listrepos/${Repository.host}/${Repository.owner}/${Repository.repo}/${Repository.requester}|}" method="POST">
+    <button style="padding:0px" class="btn btn-link"><i class="fas fa-trash"></i> Delete Repository </button>
+    </form> 
+   </ul>
     </li>
 </ul>
    </div>

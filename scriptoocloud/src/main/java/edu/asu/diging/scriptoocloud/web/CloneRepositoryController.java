@@ -5,26 +5,18 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.InvalidRemoteException;
-import org.eclipse.jgit.api.errors.TransportException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import edu.asu.diging.scriptoocloud.core.forms.CloneForm;
-import edu.asu.diging.scriptoocloud.core.model.Repository;
 import edu.asu.diging.scriptoocloud.core.service.CloneRepository;
-import edu.asu.diging.scriptoocloud.core.service.impl.CloneRepositoryImpl;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.NoSuchElementException;
-
 
 @Controller
 public class CloneRepositoryController {
@@ -34,9 +26,20 @@ public class CloneRepositoryController {
  
   
     @RequestMapping(value = "/listrepos", method = RequestMethod.GET)
-    public String getRepos(Model model) {
+    public String repos(Model model) {
         model.addAttribute("repo",cloneService.getRepos());
         return  "github/ListRepos";
+    }
+
+    @RequestMapping(value = "/listrepos/{host}/{owner}/{repo}/{requester}", method = RequestMethod.POST)
+    public String repos(@PathVariable("host") String host,
+                        @PathVariable("owner") String owner,
+                        @PathVariable("repo") String repo,
+                        @PathVariable("requester") String requester,
+                        @ModelAttribute("clone") CloneForm cloneForm, BindingResult result) 
+                             throws GitAPIException {        
+        cloneService.deleteRepo(host + "/" + owner + "/" + repo, requester, owner, repo);    
+        return "github/clone";       
     }
   
     @RequestMapping(value = "/clone", method = RequestMethod.GET)

@@ -1,16 +1,8 @@
 package edu.asu.diging.scriptoocloud.core.service.impl;
 
-    import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.File;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import javax.transaction.Transactional;
@@ -18,8 +10,6 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.InvalidRemoteException;
-import org.eclipse.jgit.api.errors.TransportException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -38,15 +28,13 @@ public class CloneRepositoryImpl implements CloneRepository{
     @Autowired 
     private ClonedRepository clonedRepository;
     
-    private Scanner scanner;
     private String host;
     private String owner;
     private String repo;
     private String requester;
     private String url;
     private ZonedDateTime creationDate;
-    private String dir = "C:/testRepo";
-    
+    private String drive = "C:/";
     
     @Override
     public ArrayList<Repository> getRepos(){
@@ -58,14 +46,15 @@ public class CloneRepositoryImpl implements CloneRepository{
 
     @Override
     public String cloneRepo(CloneForm cloneForm) throws GitAPIException {    
-        url = cloneForm.getUrl();
+        
         host = cloneForm.getHost();
         owner = cloneForm.getOwner();
         repo = cloneForm.getRepo();
         requester = ((IUser)SecurityContextHolder.getContext()
                             .getAuthentication().getPrincipal()).getUsername();
         creationDate = ZonedDateTime.now();                                   
-                                   
+        url = host + "/" + owner + "/" +repo;
+                                           
         RepositoryImpl repository = new RepositoryImpl();
         repository.setUrl(url);
         repository.setHost(host);
@@ -74,46 +63,71 @@ public class CloneRepositoryImpl implements CloneRepository{
         repository.setRequester(requester);
         repository.setCreationDate(creationDate);
         
-        
         try{
             Repository repositoryEntity = clonedRepository.findByUrl(url);
             if(repositoryEntity != null){
                 clonedRepository.deleteById(repositoryEntity.getId());
-                System.out.println("\n\nDELETING");
-                File parentDirectory = new File(dir + requester + owner + repo);
+                File parentDirectory = new File(drive + requester + "_" + owner + "_" + repo);
                 deleteDirectoryContents(parentDirectory);
             }
         }
         catch(InvalidDataAccessResourceUsageException e){}
         
-        Git.cloneRepository().setURI(url)
-        .setDirectory(new File(dir + requester + owner + repo)).call().getRepository().close();
+        Git.cloneRepository().setURI(cloneForm.getUrl())
+        .setDirectory(new File(drive + requester + "_" + owner + "_" + repo))
+        .call().getRepository().close();
 
         clonedRepository.save(repository);
         
         return "github/clone";
     }
-
-/*
- * Java can only delete empty directories
- */
-public void deleteDirectoryContents(File file){
     
-    File directorycontents[];
     
-    if(file.isDirectory())
-    {
-        directorycontents = file.listFiles();
-        for(File fileItem : directorycontents){
-            deleteDirectoryContents(fileItem);
-                System.out.print(fileItem);        
+    
+    
+    
+    @Override
+    public String deleteRepo(String url, String requester, String owner, String repo){
+    
+        try{
+            Repository repositoryEntity = clonedRepository.findByUrl(url);
+            if(repositoryEntity != null){
+                clonedRepository.deleteById(repositoryEntity.getId());
+                File parentDirectory = new File(drive + requester + "_" + owner + "_" + repo);
+                deleteDirectoryContents(parentDirectory);
+            }
         }
-          
-        file.delete();
+        catch(InvalidDataAccessResourceUsageException e){}
+    
+        return "github/clone";
     }
-    else{
-        file.delete();
+    
+    
+    
+    
+
+    /*
+     * File.delete() only works on empty directories
+     */
+    @Override
+    public void deleteDirectoryContents(File file){
+        
+        File directorycontents[];
+        
+        if(file.isDirectory())
+        {
+            directorycontents = file.listFiles();
+            for(File fileItem : directorycontents)
+            {
+                deleteDirectoryContents(fileItem);     
+            }
+              
+            file.delete();
+        }
+        else
+        {
+            file.delete();
+        }
     }
-}
 
 }
