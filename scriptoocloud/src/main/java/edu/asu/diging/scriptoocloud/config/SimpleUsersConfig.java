@@ -10,7 +10,7 @@ import edu.asu.diging.simpleusers.core.config.SimpleUsersConfiguration;
 
 @Configuration
 @PropertySource("classpath:config.properties")
-public class EmailConfig implements SimpleUsersConfiguration{
+public class SimpleUsersConfig implements SimpleUsersConfiguration{
 
     @Autowired
     private Environment env;
