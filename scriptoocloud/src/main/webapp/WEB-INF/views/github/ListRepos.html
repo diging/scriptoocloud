@@ -5,7 +5,7 @@
   <body>
    <div layout:fragment="content">
 
-<h2>Users</h2>
+<h2>Repositories</h2>
 <ul class="list-group">
  <li th:each="Repository : ${repo}"  class="list-group-item clearfix">
     <ul class="list-group">
@@ -34,7 +34,6 @@
     <label>Requester:</label>
     <span th:text="${Repository.requester}" ></span> 
     </li>
-    
 
     <form th:action="@{|/listrepos/${Repository.host}/${Repository.owner}/${Repository.repo}/${Repository.requester}|}" method="POST">
     <button style="padding:0px" class="btn btn-link"><i class="fas fa-trash"></i> Delete Repository </button>

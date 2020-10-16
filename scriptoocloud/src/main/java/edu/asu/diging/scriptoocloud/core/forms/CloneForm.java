@@ -16,7 +16,6 @@ public class CloneForm {
     @NotEmpty(message = "Repository name required")
     private String repo;
    
-   
     public String getHost() {
         return host;
     }
@@ -48,6 +47,5 @@ public class CloneForm {
     public void setUrl(String url) {
         this.url = url;
     }
-
 
 }

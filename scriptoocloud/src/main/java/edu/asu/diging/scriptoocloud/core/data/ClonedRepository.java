@@ -15,7 +15,4 @@ public interface ClonedRepository extends PagingAndSortingRepository<RepositoryI
     public RepositoryImpl findByOwner(String repo);
     
     public RepositoryImpl findByRepo(String owner);
-    
-
-    
 }
