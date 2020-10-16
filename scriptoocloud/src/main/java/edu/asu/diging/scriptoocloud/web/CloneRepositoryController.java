@@ -1,7 +1,5 @@
 package edu.asu.diging.scriptoocloud.web;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -13,7 +11,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import edu.asu.diging.scriptoocloud.core.forms.CloneForm;
 import edu.asu.diging.scriptoocloud.core.service.CloneRepository;
@@ -24,22 +21,20 @@ public class CloneRepositoryController {
     @Autowired
     CloneRepository cloneService;
  
-  
     @RequestMapping(value = "/listrepos", method = RequestMethod.GET)
-    public String repos(Model model) {
+    public String listRepos(Model model) {
         model.addAttribute("repo",cloneService.getRepos());
         return  "github/ListRepos";
     }
 
     @RequestMapping(value = "/listrepos/{host}/{owner}/{repo}/{requester}", method = RequestMethod.POST)
-    public String repos(@PathVariable("host") String host,
+    public String deleteRepo(@PathVariable("host") String host,
                         @PathVariable("owner") String owner,
                         @PathVariable("repo") String repo,
                         @PathVariable("requester") String requester,
                         @ModelAttribute("clone") CloneForm cloneForm, BindingResult result) 
                              throws GitAPIException {        
-        cloneService.deleteRepo(host + "/" + owner + "/" + repo, requester, owner, repo);    
-        return "github/clone";       
+       return cloneService.deleteRepo(host + "/" + owner + "/" + repo, requester, owner, repo);        
     }
   
     @RequestMapping(value = "/clone", method = RequestMethod.GET)
@@ -53,10 +48,9 @@ public class CloneRepositoryController {
                              throws GitAPIException {                                          
         if(result.hasErrors()){
             model.addAttribute("clone", new CloneForm());
-              return "redirect:github/clone" + "?BadForm";
+              return "redirect:/clone" + "?BadForm";
         }                 
-        cloneService.cloneRepo(cloneForm);       
-        return "github/clone";       
+        return cloneService.cloneRepo(cloneForm);       
     }
     
     

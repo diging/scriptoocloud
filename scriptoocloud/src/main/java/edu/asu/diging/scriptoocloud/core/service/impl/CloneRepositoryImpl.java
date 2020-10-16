@@ -3,7 +3,6 @@ package edu.asu.diging.scriptoocloud.core.service.impl;
 import java.io.File;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import javax.transaction.Transactional;
 
@@ -45,7 +44,7 @@ public class CloneRepositoryImpl implements CloneRepository{
     }
 
     @Override
-    public String cloneRepo(CloneForm cloneForm) throws GitAPIException {    
+    public String cloneRepo(CloneForm cloneForm){    
         
         host = cloneForm.getHost();
         owner = cloneForm.getOwner();
@@ -73,39 +72,32 @@ public class CloneRepositoryImpl implements CloneRepository{
         }
         catch(InvalidDataAccessResourceUsageException e){}
         
-        Git.cloneRepository().setURI(cloneForm.getUrl())
-        .setDirectory(new File(drive + requester + "_" + owner + "_" + repo))
-        .call().getRepository().close();
+        try{
+            Git.cloneRepository().setURI(cloneForm.getUrl())
+            .setDirectory(new File(drive + requester + "_" + owner + "_" + repo))
+            .call().getRepository().close();
+        }
+        catch(GitAPIException e){return "redirect:/clone" + "?badurl"; }
 
         clonedRepository.save(repository);
         
-        return "github/clone";
+        return "redirect:/clone" + "?success"; 
     }
-    
-    
-    
-    
     
     @Override
     public String deleteRepo(String url, String requester, String owner, String repo){
     
-        try{
-            Repository repositoryEntity = clonedRepository.findByUrl(url);
-            if(repositoryEntity != null){
-                clonedRepository.deleteById(repositoryEntity.getId());
-                File parentDirectory = new File(drive + requester + "_" + owner + "_" + repo);
-                deleteDirectoryContents(parentDirectory);
-            }
-        }
-        catch(InvalidDataAccessResourceUsageException e){}
+        Repository repositoryEntity = clonedRepository.findByUrl(url);
     
-        return "github/clone";
+        if(repositoryEntity != null){
+            clonedRepository.deleteById(repositoryEntity.getId());
+            File parentDirectory = new File(drive + requester + "_" + owner + "_" + repo);
+            deleteDirectoryContents(parentDirectory);
+        }
+    
+        return "redirect:/listrepos" + "?success"; 
     }
     
-    
-    
-    
-
     /*
      * File.delete() only works on empty directories
      */

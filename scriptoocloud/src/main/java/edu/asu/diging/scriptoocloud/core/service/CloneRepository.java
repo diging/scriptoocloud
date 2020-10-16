@@ -12,9 +12,7 @@ public interface CloneRepository {
 
     ArrayList<Repository> getRepos();
 
-    String cloneRepo(CloneForm cloneForm) throws GitAPIException;
-
-    String deleteRepo(String url);
+    String cloneRepo(CloneForm cloneForm);
 
     /*
      * File.delete() only works on empty directories
