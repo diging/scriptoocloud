@@ -3,8 +3,6 @@ package edu.asu.diging.scriptoocloud.core.service;
 import java.io.File;
 import java.util.ArrayList;
 
-import org.eclipse.jgit.api.errors.GitAPIException;
-
 import edu.asu.diging.scriptoocloud.core.forms.CloneForm;
 import edu.asu.diging.scriptoocloud.core.model.Repository;
 
