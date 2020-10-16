@@ -77,7 +77,11 @@ public class CloneRepositoryImpl implements CloneRepository{
             .setDirectory(new File(drive + requester + "_" + owner + "_" + repo))
             .call().getRepository().close();
         }
-        catch(GitAPIException e){return "redirect:/clone" + "?badurl"; }
+        catch(GitAPIException e){
+            File parentDirectory = new File(drive + requester + "_" + owner + "_" + repo);
+            deleteDirectoryContents(parentDirectory);
+            return "redirect:/clone" + "?badurl"; 
+        }
 
         clonedRepository.save(repository);
         
