@@ -24,6 +24,10 @@
 		<db.password>db-password</db.password>
 
 		<log.level>info</log.level>
+		
+		<tomcat.deploy.path></tomcat.deploy.path>
+        <tomcat.app.name>scriptoocloud</tomcat.app.name>
+        <tomcat.server.id>TomcatServer</tomcat.server.id>
 	</properties>
 
 	<dependencyManagement>
@@ -278,6 +282,16 @@
 				<artifactId>maven-failsafe-plugin</artifactId>
 				<version>2.22.2</version>
 			</plugin>
+			<plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <url>${tomcat.deploy.path}</url>
+                    <server>${tomcat.server.id}</server>
+                    <path>/${tomcat.app.name}</path>
+                </configuration>
+            </plugin>
 		</plugins>
 	</build>
 
