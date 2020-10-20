@@ -79,11 +79,14 @@
 			<artifactId>junit-platform-launcher</artifactId>
 			<version>1.7.0</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
 		<dependency>
 			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>1.10.19</version>
+			<artifactId>mockito-inline</artifactId>
+			<version>3.5.15</version>
+			<scope>test</scope>
 		</dependency>
+
 
 		<!-- Spring Security -->
 		<dependency>

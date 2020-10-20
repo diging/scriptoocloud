@@ -16,4 +16,8 @@ public class ExampleServiceAImpl implements ExampleServiceA {
     public int generateRandom() {
         return new Random().nextInt();
     }
+    
+    public static Integer staticGenerate() {
+        return new Random().nextInt();
+    }
 }
