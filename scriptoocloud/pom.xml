@@ -23,6 +23,8 @@
 		<db.user>db-user</db.user>
 		<db.password>db-password</db.password>
 
+		<git.repositories.path></git.repositories.path>
+
 		<log.level>info</log.level>
 
 		<tomcat.deploy.path></tomcat.deploy.path>

@@ -11,7 +11,7 @@
         <div class="text-danger" th:if ="${param.badurl != null}  ">Bad Url</div>
         <div class="text-success" th:if ="${param.success != null}  ">Repository Succesfully Cloned!</div>    
         
-        <form action="#" id = "repoForm" th:action="@{/clone}" method="POST" th:object="${clone}">
+        <form action="#" id = "repoForm" th:action="@{/repositories/clone}" method="POST" th:object="${clone}">
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
             
             <p class="text-danger" id = "errorWindow"></p>

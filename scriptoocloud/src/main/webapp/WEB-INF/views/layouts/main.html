@@ -51,11 +51,11 @@
 	          	</li>
 	            
                 <li sec:authorize="hasRole('ADMIN')" role="presentation">
-                    <a th:href="@{/clone}">Clone</a>
+                    <a th:href="@{/repositories/clone}">Clone</a>
                 </li> 	
                 
                 <li sec:authorize="hasRole('ADMIN')" role="presentation">
-                    <a  th:href="@{/listrepos}" >Manage Repositories</a>
+                    <a  th:href="@{/repositories/list}" >Manage Repositories</a>
                 </li>
                 
 	          	<li sec:authorize="isAuthenticated()" role="presentation">

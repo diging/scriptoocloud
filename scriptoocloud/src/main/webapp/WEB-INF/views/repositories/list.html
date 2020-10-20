@@ -7,35 +7,35 @@
 
 <h2>Repositories</h2>
 <ul class="list-group">
- <li th:each="Repository : ${repo}"  class="list-group-item clearfix">
+ <li th:each="repository : ${repositories}"  class="list-group-item clearfix">
     <ul class="list-group">
    
     <li class="list-group-item clearfix">
     <label>Name:</label>
-    <span th:text="${Repository.repo}" ></span> 
+    <span th:text="${repository.repo}" ></span> 
     </li>
     
     <li class="list-group-item clearfix">
     <label>Owner:</label> 
-    <span th:text="${Repository.owner}" ></span>
+    <span th:text="${repository.owner}" ></span>
     </li>
     
     <li  class="list-group-item clearfix">
     <label>Remote host:</label>   
-    <span th:text="${Repository.host}" ></span>   
+    <span th:text="${repository.host}" ></span>   
     </li>
     
     <li class="list-group-item clearfix">
     <label>Creation Date:</label>
-    <span th:text="${Repository.creationDate}" ></span>     
+    <span th:text="${repository.creationDate}" ></span>     
     </li>
     
     <li  class="list-group-item clearfix">
     <label>Requester:</label>
-    <span th:text="${Repository.requester}" ></span> 
+    <span th:text="${repository.requester}" ></span> 
     </li>
 
-    <form th:action="@{|/listrepos/${Repository.host}/${Repository.owner}/${Repository.repo}/${Repository.requester}|}" method="POST">
+    <form th:action="@{/listrepos}" method="POST">
     <button style="padding:0px" class="btn btn-link"><i class="fas fa-trash"></i> Delete Repository </button>
     </form> 
    </ul>

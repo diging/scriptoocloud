@@ -8,96 +8,83 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;
 
-import edu.asu.diging.scriptoocloud.core.model.Repository;
+import edu.asu.diging.scriptoocloud.core.model.GitRepository;
 
 @Entity
-public class RepositoryImpl implements Repository {
+public class GitRepositoryImpl implements GitRepository {
 
     @Id
     @GeneratedValue(strategy=GenerationType.SEQUENCE)
     private long id;
     
     @NotEmpty(message = "Host name required")
-    private String host;
+    private String gitRepositoryHost;
 
     @NotEmpty(message = "Repository owner and name required")
-    private String owner;
+    private String  gitRepositoryOwner;
     
     @NotEmpty(message = "Repository name required")
-    private String repo;
+    private String gitRepositoryName;
     
     private String url;
     private ZonedDateTime creationDate;
-    private String Requester;
+    private String requester;
     
-    @Override
+     @Override
     public long getId() {
         return id;
     }
-
     @Override
     public void setId(long id) {
         this.id = id;
     }
-
     @Override
-    public String getHost() {
-        return host;
+    public String getGitRepositoryHost() {
+        return gitRepositoryHost;
     }
-    
     @Override
-    public void setHost(String host) {
-        this.host = host;
+    public void setGitRepositoryHost(String gitRepositoryHost) {
+        this.gitRepositoryHost = gitRepositoryHost;
     }
-    
     @Override
-    public String getOwner() {
-        return owner;
+    public String getGitRepositoryOwner() {
+        return gitRepositoryOwner;
     }
-    
     @Override
-    public void setOwner(String owner) {
-        this.owner = owner;
+    public void setGitRepositoryOwner(String gitRepositoryOwner) {
+        this.gitRepositoryOwner = gitRepositoryOwner;
     }
-    
     @Override
-    public String getRepo() {
-        return repo;
+    public String getGitRepositoryName() {
+        return gitRepositoryName;
     }
-    
     @Override
-    public void setRepo(String repo) {
-        this.repo = repo;
+    public void setGitRepositoryName(String gitRepositoryName) {
+        this.gitRepositoryName = gitRepositoryName;
     }
-    
     @Override
     public String getUrl() {
         return url;
     }
-    
     @Override
     public void setUrl(String url) {
         this.url = url;
     }
-    
     @Override
     public ZonedDateTime getCreationDate() {
         return creationDate;
     }
-    
     @Override
     public void setCreationDate(ZonedDateTime creationDate) {
         this.creationDate = creationDate;
     }
-    
     @Override
     public String getRequester() {
-        return Requester;
+        return requester;
     }
-    
     @Override
     public void setRequester(String requester) {
-        Requester = requester;
+        this.requester = requester;
     }
     
 }   
