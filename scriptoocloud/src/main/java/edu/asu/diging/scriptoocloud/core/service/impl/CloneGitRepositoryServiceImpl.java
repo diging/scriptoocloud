@@ -65,7 +65,7 @@ public class CloneGitRepositoryServiceImpl implements CloneGitRepositoryService 
             jGitService.clone(path + requester + "_" + owner + "_" + repositoryName, cloneForm.getUrl());
             gitRepositoryJpa.save(gitRepository);
         }
-        catch(GitAPIException e){
+        catch(IllegalArgumentException e){
             throw new IllegalArgumentException(e);
         }
 

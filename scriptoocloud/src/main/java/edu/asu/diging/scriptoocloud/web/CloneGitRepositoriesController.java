@@ -60,7 +60,8 @@ public class CloneGitRepositoriesController {
         catch(IllegalArgumentException e){
             deleteGitRepositoryService
                 .deleteDirectoryContents(new File(path + user + cloneForm.getOwner() + cloneForm.getRepo()));
-            logger.error("No git repository found at provided URL");
+            logger.error("No git repository found at provided URL" 
+                            + path + user + cloneForm.getOwner() + cloneForm.getRepo());
             return "redirect:/repositories/clone" + "?badurl";
        }
        
