@@ -6,8 +6,8 @@ import edu.asu.diging.scriptoocloud.core.model.GitRepository;
 
 public interface DeleteGitRepositoryService {
 
-    void deleteRepository(GitRepository gitRepository);
-    
     void deleteDirectoryContents(File file);
+
+    void deleteRepository(GitRepository gitRepository);
     
 }

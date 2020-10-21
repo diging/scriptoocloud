@@ -56,9 +56,9 @@ public class CloneGitRepositoryServiceImpl implements CloneGitRepositoryService 
         gitRepository.setCreationDate(creationDate);
 
         GitRepository repositoryEntity = gitRepositoryJpa.findByUrl(url);
+        
         if(repositoryEntity != null){
-            gitRepositoryJpa.deleteById(repositoryEntity.getId());
-            deleteGitRepository.deleteRepository(gitRepository);
+            deleteGitRepository.deleteRepository(repositoryEntity);
         }
         
         try{
