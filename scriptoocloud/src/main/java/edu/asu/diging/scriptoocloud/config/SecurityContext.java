@@ -35,8 +35,8 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
                 .antMatchers("/", "/resources/**",
                        "/register").permitAll()
                 // The rest of the our application is protected.
-                .antMatchers().hasRole("USER")
-                .anyRequest().hasRole("ADMIN");
+                .antMatchers("/repositories/**").hasRole("ADMIN")
+                .anyRequest().hasRole("USER");
     }
 
     @Bean

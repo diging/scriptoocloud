@@ -24,7 +24,7 @@ public class DeleteGitRepositoryController {
     public String deleteRepo(@ModelAttribute("repository") GitRepository gitRepository, BindingResult result) {    
         deleteGitService.deleteRepository(gitRepository);
         gitRepositoryJpa.deleteById(gitRepository.getId());
-        return "redirect:repositories/list" + "?success";            
+        return "redirect:/repositories/list" + "?success";            
     }
   
 }

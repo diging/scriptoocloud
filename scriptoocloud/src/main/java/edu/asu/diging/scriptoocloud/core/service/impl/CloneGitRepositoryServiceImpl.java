@@ -25,6 +25,9 @@ import edu.asu.diging.simpleusers.core.model.IUser;
 @Service
 public class CloneGitRepositoryServiceImpl implements CloneGitRepositoryService {
 
+    @Autowired
+    JgitServiceImpl jGitService;
+
     @Autowired 
     private GitRepositoryRepository gitRepositoryJpa;
         
@@ -59,9 +62,7 @@ public class CloneGitRepositoryServiceImpl implements CloneGitRepositoryService 
         }
         
         try{
-            Git.cloneRepository().setURI(cloneForm.getUrl())
-            .setDirectory(new File(path + requester + "_" + owner + "_" + repositoryName))
-            .call().getRepository().close();
+            jGitService.clone(path + requester + "_" + owner + "_" + repositoryName, cloneForm.getUrl());
             gitRepositoryJpa.save(gitRepository);
         }
         catch(GitAPIException e){
