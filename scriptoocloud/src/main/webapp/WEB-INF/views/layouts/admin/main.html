@@ -9,13 +9,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="description" content="ScripToo Cloud Admin Dashboard">
+    <meta name="description" content="">
     <meta name="author" content="">
 
     <link rel="stylesheet" th:href="@{/resources/font-awesome-5.7.2/css/all.css}" type="text/css"/>
     <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
 
-    <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">ScripTooCloud Application</title>
+    <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">My awesome webapp</title>
 
     <!-- Bootstrap core CSS -->
     <link th:href="@{/resources/bootstrap/css/bootstrap.min.css}" type="text/css" rel="stylesheet">
@@ -54,15 +54,17 @@
             <a class="navbar-brand" th:href="@{/}">ScripTooCloud</a>
         </div>
         <ul class="nav navbar-nav tabs">
-            <li class="active" role="presentation"><a
-                th:href="@{/admin/user/list}">Users</a></li>
-            <li class="pull-left"><a href="">Scripts</a></li>
-            <li class="pull-left"><a href="">Analytics</a></li>
-            <li class="pull-left"><a href="https://github.com/diging/scriptoocloud">GitHub</a></li>
+            <li class="active" role="presentation">
+                <a th:href="@{/admin/user/list}">Users</a>
+            </li>
+            <li class="pull-left">
+                <a href="https://github.com/diging/scriptoocloud" target="_blank">GitHub</a>
+            </li>
         </ul>
         <ul class="nav navbar-nav navbar-right tabs">
             <li sec:authorize="isAuthenticated()" role="presentation">
-                <a class="signed-in" th:text="${'Signed in as: ' + #authentication.principal.username}"></a>
+                <a class="signed-in"
+                   th:text="${'Signed in as: ' + #authentication.principal.username}"></a>
             </li>
             <li sec:authorize="isAuthenticated()" role="presentation">
                 <form th:action="@{/logout}" method="POST" class="no-padding">
@@ -90,7 +92,7 @@
         <!-- and is therefore entirely optional, as this markup fragment will be included -->
         <!-- from "fragments/header.html" at runtime.                                     -->
         <!-- ============================================================================ -->
-        <h1>Ups, something went wrong.</h1>
+        <h1>Oops, something went wrong.</h1>
         <p>
             You should not see this. Who knows what magic you did you get here; or maybe it's just
             a bug. Either way, just move on my friend.

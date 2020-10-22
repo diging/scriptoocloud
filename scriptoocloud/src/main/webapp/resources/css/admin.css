@@ -13,14 +13,14 @@ body, p, table, div, input {
 }
 
 .no-padding {
-    padding: 0!important;
+    padding: 0 !important;
 }
 
 #title_bar {
     background: #efefef;
     background: -webkit-linear-gradient(-90deg, #efefef, #dfe1e2);
     background: -moz-linear-gradient(-90deg, #efefef, #dfe1e2);
-    background: linear-gradient(180deg, #efefef, #dfe1e2);
+    background: linear-gradient(180deg, #ffffff, #f3f3f3);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#efefef', endColorstr='#dfe1e2');
     -ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#efefef', endColorstr='#dfe1e2');
     text-shadow: white 0 1px 0;
@@ -59,51 +59,23 @@ body, p, table, div, input {
     font-size: 2.6em;
     line-height: 100%;
     font-weight: bold;
+    color: #8c1d40;
 }
 
 button.btn.btn-admin {
-    -webkit-border-radius: 200px;
-    -moz-border-radius: 200px;
-    border-radius: 12px;
-    display: block;
-    font-weight: bold;
-    font-size: 0.9em;
-    font-family: Helvetica, Arial, sans-serif;
-    line-height: 12px;
-    margin-right: 3px;
-    margin-bottom: 6px;
-    padding: 5px 16px 7px;
-    -webkit-font-smoothing: antialiased;
-    background: #838a90;
-    background: -webkit-linear-gradient(-90deg, #838a90, #414549);
-    background: -moz-linear-gradient(-90deg, #838a90, #414549);
-    background: linear-gradient(180deg, #838a90, #414549);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FF838A90', endColorstr='#FF414549');
-    -ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FF838A90', endColorstr='#FF414549');
-    text-shadow: black 0 1px 0;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1), 0 1px 0 0 rgba(255, 255, 255, 0.2) inset;
-    border: solid 1px #484e53;
-    border-top-color: #616a71;
-    border-bottom-color: #363b3f;
-    color: #efefef;
-    cursor: pointer;
-    text-align: center;
-    height: 25px;
+    padding: 0;
+    background: transparent;
+    color: #8c1d40;
+
 }
 
 button.btn.btn-admin:hover {
-    background: #414549;
-    background: -webkit-linear-gradient(-90deg, #414549, #838a90);
-    background: -moz-linear-gradient(-90deg, #414549, #838a90);
-    background: linear-gradient(180deg, #414549, #838a90);
+    background: #f5f5f5;
+    text-decoration: underline;
 }
 
 button.btn.btn-admin:focus {
     outline: none;
-}
-
-button.btn.btn-admin:active {
-    transform: translateY(4px);
 }
 
 .navbar {
@@ -112,12 +84,13 @@ button.btn.btn-admin:active {
     min-height: 20px;
 }
 
-div.navbar-header a.navbar-brand, ul.nav.navbar-nav li a {
+div.navbar-header a.navbar-brand,
+ul.nav.navbar-nav li a {
     padding: 6px 10px 2px 10px;
 }
 
 div.navbar-header a.navbar-brand {
-    color: #cdcdcd;
+    color: #fec627;
     height: auto;
     display: table-cell;
     vertical-align: middle;
@@ -150,7 +123,7 @@ div.navbar-header a.navbar-brand {
     z-index: 900;
 }
 
-.header ul.tabs>li {
+.header ul.tabs > li {
     display: inline-block;
     margin-right: 5px;
     font-size: 1.0em;
@@ -184,7 +157,7 @@ div.navbar-header a.navbar-brand {
     padding: 0;
 }
 
-.header ul.tabs>li a, .btn-admin-link {
+.header ul.tabs > li a, .btn-admin-link {
     color: #cdcdcd;
     text-decoration: none;
     padding: 6px 10px 4px 10px;
@@ -193,15 +166,15 @@ div.navbar-header a.navbar-brand {
     -moz-border-radius: 10px;
     border-radius: 20px;
     text-shadow: black 0 1px 0;
-    text-align:center;
+    text-align: center;
 }
 
-.header ul.tabs>li.active>a, .btn-admin-link.active{
+.header ul.tabs > li.active > a, .btn-admin-link.active {
     background: #7b8389;
     color: #fff;
 }
 
-.header ul.tabs>li:hover>a, .header ul.tabs>li:hover > form button.btn-admin-link {
+.header ul.tabs > li:hover > a, .header ul.tabs > li:hover > form button.btn-admin-link {
     background: #7b8389;
     color: #fff;
     text-decoration: none;
@@ -212,11 +185,11 @@ div.navbar-header a.navbar-brand {
     background-color: transparent !important;
 }
 
-.header ul.tabs>li:hover ul {
+.header ul.tabs > li:hover ul {
     display: block;
 }
 
-.header ul.tabs>li ul {
+.header ul.tabs > li ul {
     background: #7b8389;
     border-radius: 0 10px 10px 10px;
     -moz-border-radius: 0 10px 10px 10px;
