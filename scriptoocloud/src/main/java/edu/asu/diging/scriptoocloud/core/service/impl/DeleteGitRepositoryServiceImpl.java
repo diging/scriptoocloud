@@ -9,6 +9,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import edu.asu.diging.scriptoocloud.core.model.GitRepository;
+import edu.asu.diging.scriptoocloud.core.model.impl.GitRepositoryImpl;
 import edu.asu.diging.scriptoocloud.core.service.DeleteGitRepositoryService;
 import edu.asu.diging.scriptoocloud.core.data.GitRepositoryRepository;
 
@@ -24,7 +25,8 @@ public class DeleteGitRepositoryServiceImpl implements DeleteGitRepositoryServic
     private String path;
 
     @Override
-    public void deleteRepository(GitRepository gitRepository){
+    public void deleteRepository(Long id){
+        GitRepositoryImpl gitRepository = gitRepositoryJpa.findById(id).get();
         gitRepositoryJpa.deleteById(gitRepository.getId());
         File file = new File(path + gitRepository.getRequester() + "_" + gitRepository.getGitRepositoryOwner() 
                                 + "_" + gitRepository.getGitRepositoryName());

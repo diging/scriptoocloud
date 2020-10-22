@@ -9,17 +9,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import edu.asu.diging.scriptoocloud.core.model.GitRepository;
-import edu.asu.diging.scriptoocloud.core.service.ListGitRepositoriesService;
+import edu.asu.diging.scriptoocloud.core.service.GitRepositoryManager;
 
 @Controller
 public class ListGitRepositoriesController {
 
-    @Autowired 
-    private ListGitRepositoriesService listRepositoriesService;
+    @Autowired
+    private GitRepositoryManager gitRepositoryManager;
  
     @RequestMapping(value = "/repositories/list", method = RequestMethod.GET)
     public String listRepos(Model model) {
-        ArrayList<GitRepository> repositories = listRepositoriesService.getRepos();
+        ArrayList<GitRepository> repositories = gitRepositoryManager.listRepositories();
         model.addAttribute("repos", repositories);
         return "repositories/list";
     }  

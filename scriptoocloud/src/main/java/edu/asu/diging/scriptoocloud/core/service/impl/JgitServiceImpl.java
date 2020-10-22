@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import edu.asu.diging.scriptoocloud.core.service.DeleteGitRepositoryService;
 import edu.asu.diging.scriptoocloud.core.service.JgitService;
 
-
 @Service
 class JgitServiceImpl implements JgitService{
 

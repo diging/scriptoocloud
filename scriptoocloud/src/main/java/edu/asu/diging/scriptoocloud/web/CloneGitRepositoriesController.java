@@ -1,7 +1,5 @@
 package edu.asu.diging.scriptoocloud.web;
 
-import java.io.File;
-
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -17,19 +15,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import edu.asu.diging.scriptoocloud.core.forms.CloneForm;
-import edu.asu.diging.scriptoocloud.core.service.CloneGitRepositoryService;
-import edu.asu.diging.scriptoocloud.core.service.DeleteGitRepositoryService;
+import edu.asu.diging.scriptoocloud.core.service.GitRepositoryManager;
 import edu.asu.diging.simpleusers.core.model.IUser;
 
 
 @Controller
 public class CloneGitRepositoriesController {
     
-    @Autowired 
-    private CloneGitRepositoryService cloneRepositoryService;
-    
     @Autowired
-    private DeleteGitRepositoryService deleteGitRepositoryService;
+    GitRepositoryManager gitRepositoryManager;
     
     @Value("${git.repositories.path}")
     private String path;
@@ -55,11 +49,9 @@ public class CloneGitRepositoriesController {
                             .getAuthentication().getPrincipal();       
                             
         try{                     
-            cloneRepositoryService.cloneRepo(cloneForm, user);       
+            gitRepositoryManager.cloneRepository(cloneForm, user);       
         }
         catch(IllegalArgumentException e){
-            deleteGitRepositoryService
-                .deleteDirectoryContents(new File(path + user + cloneForm.getOwner() + cloneForm.getRepo()));
             logger.error("No git repository found at provided URL" 
                             + path + user + cloneForm.getOwner() + cloneForm.getRepo());
             return "redirect:/repositories/clone" + "?badurl";
