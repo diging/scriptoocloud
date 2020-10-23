@@ -29,8 +29,8 @@
 		<email.ServerPort>2525</email.ServerPort>
 		<email.emailFrom></email.emailFrom>
 		<email.instanceUrl></email.instanceUrl>
-		<email.appName></email.appName>
- 		<email.tls></email.tls>
+		<email.appName>Scriptoocloud</email.appName>
+ 		<email.tls>true</email.tls>
 
 		<log.level>info</log.level>
 	</properties>
