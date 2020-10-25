@@ -12,6 +12,11 @@
 		</p>
 
       </div>
+      
+      <p sec:authorize="isAuthenticated()" role="presentation">
+	    <a th:href="@{/auth/projects/add}">Add a project</a>
+	  </p>
+      
    </div>
   </body>
 </html>
