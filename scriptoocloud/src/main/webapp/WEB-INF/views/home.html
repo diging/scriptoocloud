@@ -17,6 +17,10 @@
 	    <a th:href="@{/auth/projects/add}">Add a project</a>
 	  </p>
       
+      <p sec:authorize="isAuthenticated()" role="presentation">
+	    <a th:href="@{/auth/projects/remove}">Remove a project</a>
+	  </p>
+      
    </div>
   </body>
 </html>

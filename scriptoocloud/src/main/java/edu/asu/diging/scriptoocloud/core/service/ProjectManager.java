@@ -5,5 +5,7 @@ import edu.asu.diging.scriptoocloud.core.model.Project;
 public interface ProjectManager {
 
     Project createProject(String name, String description);
+    
+    void deleteProject(String name);
 
 }
