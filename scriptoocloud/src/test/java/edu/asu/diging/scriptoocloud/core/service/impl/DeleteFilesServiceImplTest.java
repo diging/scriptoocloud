@@ -14,15 +14,13 @@ import org.junit.jupiter.api.io.TempDir;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 
-class DeleteGitRepositoryServiceImplTest {
+class DeleteFilesServiceImplTest {
 
     @TempDir
-    private Path folder;
+    protected Path folder;
 
     @InjectMocks
-    private DeleteGitRepositoryServiceImpl serviceToTest;
-    
-    private File file;
+    private DeleteFilesServiceImpl serviceToTest;
     
     @BeforeEach
     public void init(){
@@ -33,10 +31,17 @@ class DeleteGitRepositoryServiceImplTest {
     @Test
     public void test_deleteDirectoryContents_deleteFolderAndContents() throws IOException{
         Files.write(folder.resolve("myfile"), "abc".getBytes());
-        file = folder.resolve("myfile").toFile();
+        File file = folder.resolve("myfile").toFile();
         Assertions.assertEquals(true, file.exists());
         serviceToTest.deleteDirectoryContents(file);
         Assertions.assertEquals(false, file.exists());
     }   
-  
+    
+    @Test
+    public void test_deleteDirectoryContents_noSuchFile() throws IOException{
+    //file file = null
+        File file = new File("NotOnDrive");
+        Assertions.assertEquals(false, file.exists());
+        Assertions.assertDoesNotThrow(()->serviceToTest.deleteDirectoryContents(file));
+    } 
 }
