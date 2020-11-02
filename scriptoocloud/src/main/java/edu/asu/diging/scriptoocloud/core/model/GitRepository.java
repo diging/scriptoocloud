@@ -8,18 +8,6 @@ public interface GitRepository {
 
     void setId(long id);
 
-    String getGitRepositoryHost();
-
-    void setGitRepositoryHost(String gitRepositoryHost);
-
-    String getGitRepositoryOwner();
-
-    void setGitRepositoryOwner(String gitRepositoryOwner);
-
-    String getGitRepositoryName();
-
-    void setGitRepositoryName(String gitRepositoryName);
-
     String getUrl();
 
     void setUrl(String url);
@@ -31,5 +19,9 @@ public interface GitRepository {
     String getRequester();
 
     void setRequester(String requester);
+
+    String getFolderName();
+
+    void setFolderName(String folderName);
 
 }

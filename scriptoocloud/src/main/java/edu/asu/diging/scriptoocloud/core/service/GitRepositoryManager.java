@@ -1,16 +1,16 @@
 package edu.asu.diging.scriptoocloud.core.service;
 
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 
-import edu.asu.diging.scriptoocloud.core.forms.CloneForm;
+import edu.asu.diging.scriptoocloud.core.exceptions.InvalidGitUrlException;
 import edu.asu.diging.scriptoocloud.core.model.GitRepository;
-import edu.asu.diging.simpleusers.core.model.IUser;
 
 public interface GitRepositoryManager {
 
     void deleteRepository(Long id);
 
-    void cloneRepository(CloneForm cloneForm, IUser user);
+    void cloneRepository(String gitUrl, String requester) throws InvalidGitUrlException, MalformedURLException;
 
     ArrayList<GitRepository> listRepositories();
 

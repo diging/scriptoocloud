@@ -1,15 +1,13 @@
 <html layout:decorate="~{layouts/main}">
   <head>
     <title>Authority Matcher</title>
-    <script th:src="@{/resources/scripts/validator.js}"></script>
   </head>
   <body>
    <div layout:fragment="content">
       <div class="jumbotron col-md-12">
 
 	   <h1>Clone a Remote Repository</h1>
-        <div class="text-danger" th:if ="${param.badurl != null}  ">Bad Url</div>
-        <div class="text-success" th:if ="${param.success != null}  ">Repository Succesfully Cloned!</div>    
+        <div class="text-danger" th:text = "${param.formResponse}"></div> 
         
         <form action="#" id = "repoForm" th:action="@{/repositories/clone}" method="POST" th:object="${clone}">
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
@@ -19,22 +17,11 @@
             <label>URL:</label>
             <input path="url" th:field="*{url}" class="form-control input-sm"></input>
             <p class="text-danger"><th:errors path="url"/></p>
-                    
-            <p class="text-danger" th:if="${#fields.hasErrors('host')}" th:errors="*{host}">Host Required</p>
-            <input type="hidden" th:field="*{host}" class="form-control input-sm"></input>
-
-            <p class="text-danger" th:if="${#fields.hasErrors('owner')}" th:errors="*{owner}">Owner Required</p>
-            <input type="hidden" th:field="*{owner}" class="form-control input-sm"></input>
-
-            <p class="text-danger" th:if="${#fields.hasErrors('repo')}" th:errors="*{repo}">Repo Required</p>
-            <input type="hidden" th:field="*{repo}" class="form-control input-sm"></input>
         
             <div style="padding-top: 20px;">
             </div>
-        </form>
-    
-        <button class="btn btn-sm btn-primary pull-right" onclick="validate()">Clone</button>
-               
+	        <button class="btn btn-sm btn-primary pull-right">Clone</button>
+        </form>               
       </div>
    </div>
   </body>

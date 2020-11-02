@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.asu.diging.scriptoocloud.core.service.GitRepositoryManager;
 
@@ -15,9 +16,10 @@ public class DeleteGitRepositoryController {
     private GitRepositoryManager gitRepositoryManager;
 
     @RequestMapping(value = "/repositories/delete/{id}", method = RequestMethod.POST)
-    public String deleteRepo(@PathVariable("id") Long id) {   
+    public String deleteRepo(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {   
         gitRepositoryManager.deleteRepository(id);
-        return "redirect:/repositories/list" + "?success";            
+        redirectAttributes.addAttribute("formResponse","Succesfully deleted repository");
+        return "redirect:/repositories/list";             
     }
   
 }
