@@ -1,7 +1,5 @@
 package edu.asu.diging.scriptoocloud.core.service.impl;
 
-import java.io.File;
-import java.net.MalformedURLException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 
@@ -12,13 +10,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import edu.asu.diging.scriptoocloud.core.data.GitRepositoryRepository;
-import edu.asu.diging.scriptoocloud.core.exceptions.InvalidGitUrlException;
+import edu.asu.diging.scriptoocloud.core.forms.CloneForm;
 import edu.asu.diging.scriptoocloud.core.model.GitRepository;
 import edu.asu.diging.scriptoocloud.core.model.impl.GitRepositoryImpl;
-import edu.asu.diging.scriptoocloud.core.service.DeleteFilesService;
+import edu.asu.diging.scriptoocloud.core.service.DeleteGitRepositoryService;
 import edu.asu.diging.scriptoocloud.core.service.GitRepositoryManager;
 import edu.asu.diging.scriptoocloud.core.service.JgitService;
-import edu.asu.diging.scriptoocloud.core.service.UrlFormatterService;
+import edu.asu.diging.simpleusers.core.model.IUser;
 
 @Service
 @Transactional
@@ -26,10 +24,7 @@ import edu.asu.diging.scriptoocloud.core.service.UrlFormatterService;
 public class GitRepositoryService implements GitRepositoryManager{
 
     @Autowired
-    private DeleteFilesService deleteFilesService;
-    
-    @Autowired
-    private UrlFormatterService urlFormatter;
+    private DeleteGitRepositoryService deleteGitRepositoryService;
     
     @Autowired 
     private GitRepositoryRepository gitRepositoryJpa;
@@ -39,28 +34,42 @@ public class GitRepositoryService implements GitRepositoryManager{
 
     @Value("${git.repositories.path}")
     private String path;
-
+    
     @Override
-    public void cloneRepository(String gitUrl, String requester) throws InvalidGitUrlException, MalformedURLException{
-     
-        String folderName = urlFormatter.urlToFolderName(gitUrl);
-
+    public void deleteRepository(Long id){
+        deleteGitRepositoryService.deleteRepository(id);
+    }
+    
+    @Override
+    public void cloneRepository(CloneForm cloneForm, IUser user){
+        String host = cloneForm.getHost();
+        String owner = cloneForm.getOwner();
+        String repositoryName = cloneForm.getRepo();
+        String requester = user.getUsername();
         ZonedDateTime creationDate = ZonedDateTime.now();                                   
-      
+        String url = host + "/" + owner + "/" + repositoryName;
+                                           
         GitRepositoryImpl gitRepository = new GitRepositoryImpl();
-        gitRepository.setUrl(gitUrl);
+        gitRepository.setUrl(url);
+        gitRepository.setGitRepositoryHost(host);
+        gitRepository.setGitRepositoryOwner(owner);
+        gitRepository.setGitRepositoryName(repositoryName);
         gitRepository.setRequester(requester);
         gitRepository.setCreationDate(creationDate);
-        gitRepository.setFolderName(folderName);
-        
-        GitRepository repositoryEntity = gitRepositoryJpa.findByUrl(gitUrl);
+
+        GitRepository repositoryEntity = gitRepositoryJpa.findByUrl(url);
         
         if(repositoryEntity != null){
             deleteRepository(repositoryEntity.getId());
         }
         
-        jGitService.clone(path + folderName, gitUrl);
-        gitRepositoryJpa.save(gitRepository);
+        try{
+            jGitService.clone(path + requester + "_" + owner + "_" + repositoryName, cloneForm.getUrl());
+            gitRepositoryJpa.save(gitRepository);
+        }
+        catch(IllegalArgumentException e){
+            throw new IllegalArgumentException(e);
+        }
     }
 
     @Override
@@ -70,13 +79,5 @@ public class GitRepositoryService implements GitRepositoryManager{
         repoModels.iterator().forEachRemaining(r -> reposList.add(r));
         return reposList;
     }
-        
-    @Override
-    public void deleteRepository(Long id){
-        GitRepositoryImpl gitRepository = gitRepositoryJpa.findById(id).get();
-        gitRepositoryJpa.deleteById(gitRepository.getId());
-        File file = new File(path + gitRepository.getFolderName());
-        deleteFilesService.deleteDirectoryContents(file);
-    } 
     
 }

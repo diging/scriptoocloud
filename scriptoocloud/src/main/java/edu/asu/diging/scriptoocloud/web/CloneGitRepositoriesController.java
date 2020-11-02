@@ -1,37 +1,34 @@
 package edu.asu.diging.scriptoocloud.web;
 
-import java.net.MalformedURLException;
-import java.security.Principal;
-
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import edu.asu.diging.scriptoocloud.core.exceptions.InvalidGitUrlException;
 import edu.asu.diging.scriptoocloud.core.forms.CloneForm;
 import edu.asu.diging.scriptoocloud.core.service.GitRepositoryManager;
+import edu.asu.diging.simpleusers.core.model.IUser;
 
 
 @Controller
 public class CloneGitRepositoriesController {
     
     @Autowired
-    private GitRepositoryManager gitRepositoryManager;
+    GitRepositoryManager gitRepositoryManager;
     
     @Value("${git.repositories.path}")
     private String path;
   
-    private Logger logger = LoggerFactory.getLogger(getClass());    
+    private static Logger logger = LoggerFactory.getLogger(CloneGitRepositoriesController.class);    
     
     @RequestMapping(value = "/repositories/clone", method = RequestMethod.GET)
     public String clone(Model model) {
@@ -41,31 +38,27 @@ public class CloneGitRepositoriesController {
   
     @RequestMapping(value = "/repositories/clone", method = RequestMethod.POST)
     public String clone(@Valid @ModelAttribute("clone") CloneForm cloneForm, BindingResult result, 
-                           RedirectAttributes redirectAttributes, Model model, Principal principal){                                          
+                            Model model){                                          
         
         if(result.hasErrors()){
             model.addAttribute("clone",cloneForm);
-            redirectAttributes.addAttribute("formResponse","No Url provided");
-            return "redirect:/repositories/clone";
+            return "redirect:/repositories/clone" + "?BadForm";
         }                 
         
-        String user =  principal.getName();     
+        IUser user = (IUser)SecurityContextHolder.getContext()
+                            .getAuthentication().getPrincipal();       
                             
         try{                     
-            gitRepositoryManager.cloneRepository(cloneForm.getUrl(), user);       
-        }catch(InvalidGitUrlException e){
-            logger.error("No git repository found at provided URL " + cloneForm.getUrl());
-            redirectAttributes.addAttribute("formResponse","No such git repository found");
-            model.addAttribute("clone",new CloneForm());
-            return "redirect:/repositories/clone";
-       }catch(MalformedURLException e){
-            logger.error("Invalid Url provided " + cloneForm.getUrl());
-            redirectAttributes.addAttribute("formResponse","Invalid Url");
-            model.addAttribute("clone",cloneForm);            
-            return "redirect:/repositories/clone";
+            gitRepositoryManager.cloneRepository(cloneForm, user);       
+        }
+        catch(IllegalArgumentException e){
+            logger.error("No git repository found at provided URL" 
+                            + path + user + cloneForm.getOwner() + cloneForm.getRepo());
+            return "redirect:/repositories/clone" + "?badurl";
        }
-       redirectAttributes.addAttribute("formResponse","Successfully cloned");
-       return "redirect:/repositories/clone";
+       
+       return "redirect:/repositories/clone" + "?success";
     }
+    
     
 }

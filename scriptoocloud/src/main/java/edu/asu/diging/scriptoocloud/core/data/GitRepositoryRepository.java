@@ -9,4 +9,10 @@ public interface GitRepositoryRepository extends PagingAndSortingRepository<GitR
     public GitRepositoryImpl findByUrl(String url);
     
     public GitRepositoryImpl deleteByUrl(String url);
+
+    public GitRepositoryImpl findBygitRepositoryHost(String host);
+    
+    public GitRepositoryImpl findBygitRepositoryOwner(String repo);
+    
+    public GitRepositoryImpl findBygitRepositoryName(String owner);
 }

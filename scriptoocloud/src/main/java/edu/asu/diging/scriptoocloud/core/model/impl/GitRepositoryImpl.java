@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotEmpty;
 
 import edu.asu.diging.scriptoocloud.core.model.GitRepository;
 
@@ -15,26 +16,51 @@ public class GitRepositoryImpl implements GitRepository {
     @Id
     @GeneratedValue(strategy=GenerationType.SEQUENCE)
     private long id;
+    
+    @NotEmpty(message = "Host name required")
+    private String gitRepositoryHost;
+
+    @NotEmpty(message = "Repository owner and name required")
+    private String  gitRepositoryOwner;
+    
+    @NotEmpty(message = "Repository name required")
+    private String gitRepositoryName;
+    
     private String url;
     private ZonedDateTime creationDate;
     private String requester;
-    private String folderName;
     
-    @Override
-    public String getFolderName() {
-        return folderName;
-    }
-    @Override
-    public void setFolderName(String folderName) {
-        this.folderName = folderName;
-    }
-    @Override
+     @Override
     public long getId() {
         return id;
     }
     @Override
     public void setId(long id) {
         this.id = id;
+    }
+    @Override
+    public String getGitRepositoryHost() {
+        return gitRepositoryHost;
+    }
+    @Override
+    public void setGitRepositoryHost(String gitRepositoryHost) {
+        this.gitRepositoryHost = gitRepositoryHost;
+    }
+    @Override
+    public String getGitRepositoryOwner() {
+        return gitRepositoryOwner;
+    }
+    @Override
+    public void setGitRepositoryOwner(String gitRepositoryOwner) {
+        this.gitRepositoryOwner = gitRepositoryOwner;
+    }
+    @Override
+    public String getGitRepositoryName() {
+        return gitRepositoryName;
+    }
+    @Override
+    public void setGitRepositoryName(String gitRepositoryName) {
+        this.gitRepositoryName = gitRepositoryName;
     }
     @Override
     public String getUrl() {

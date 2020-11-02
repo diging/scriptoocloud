@@ -6,16 +6,25 @@
    <div layout:fragment="content">
 
 <h2>Repositories</h2>
-<div class="text-danger" th:text = "${param.formResponse}"></div> 
 <ul class="list-group">
  <li th:each="repo : ${repos}"  class="list-group-item clearfix">
     <ul class="list-group">
    
     <li class="list-group-item clearfix">
-    <label>url:</label>
-    <span th:text="${repo.url}" ></span> 
+    <label>Name:</label>
+    <span th:text="${repo.gitRepositoryName}" ></span> 
     </li>
- 
+    
+    <li class="list-group-item clearfix">
+    <label>Owner:</label> 
+    <span th:text="${repo.gitRepositoryOwner}" ></span>
+    </li>
+    
+    <li  class="list-group-item clearfix">
+    <label>Remote host:</label>   
+    <span th:text="${repo.gitRepositoryHost}" ></span>   
+    </li>
+    
     <li class="list-group-item clearfix">
     <label>Creation Date:</label>
     <span th:text="${repo.creationDate}" ></span>     
