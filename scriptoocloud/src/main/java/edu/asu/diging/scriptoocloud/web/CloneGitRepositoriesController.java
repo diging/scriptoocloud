@@ -51,14 +51,14 @@ public class CloneGitRepositoriesController {
         
         String user =  principal.getName();     
                             
-        try{                     
+        try {                     
             gitRepositoryManager.cloneRepository(cloneForm.getUrl(), user);       
-        }catch(InvalidGitUrlException e){
+        } catch(InvalidGitUrlException e){
             logger.error("No git repository found at provided URL " + cloneForm.getUrl());
             redirectAttributes.addAttribute("formResponse","No such git repository found");
             model.addAttribute("clone",new CloneForm());
             return "redirect:/repositories/clone";
-       }catch(MalformedURLException e){
+        } catch(MalformedURLException e){
             logger.error("Invalid Url provided " + cloneForm.getUrl());
             redirectAttributes.addAttribute("formResponse","Invalid Url");
             model.addAttribute("clone",cloneForm);            
