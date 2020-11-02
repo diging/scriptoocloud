@@ -8,7 +8,7 @@ body {
 }
 
 body, p, table, div, button, input.btn, input {
-    font-family: 'Open Sans Condensed', Arial, sans-serif !important;
+    font-family: 'Open Sans', Arial, sans-serif !important;
 }
 
 a, a:hover {
@@ -24,6 +24,7 @@ a.app-title {
     font-weight: bold;
     color: #8c1d40;
     text-shadow: -1px -1px 0 #f2dede;
+    letter-spacing: -1.5px;
 }
 
 .header-nav {
@@ -35,7 +36,7 @@ a.sign-in-out:hover {
 }
 
 .account-button, button.account-button {
-    padding: 0 10px 0 10px;
+    padding: 3px 10px 3px 10px;
     color: #454545;
     border-radius: 10px;
     border: none;
@@ -65,6 +66,11 @@ a.sign-in-out:hover {
     background: linear-gradient(to bottom, rgba(168, 176, 188, 0.6) 0%, rgba(168, 176, 188, 0.35) 100%);
     /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#99a8b0bc', endColorstr='#59a8b0bc', GradientType=0);
+}
+
+button.account-button {
+    height:22px;
+    padding-top:1px;
 }
 
 .account-button, button.account-button:focus {
@@ -220,7 +226,7 @@ h5,
 h6 {
     margin: 0;
     color: #333;
-    font-family: 'Open Sans Condensed', Arial, sans-serif;
+    font-family: 'Open Sans', Arial, sans-serif;
     font-weight: 300;
     letter-spacing: -1px;
 }
