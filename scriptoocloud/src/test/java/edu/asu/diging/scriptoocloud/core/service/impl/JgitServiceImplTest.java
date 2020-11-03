@@ -30,14 +30,21 @@ class JgitServiceImplTest {
     } 
     
     @Test
+    public void test_clone_success(){
+        Assertions.assertDoesNotThrow(()->serviceToTest.clone("testCloneSuccess", "https://github.com/diging/scriptoocloud"));
+        File file = new File("testCloneSuccess");
+        Assertions.assertTrue(file.exists());
+    }
+       
+    @Test
     public void test_clone_noSuchRepository(){
         Assertions.assertThrows(InvalidGitUrlException.class,
-            ()->serviceToTest.clone("testFile", "github.com/test"));
+            ()->serviceToTest.clone("testCloneFail", "github.com/test"));
     }   
     
     @Test
     public void test_clone_badUrl(){
         Assertions.assertThrows(InvalidGitUrlException.class,
-            ()->serviceToTest.clone("testFile", "githubm/test"));
+            ()->serviceToTest.clone("testCloneFail", "githubm/test"));
     }   
 }

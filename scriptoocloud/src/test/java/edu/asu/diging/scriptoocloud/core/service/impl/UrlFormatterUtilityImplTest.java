@@ -13,10 +13,10 @@ import org.mockito.MockitoAnnotations;
 
 import edu.asu.diging.scriptoocloud.core.data.GitRepositoryRepository;
 
-class UrlFormatterServiceImplTest {
+class UrlFormatterUtilityImplTest {
 
     @InjectMocks
-    private UrlFormatterServiceImpl serviceToTest;
+    private UrlFormatterUtilityImpl serviceToTest;
     
     @Mock
     GitRepositoryRepository gitRepositoryJpa;
@@ -28,12 +28,12 @@ class UrlFormatterServiceImplTest {
     
     @Test
     public void test_urlToFolderName_goodUrlWww() throws MalformedURLException{
-        Assertions.assertEquals("www.website.com_path_path", serviceToTest.urlToFolderName("https://www.website.com/path/path"));
+        Assertions.assertEquals("www_website_com_path_path", serviceToTest.urlToFolderName("https://www.website.com/path/path"));
     }   
     
     @Test
     public void test_urlToFolderName_goodUrlNoWww() throws MalformedURLException{
-        Assertions.assertEquals("website.com_path_path", serviceToTest.urlToFolderName("https://website.com/path/path"));
+        Assertions.assertEquals("website_com_path_path", serviceToTest.urlToFolderName("https://website.com/path/path"));
     }   
     
     @Test

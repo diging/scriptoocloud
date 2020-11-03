@@ -25,7 +25,6 @@ class DeleteFilesServiceImplTest {
     @BeforeEach
     public void init(){
         MockitoAnnotations.initMocks(this);   
-        
     }
 
     @Test
@@ -39,7 +38,6 @@ class DeleteFilesServiceImplTest {
     
     @Test
     public void test_deleteDirectoryContents_noSuchFile() throws IOException{
-    //file file = null
         File file = new File("NotOnDrive");
         Assertions.assertEquals(false, file.exists());
         Assertions.assertDoesNotThrow(()->serviceToTest.deleteDirectoryContents(file));

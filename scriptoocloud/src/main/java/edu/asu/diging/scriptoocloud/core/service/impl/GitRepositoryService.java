@@ -18,7 +18,7 @@ import edu.asu.diging.scriptoocloud.core.model.impl.GitRepositoryImpl;
 import edu.asu.diging.scriptoocloud.core.service.DeleteFilesService;
 import edu.asu.diging.scriptoocloud.core.service.GitRepositoryManager;
 import edu.asu.diging.scriptoocloud.core.service.JgitService;
-import edu.asu.diging.scriptoocloud.core.service.UrlFormatterService;
+import edu.asu.diging.scriptoocloud.core.service.UrlFormatterUtility;
 
 @Service
 @Transactional
@@ -29,7 +29,7 @@ public class GitRepositoryService implements GitRepositoryManager{
     private DeleteFilesService deleteFilesService;
     
     @Autowired
-    private UrlFormatterService urlFormatter;
+    private UrlFormatterUtility urlFormatter;
     
     @Autowired 
     private GitRepositoryRepository gitRepositoryJpa;
@@ -42,7 +42,6 @@ public class GitRepositoryService implements GitRepositoryManager{
 
     @Override
     public void cloneRepository(String gitUrl, String requester) throws InvalidGitUrlException, MalformedURLException{
-     
         String folderName = urlFormatter.urlToFolderName(gitUrl);
 
         ZonedDateTime creationDate = ZonedDateTime.now();                                   
