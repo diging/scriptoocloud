@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{layouts/main}"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Sign In | ScripToo Cloud</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div id="wrapper">
+        <section class="container main-page-content">
+            <div class="row">
+                <!-- REGISTER -->
+                <div class="col-md-6">
+                    <h2><strong>Sign In</strong> To Your Account</h2>
+                    <form
+                        class="simple_form white-row"
+                        th:action="@{/login}"
+                        method="post">
+                        <div class="alert alert-danger" th:if="${param.error}">
+                            <p>Invalid Username and Password Combination</p>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="label label-success"
+                                         th:if="${param.logout}">
+                                        You have been logged out.
+                                    </div>
+                                    <div>
+                                        <label for="username">Username</label>
+                                        <input
+                                            class="form-control"
+                                            id="username"
+                                            name="username"
+                                            autofocus="autofocus"
+                                            type="text"
+                                            placeholder="Username"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div>
+                                        <label for="user_password">Password</label>
+                                        <input
+                                            class="form-control"
+                                            type="password"
+                                            name="password"
+                                            placeholder="Password"
+                                            id="user_password"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <input
+                                    class="btn pull-right red-form-button"
+                                    type="submit"
+                                    value="Sign In"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="acct-links">
+                                    <a th:href="@{/register}">Register</a>
+                                    <span class="seperator">|</span>
+                                    <a th:href="@{/reset/request}">Forgot Your Password?</a>
+                                    <br/>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="col-md-6">
+                    <h2>Don't Have an Account Yet?</h2>
+                    <div class="white-row">
+                        <h4><a th:href="@{/register}">Register</a> to use ScripTooCloud</h4>
+                        <p>Please note:</p>
+                        <ul class="list-icon check">
+                            <li>Your registration will need to be approved by an administrator</li>
+                        </ul>
+                        <hr class="half-margins"/>
+                        <p>
+                            <a href="@{/register}">Register a ScripTooCloud Account</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+</body>
+</html>
