@@ -1,0 +1,14 @@
+package edu.asu.diging.scriptoocloud.core.data;
+import edu.asu.diging.scriptoocloud.core.model.impl.Dataset;
+import edu.asu.diging.simpleusers.core.model.IUser;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.stereotype.Repository;
+import java.util.Optional;
+
+@Repository
+public interface DatasetRepository extends PagingAndSortingRepository<Dataset, Long> {
+
+    Dataset findByName(String name);
+
+    Optional<Dataset> findByNameAndUser(String username, IUser user);
+}

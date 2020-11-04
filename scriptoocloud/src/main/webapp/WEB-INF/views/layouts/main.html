@@ -90,6 +90,19 @@
     </div>
 </header>
 
+<div sec:authorize="isAuthenticated()" id="user-navigation">
+    <div class="container">
+        <ul class="breadcrumb">
+            <li class="notactive">
+                <a th:href="@{'/datasets/' + ${#authentication.principal.username} }">My Datasets</a>
+            </li>
+            <li class="active">
+                My Projects
+            </li>
+        </ul>
+    </div>
+</div>
+
 <div th:if="${show_alert}" class="alert alert-${alert_type}" role="alert">${alert_msg}</div>
 
 <!-- Content -->

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{layouts/main}"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Datasets Success | ScripToo Cloud</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div id="wrapper">
+        <section class="container main-page-content ">
+            <div class="row">
+                <div class="col-md-12">
+                    <div th:if="${message}">
+                        <h2 th:text="${message}"></h2>
+                    </div>
+                    <p>
+                        <a class="large-link"
+                           th:href="@{'/datasets/' + ${#authentication.principal.username}}">
+                            Back to Datasets Page
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+</body>
+</html>

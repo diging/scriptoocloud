@@ -1,6 +1,5 @@
 package edu.asu.diging.scriptoocloud.config;
 
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,21 +22,23 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.formLogin()
+        http
+                .formLogin()
                 .loginPage("/login").permitAll()
                 .and()
                 .logout()
                 .deleteCookies("JSESSIONID")
                 .logoutSuccessUrl("/")
-                .and().exceptionHandling().accessDeniedPage("/403")
-                // Configures url based authorization
+                .and()
+                .exceptionHandling()
+                .accessDeniedPage("/403")
                 .and()
                 .authorizeRequests()
                 // Anyone can access the urls
-                .antMatchers("/", "/resources/**",
-                        "/register").permitAll()
+                .antMatchers("/", "/resources/**", "/register").permitAll()
                 // The rest of the our application is protected.
                 .antMatchers("/users/**", "/admin/**").hasRole("ADMIN")
+                .antMatchers("/datasets/**").authenticated()
                 .anyRequest().hasRole("USER");
     }
 
