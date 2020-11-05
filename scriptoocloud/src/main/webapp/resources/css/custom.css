@@ -34,8 +34,12 @@ a.sign-in-out:hover {
     text-decoration: none;
 }
 
+a.sign-in-out{
+    font-size: 1.2em;
+}
+
 .account-button, button.account-button {
-    padding: 0 10px 0 10px;
+    padding: 0px 15px 0 15px;
     color: #454545;
     border-radius: 10px;
     border: none;
@@ -125,6 +129,7 @@ header#topHead {
  **************************************************************** **/
 .main-page-content {
     padding-top:70px;
+    min-height:0px;
 }
 
 .white-row {

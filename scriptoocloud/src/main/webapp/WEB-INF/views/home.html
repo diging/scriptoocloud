@@ -6,12 +6,18 @@
    <div layout:fragment="content">
       <div class="jumbotron col-md-12">
 
-		<h1>Congratulation!</h1>
-		<p>
-		You did it. This basic webapp is all set up now. Try to login as "admin" with password "admin".
+		<h1>Welcome.</h1>
+		
+		<p sec:authorize="!isAuthenticated()">
+			Please sign in to access site functionality.
 		</p>
-
+		
       </div>
+      
+      <div sec:authorize="isAuthenticated()" class="col-md-12">
+	      <h2><a class="account-button sign-in-out" th:href="@{/auth/projects/projects}" target="_blank">Project Manager</a> - Add, edit, and remove projects here.</h2>
+	  </div>
+	  
    </div>
   </body>
 </html>
