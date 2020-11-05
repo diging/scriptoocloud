@@ -39,7 +39,7 @@ a.sign-in-out{
 }
 
 .account-button, button.account-button {
-    padding: 0px 15px 0 15px;
+    padding: 3px 10px 3px 10px;
     color: #454545;
     border-radius: 10px;
     border: none;
@@ -364,6 +364,11 @@ h6 {
     outline: none;
     border-color: #9ecaed;
     box-shadow: 0 0 10px #9ecaed;
+}
+
+form button.account-button.sign-in-out{
+    height:22px;
+    padding-top:1px;
 }
 
 .breadcrumb {
