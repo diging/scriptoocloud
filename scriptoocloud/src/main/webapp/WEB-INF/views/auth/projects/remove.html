@@ -8,8 +8,8 @@
 	<form th:action="@{/auth/projects/remove}" method="POST" th:object="${project}">
 		
 		<label>Project Name: </label>
-		<input th:field="*{name}" class="form-control input-sm"></input>
-		<p class="text-danger"><th:errors path="name"/></p>
+		<input th:field="*{id}" class="form-control input-sm"></input>
+		<p class="text-danger"><th:errors path="id"/></p>
 		
 		<button style="padding:0" class="btn btn-link"><i class="fas"></i>Submit</button>
 	  </form>
