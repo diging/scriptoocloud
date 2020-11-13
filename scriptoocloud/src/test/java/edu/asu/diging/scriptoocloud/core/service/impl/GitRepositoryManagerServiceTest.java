@@ -26,9 +26,6 @@ import edu.asu.diging.scriptoocloud.core.service.UrlFormatterUtility;
 
 class GitRepositoryManagerServiceTest {
 
-    @InjectMocks
-    private GitRepositoryService serviceToTest;
-    
     @Mock
     private JgitService jGitService;
     
@@ -43,6 +40,9 @@ class GitRepositoryManagerServiceTest {
     
     @Mock
     private GitRepositoryImpl gitRepository;
+    
+    @InjectMocks
+    private GitRepositoryService serviceToTest;
     
     @BeforeEach
     public void init() {

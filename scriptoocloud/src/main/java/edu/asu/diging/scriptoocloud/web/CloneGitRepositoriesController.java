@@ -27,10 +27,6 @@ public class CloneGitRepositoriesController {
     
     @Autowired
     private GitRepositoryManager gitRepositoryManager;
-    
-    @Value("${git.repositories.path}")
-    private String path;
-  
     private Logger logger = LoggerFactory.getLogger(getClass());    
     
     @RequestMapping(value = "/repositories/clone", method = RequestMethod.GET)
