@@ -2,8 +2,11 @@ package edu.asu.diging.scriptoocloud.core.forms;
 
 import javax.validation.constraints.NotEmpty;
 
-public class CloneForm {
+import edu.asu.diging.scriptoocloud.web.validation.RepositoryUrlConstraint;
 
+@RepositoryUrlConstraint(url = "url")
+public class CloneForm {
+ 
     @NotEmpty(message = "URL required") 
     public String url;
 

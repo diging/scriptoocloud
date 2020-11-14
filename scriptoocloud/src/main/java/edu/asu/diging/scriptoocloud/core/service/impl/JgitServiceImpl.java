@@ -24,9 +24,7 @@ class JgitServiceImpl implements JgitService{
     @Override
     public void clone(String filename, String url) throws InvalidGitUrlException{
         try{
-            Git git =  Git.cloneRepository().setURI(url).setDirectory(new File(filename))
-            .call();
-            git.close();
+            Git.cloneRepository().setURI(url).setDirectory(new File(filename)).call().close();
         } catch(GitAPIException e){
             deleteFilesService.deleteDirectoryContents(new File(filename));
             throw new InvalidGitUrlException(e);
