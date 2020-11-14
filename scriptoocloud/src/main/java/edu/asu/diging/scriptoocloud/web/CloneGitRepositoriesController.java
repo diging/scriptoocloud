@@ -43,7 +43,6 @@ public class CloneGitRepositoriesController {
             model.addAttribute("clone",cloneForm);
             return "/repositories/clone";
         } 
-                    
         
         String user =  principal.getName();     
                             
@@ -55,10 +54,7 @@ public class CloneGitRepositoriesController {
             model.addAttribute("clone",new CloneForm());
             return "redirect:/repositories/clone";
         } catch(MalformedURLException e){
-            //logger.error("Invalid Url provided " + cloneForm.getUrl());
-            //redirectAttributes.addAttribute("formResponse","Invalid Url");
-            //model.addAttribute("clone",cloneForm);            
-            //return "redirect:/repositories/clone";
+            logger.error("Malformed URL made it past validator " + cloneForm.getUrl());
        }
        redirectAttributes.addAttribute("formResponse","Successfully cloned");
        return "redirect:/repositories/clone";
