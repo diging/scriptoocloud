@@ -38,12 +38,12 @@ public class CloneGitRepositoriesController {
     @RequestMapping(value = "/repositories/clone", method = RequestMethod.POST)
     public String clone(@Valid @ModelAttribute("clone") CloneForm cloneForm, BindingResult result, 
                            RedirectAttributes redirectAttributes, Model model, Principal principal){                                          
-        
+      
         if(result.hasErrors()){
             model.addAttribute("clone",cloneForm);
-            redirectAttributes.addAttribute("formResponse","No Url provided");
-            return "redirect:/repositories/clone";
-        }                 
+            return "/repositories/clone";
+        } 
+                    
         
         String user =  principal.getName();     
                             
@@ -55,10 +55,10 @@ public class CloneGitRepositoriesController {
             model.addAttribute("clone",new CloneForm());
             return "redirect:/repositories/clone";
         } catch(MalformedURLException e){
-            logger.error("Invalid Url provided " + cloneForm.getUrl());
-            redirectAttributes.addAttribute("formResponse","Invalid Url");
-            model.addAttribute("clone",cloneForm);            
-            return "redirect:/repositories/clone";
+            //logger.error("Invalid Url provided " + cloneForm.getUrl());
+            //redirectAttributes.addAttribute("formResponse","Invalid Url");
+            //model.addAttribute("clone",cloneForm);            
+            //return "redirect:/repositories/clone";
        }
        redirectAttributes.addAttribute("formResponse","Successfully cloned");
        return "redirect:/repositories/clone";

@@ -4,10 +4,11 @@ import javax.validation.constraints.NotEmpty;
 
 import edu.asu.diging.scriptoocloud.web.validation.RepositoryUrlConstraint;
 
-@RepositoryUrlConstraint(url = "url")
+
 public class CloneForm {
- 
+
     @NotEmpty(message = "URL required") 
+    @RepositoryUrlConstraint
     public String url;
 
     public String getUrl() {

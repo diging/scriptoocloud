@@ -11,11 +11,10 @@ import javax.validation.Payload;
 
 @Documented
 @Constraint(validatedBy = RepositoryUrlConstraintValidator.class)
-@Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
+@Target({ElementType.FIELD, ElementType.METHOD,ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RepositoryUrlConstraint {
-    String message() default "The fields must match";
+    String message() default "Malformed URL Provided";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
-    String url();
 }

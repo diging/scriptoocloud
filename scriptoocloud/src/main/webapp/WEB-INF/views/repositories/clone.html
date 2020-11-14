@@ -7,7 +7,7 @@
       <div class="jumbotron col-md-12">
 
 	   <h1>Clone a Remote Repository</h1>
-        <div class="text-danger" th:text = "${param.formResponse}"></div> 
+        <div class="text-success" th:text = "${param.formResponse}"></div> 
         
         <form action="#" id = "repoForm" th:action="@{/repositories/clone}" method="POST" th:object="${clone}">
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
@@ -16,7 +16,8 @@
             
             <label>URL:</label>
             <input path="url" th:field="*{url}" class="form-control input-sm"></input>
-            <p class="text-danger"><th:errors path="url"/></p>
+           
+            <p class="text-danger" th:errors ="*{url}"></p>
         
             <div style="padding-top: 20px;">
             </div>
