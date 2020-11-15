@@ -5,7 +5,7 @@
   <body>
 	<div layout:fragment="content">
 	<h2>Create a new project</h2>
-	<form th:action="@{/auth/projects/add}" method="POST" th:object="${project}">
+	<form th:action="@{/auth/add}" method="POST" th:object="${project}">
 		
 		<label>Project Name: </label>
 		<input th:field="*{name}" class="form-control input-sm"></input>

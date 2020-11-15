@@ -33,10 +33,10 @@ public class ProjectsController {
     @Autowired
     private ProjectManager projectManager;
 
-    @RequestMapping("/auth/projects/projects")
+    @RequestMapping("/auth/projects")
     public String listProjects(Model model) {
     	model.addAttribute("projects", projectManager.findAll() );
-        return "/auth/projects/projects";
+        return "/auth/projects";
     }
     
 }

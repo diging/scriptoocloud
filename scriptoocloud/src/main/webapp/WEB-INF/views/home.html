@@ -14,11 +14,7 @@
       </div>
       
       <p sec:authorize="isAuthenticated()" role="presentation">
-	    <a th:href="@{/auth/projects/projects}">Project Manager</a>
-	  </p>
-	  
-	  <p sec:authorize="isAuthenticated()" role="presentation">
-	    <a th:href="@{/auth/projects/add}">Add Project</a>
+	    <a th:href="@{/auth/projects}">Project Manager</a>
 	  </p>
       
    </div>

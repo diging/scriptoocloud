@@ -36,6 +36,6 @@ public class RemoveProjectController {
         
         projectManager.deleteProject(id); 
       
-        return "/auth/projects/projects";
+        return "redirect:/";
     }
 }

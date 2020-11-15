@@ -7,8 +7,11 @@ import java.util.List;
 import javax.persistence.NonUniqueResultException;
 import javax.transaction.Transactional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.NestedServletException;
 
 import edu.asu.diging.scriptoocloud.core.data.ProjectRepository;
 import edu.asu.diging.scriptoocloud.core.model.Project;
@@ -18,6 +21,8 @@ import edu.asu.diging.scriptoocloud.core.service.ProjectManager;
 @Transactional
 @Service
 public class ProjectManagerImpl implements ProjectManager {
+	
+	private static final Logger LOGGER=LoggerFactory.getLogger(ProjectManager.class);
 
     @Autowired
     private ProjectRepository projectRepo;
@@ -44,7 +49,8 @@ public class ProjectManagerImpl implements ProjectManager {
         try {
         	Project project = projectRepo.findById(id);
         	projectRepo.delete((ProjectImpl)project);
-        } catch (NonUniqueResultException e) {
+        } catch (IllegalArgumentException e) {
+        	LOGGER.error("Project does not exist.");
         }
     }
     

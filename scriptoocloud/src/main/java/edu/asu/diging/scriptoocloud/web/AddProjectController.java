@@ -23,13 +23,13 @@ public class AddProjectController {
     @Autowired
     private ProjectManager projectManager;
 
-    @RequestMapping(value = "/auth/projects/add", method=RequestMethod.GET)
+    @RequestMapping(value = "/auth/add", method=RequestMethod.GET)
     public String get(Model model) {
     	model.addAttribute("project", new ProjectImpl());
-        return "/auth/projects/add";
+        return "/auth/add";
     }
     
-    @RequestMapping(value = "/auth/projects/add", method=RequestMethod.POST)
+    @RequestMapping(value = "/auth/add", method=RequestMethod.POST)
     public String post(@Valid @ModelAttribute("project") ProjectImpl projectImpl, BindingResult result, Model model, RedirectAttributes redirectAttrs) {
         if (result.hasErrors()) {
             model.addAttribute("project", projectImpl);
