@@ -8,8 +8,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.asu.diging.scriptoocloud.config.SimpleUsersConfig;
@@ -23,21 +25,17 @@ public class RemoveProjectController {
     
     @Autowired
     private ProjectManager projectManager;
-
+    
     @RequestMapping(value = "/auth/projects/remove", method=RequestMethod.GET)
     public String get(Model model) {
-    	model.addAttribute("project", new ProjectImpl());
         return "/auth/projects/remove";
-    }
+    } 
     
     @RequestMapping(value = "/auth/projects/remove", method=RequestMethod.POST)
-    public String post(@Valid @ModelAttribute("project") ProjectImpl projectImpl, BindingResult result, Model model, RedirectAttributes redirectAttrs) {
-        if (result.hasErrors()) {
-            model.addAttribute("project", projectImpl);
-        }
-
-        projectManager.deleteProject(projectImpl.getId()); 
+    public String post(@RequestParam(value = "id", required = true) int id,Model model) {
+        
+        projectManager.deleteProject(id); 
       
-        return "redirect:/";
+        return "/auth/projects/projects";
     }
 }

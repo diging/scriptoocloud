@@ -12,6 +12,15 @@
 			</div> 
 		</li>
 	  </ul>
+	  <br>
+	  <form th:action="@{/auth/projects/remove}" method="POST">
+	  	<h2>Remove a project:</h2>
+		<label>Project ID: </label>
+		<input type="text" th:name="id" class="form-control input-sm"/>
+		<p class="text-danger"><th:errors path="id"/></p>
+		<button style="padding:0" class="btn btn-link"><i class="fas"></i>Submit</button>
+		</form>
+	  
 	</div>
 </body>
 </html>
