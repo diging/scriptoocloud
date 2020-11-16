@@ -21,7 +21,6 @@ import edu.asu.diging.scriptoocloud.core.exceptions.InvalidGitUrlException;
 import edu.asu.diging.scriptoocloud.core.forms.CloneForm;
 import edu.asu.diging.scriptoocloud.core.service.GitRepositoryManager;
 
-
 @Controller
 public class CloneGitRepositoriesController {
     
@@ -51,10 +50,11 @@ public class CloneGitRepositoriesController {
         } catch(InvalidGitUrlException e){
             logger.error("No git repository found at provided URL " + cloneForm.getUrl());
             redirectAttributes.addAttribute("formResponse","No such git repository found");
-            model.addAttribute("clone",new CloneForm());
+            model.addAttribute("clone",cloneForm);
             return "redirect:/repositories/clone";
         } catch(MalformedURLException e){
             logger.error("Malformed URL made it past validator " + cloneForm.getUrl());
+            return "redirect:/repositories/clone";
        }
        redirectAttributes.addAttribute("formResponse","Successfully cloned");
        return "redirect:/repositories/clone";
