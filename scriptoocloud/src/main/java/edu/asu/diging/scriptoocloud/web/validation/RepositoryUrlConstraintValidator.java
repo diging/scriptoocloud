@@ -18,10 +18,9 @@ public class RepositoryUrlConstraintValidator implements ConstraintValidator<Rep
     public boolean isValid(String urlField, ConstraintValidatorContext context) {
         boolean valid = true;
         URL url;
-        try{
+        try {
          url = new URL(urlField);
-        }
-        catch(final Exception ignore){
+        } catch(final Exception ignore){
             logger.error("Malformed URL provided");
             valid = false;    
         }

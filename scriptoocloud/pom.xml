@@ -24,6 +24,7 @@
 		<db.password>db-password</db.password>
 
 		<git.repositories.path></git.repositories.path>
+		<testPathValue>abc</testPathValue>
 
 		<log.level>info</log.level>
 
@@ -256,8 +257,19 @@
 					<exclude>**/*.ttf</exclude>
 					<exclude>**/*.woff2</exclude>
 				</excludes>
-			</resource>
+			</resource>	
 		</resources>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<filtering>true</filtering>
+				<excludes>
+					<exclude>**/*.woff</exclude>
+					<exclude>**/*.ttf</exclude>
+					<exclude>**/*.woff2</exclude>
+				</excludes>
+			</testResource>		
+		</testResources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
