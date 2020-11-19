@@ -12,18 +12,20 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @Configuration
 @EnableWebSecurity
 public class SecurityContext extends WebSecurityConfigurerAdapter {
-    
+
     @Override
     public void configure(WebSecurity web) throws Exception {
         web
-        // Spring Security ignores request to static resources such as CSS or JS
-        // files.
-        .ignoring().antMatchers("/static/**");
+                // Spring Security ignores request to static resources such as CSS or JS
+                // files.
+                .ignoring().antMatchers("/static/**");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-       http.formLogin().and()
+        http.formLogin()
+                .loginPage("/login").permitAll()
+                .and()
                 .logout()
                 .deleteCookies("JSESSIONID")
                 .logoutSuccessUrl("/")
@@ -33,7 +35,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 // Anyone can access the urls
                 .antMatchers("/", "/resources/**",
-                       "/register").permitAll()
+                        "/register").permitAll()
                 // The rest of the our application is protected.
                 .antMatchers("/users/**", "/admin/**","/auth/**").hasRole("ADMIN")
                 .antMatchers("/auth/add","/auth/remove").hasRole("USER")
@@ -43,6 +45,6 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(4);
-    }  
+    }
 
 }
