@@ -26,7 +26,16 @@ class DeleteFilesServiceImplTest {
     public void init(){
         MockitoAnnotations.initMocks(this);   
     }
-
+    
+    @Test
+    public void test_deleteDirectoryContents_deleteFile() throws IOException{
+        File file = new File(folder+"myfile");
+        file.createNewFile();
+        Assertions.assertEquals(true, file.exists());
+        serviceToTest.deleteDirectoryContents(file);
+        Assertions.assertEquals(false, file.exists());
+    }   
+    
     @Test
     public void test_deleteDirectoryContents_deleteFolderAndContents() throws IOException{
         Files.write(folder.resolve("myfile"), "abc".getBytes());

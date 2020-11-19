@@ -38,7 +38,7 @@ public class GitRepositoryService implements GitRepositoryManager{
     private JgitService jGitService;
 
     @Value("${git.repositories.path}")
-    private String path;
+    public String path;
 
     @Override
     public void cloneRepository(String gitUrl, String requester) throws InvalidGitUrlException, MalformedURLException{

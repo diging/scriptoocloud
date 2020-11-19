@@ -24,7 +24,7 @@
 		<db.password>db-password</db.password>
 
 		<git.repositories.path></git.repositories.path>
-		<testPathValue>abc</testPathValue>
+		<testPathValue></testPathValue>
 
 		<log.level>info</log.level>
 

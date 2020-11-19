@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -15,6 +16,13 @@ import org.mockito.Mockito;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import edu.asu.diging.scriptoocloud.core.data.GitRepositoryRepository;
 import edu.asu.diging.scriptoocloud.core.exceptions.InvalidGitUrlException;
@@ -24,6 +32,9 @@ import edu.asu.diging.scriptoocloud.core.service.DeleteFilesService;
 import edu.asu.diging.scriptoocloud.core.service.JgitService;
 import edu.asu.diging.scriptoocloud.core.service.UrlFormatterUtility;
 
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = { AnnotationConfigContextLoader.class})
+@TestPropertySource("classpath:config.properties")
 class GitRepositoryManagerServiceTest {
 
     @Mock
@@ -44,12 +55,16 @@ class GitRepositoryManagerServiceTest {
     @InjectMocks
     private GitRepositoryService serviceToTest;
     
+    @Value("${testPath}")
+    private String path;
+    
     @BeforeEach
     public void init() {
         MockitoAnnotations.initMocks(this);   
+        ReflectionTestUtils.setField(serviceToTest, "path", path);
     }
-    
-    @Test
+   
+   @Test
     public void test_cloneRepository_clone() throws MalformedURLException, InvalidGitUrlException {
         Mockito.when(urlFormatter.urlToFolderName("https://github.com/diging/scriptoocloud"))
             .thenReturn("github.com_diging_scriptoocloud");
@@ -87,5 +102,5 @@ class GitRepositoryManagerServiceTest {
         
         Mockito.verify(gitRepositoryJpa).deleteById(Mockito.any());
         Mockito.verify(deleteFilesService).deleteDirectoryContents(Mockito.any());
-    }   
+    } 
 }

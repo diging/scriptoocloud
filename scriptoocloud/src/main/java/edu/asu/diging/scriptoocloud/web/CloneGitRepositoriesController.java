@@ -54,7 +54,7 @@ public class CloneGitRepositoriesController {
             return "redirect:/repositories/clone";
         } catch(MalformedURLException e){
             logger.error("Malformed URL made it past validator " + cloneForm.getUrl());
-            return "redirect:/repositories/clone";
+            return "/repositories/clone";
        }
        redirectAttributes.addAttribute("formResponse","Successfully cloned");
        return "redirect:/repositories/clone";
