@@ -1,43 +1,187 @@
-<html layout:decorate="~{layouts/main}">
-  <head>
-    <title>Authority Matcher</title>
-  </head>
-  <body>
-  <div layout:fragment="content">
-  <h2>Create new Account</h2>
-  
-	<form action="#" th:action="@{/register}" method="POST" th:object="${user}">
-		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-		
-		<label>Username: </label>
-		<input th:field="*{username}" class="form-control input-sm"></input>
-		<p class="text-danger"><th:errors path="username"/></p>
-	
-		<label>First name:</label>
-		<input th:field="*{firstName}" class="form-control input-sm"></input>
-		<p class="text-danger"><th:errors path="firstName"/></p>
-		
-		<label>Last name:</label>
-		<input th:field="*{lastName}" class="form-control input-sm"></input>
-		<p class="text-danger"><th:errors path="lastName"/></p>
-		
-		<label>Email:</label>
-		<input th:field="*{email}" class="form-control input-sm"></input>
-		<p class="text-danger"><th:errors path="email"/></p>
-		
-		<label>Password:</label>
-		<input type="password" th:field="*{password}" class="form-control input-sm"></password>
-		<p class="text-danger"><th:errors path="password"/></p>
-		
-		<label>Confirm Password:</label>
-		<input type="password" th:field="*{confirmPassword}" class="form-control input-sm"></password>
-		<p class="text-danger"><th:errors path="confirmPassword"/></p>
-	
-		<div style="padding-top: 20px;">
-		<button class="btn btn-sm btn-primary pull-right">Create Account</button>
-		</div>
-	</form>
-
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{layouts/main}"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Register | ScripToo Cloud</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div id="wrapper">
+        <section class="container main-page-content ">
+            <div class="row">
+                <!-- REGISTER -->
+                <div class="col-md-6">
+                    <h2><strong>Register</strong> Your Account</h2>
+                    <form
+                        th:object="${user}"
+                        th:action="@{/register}"
+                        class="simple_form white-row"
+                        method="POST">
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('*')}">
+                            <p th:each="err : ${#fields.errors('*')}" th:text="${err}"></p>
+                        </div>
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <label for="username">Username*</label>
+                                    <input
+                                        th:field="*{username}"
+                                        class="form-control"
+                                        id="username"
+                                        name="username"
+                                        autofocus="autofocus"
+                                        type="text"
+                                        placeholder="Username"/>
+                                    <p th:if="${#fields.hasErrors('username')}"
+                                       th:errors="*{username}"
+                                       class="label label-danger">
+                                    </p>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div>
+                                        <label for="user_first">First Name</label>
+                                        <input
+                                            th:field="*{firstName}"
+                                            class="form-control"
+                                            type="text"
+                                            name="first_name"
+                                            placeholder="First Name"
+                                            id="user_first"/>
+                                        <p th:if="${#fields.hasErrors('firstName')}"
+                                           th:errors="*{firstName}"
+                                           class="label label-danger">
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div>
+                                        <label for="user_last">Last Name</label>
+                                        <input
+                                            th:field="*{lastName}"
+                                            class="form-control"
+                                            type="text"
+                                            name="last_name"
+                                            placeholder="Last Name"
+                                            id="user_last"/>
+                                        <p th:if="${#fields.hasErrors('lastName')}"
+                                           th:errors="*{lastName}"
+                                           class="label label-danger">
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div>
+                                        <label for="user_email">Email*</label>
+                                        <input
+                                            th:field="*{email}"
+                                            class="form-control"
+                                            type="text"
+                                            name="email"
+                                            placeholder="Email"
+                                            id="user_email"/>
+                                        <p th:if="${#fields.hasErrors('email')}"
+                                           th:errors="*{email}"
+                                           class="label label-danger">
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div>
+                                        <label for="password">Password*</label>
+                                        <input
+                                            th:field="*{password}"
+                                            class="form-control"
+                                            type="password"
+                                            name="password"
+                                            placeholder="Password"
+                                            id="password"/>
+                                        <p class="label label-danger"
+                                           th:if="${#fields.hasErrors('password')}"
+                                           th:errors="*{password}">
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div>
+                                        <label for="confirm_password">Confirm Password*</label>
+                                        <input
+                                            th:field="*{confirmPassword}"
+                                            class="form-control"
+                                            type="password"
+                                            name="confirm_password"
+                                            placeholder="Confirm Password"
+                                            id="confirm_password"/>
+                                        <p class="label label-danger"
+                                           th:if="${#fields.hasErrors('confirmPassword')}"
+                                           th:errors="*{confirmPassword}">
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p>*Required</p>
+                                <input
+                                    class="btn pull-right red-form-button"
+                                    type="submit"
+                                    value="Register"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="acct-links">
+                                    <a th:href="@{/login}">Sign In</a>
+                                    <span class="seperator">|</span>
+                                    <a th:href="@{/reset/request}">Forgot Your Password?</a>
+                                    <br/>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-6">
+                    <h2>Already Registered?</h2>
+                    <div class="white-row">
+                        <h4><a th:href="@{/login}">Sign In</a> to ScripTooCloud</h4>
+                        <p>Please note:</p>
+                        <ul class="list-icon check">
+                            <li>Your registration will need to be approved by an administrator</li>
+                        </ul>
+                        <hr class="half-margins"/>
+                        <p>
+                            <a th:href="@{/login}">Sign In</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
 </div>
 </body>
 </html>
