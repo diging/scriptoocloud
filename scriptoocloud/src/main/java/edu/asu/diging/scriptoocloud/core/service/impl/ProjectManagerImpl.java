@@ -41,6 +41,16 @@ public class ProjectManagerImpl implements ProjectManager {
     }
     
     /* (non-Javadoc)
+     * 
+     */
+    @Override
+    public Project getProject(long id) {
+    	Project project = projectRepo.findById(id);
+        
+        return project;
+    }
+    
+    /* (non-Javadoc)
      * @see edu.asu.diging.scriptoocloud.core.service.impl.ProjectManager#deleteProject(java.lang.String)
      */
     @Override

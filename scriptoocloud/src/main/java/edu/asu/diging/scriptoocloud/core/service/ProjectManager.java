@@ -8,6 +8,8 @@ public interface ProjectManager {
 
     Project createProject(String name, String description);
     
+    Project getProject(long id);
+    
     void deleteProject(long id);
 
 	List<Project> findAll();
