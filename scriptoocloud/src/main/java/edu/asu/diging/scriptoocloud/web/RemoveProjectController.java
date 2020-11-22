@@ -29,10 +29,10 @@ public class RemoveProjectController {
     @RequestMapping(value = "/auth/projects/remove", method=RequestMethod.GET)
     public String get(Model model) {
         return "/auth/projects/remove";
-    } 
+    }              
     
-    @RequestMapping(value = "/auth/projects/remove", method=RequestMethod.POST)
-    public String post(@RequestParam(value = "id", required = true) int id,Model model) {
+    @RequestMapping(value = "/auth/projects/remove/{id}", method=RequestMethod.POST)
+    public String post(@PathVariable("id") int id,Model model) {
         
         projectManager.deleteProject(id); 
       

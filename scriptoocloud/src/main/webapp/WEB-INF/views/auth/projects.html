@@ -10,17 +10,13 @@
 			<p>Name: <span th:text="${project.getName()}" th:remove="tag"></span> ID: <span th:text="${project.getId()}" th:remove="tag"></span>Description: <span th:text="${project.getDescription()}" th:remove="tag"></span> Date Created: <span th:text="${project.getCreationDate()}" th:remove="tag"></span></p>
 			<div class="pull-right text-right">
 			</div> 
+			
+			<form th:action="@{|/auth/projects/remove/${project.getId()}|}" method="POST">
+		    	<button style="padding:0px" class="btn btn-link"><i class="fas fa-trash"></i> Delete Project</button>
+		    </form> 
 		</li>
 	  </ul>
 	  <h2><a th:href="@{/auth/add}">Add a project</a></h1>
-	  <form th:action="@{/auth/projects/remove}" method="POST">
-	  	<h2>Remove a project:</h2>
-		<label>Project ID: </label>
-		<input type="text" th:name="id" class="form-control input-sm"/>
-		<p class="text-danger"><th:errors path="id"/></p>
-		<button style="padding:0" class="btn btn-link"><i class="fas"></i>Submit</button>
-		</form>
-	  
 	</div>
 </body>
 </html>
