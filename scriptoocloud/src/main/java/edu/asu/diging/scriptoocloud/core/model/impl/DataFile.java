@@ -11,7 +11,7 @@ public class DataFile {
     private String name;
     private String type;
     @ManyToOne
-    @JoinColumn(name="datasetId", nullable=false)
+    @JoinColumn(name="dataset_id", nullable=false)
     private Dataset dataset;
     private OffsetDateTime createdAt;
 
@@ -54,4 +54,5 @@ public class DataFile {
     public void setCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
     }
+
 }

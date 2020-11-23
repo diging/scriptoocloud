@@ -1,10 +1,11 @@
 package edu.asu.diging.scriptoocloud.core.service;
 
-import org.springframework.web.multipart.MultipartFile;
+import edu.asu.diging.scriptoocloud.core.model.impl.DataFile;
+import org.springframework.data.domain.Page;
 
 public interface IDataFileService {
 
-    boolean createFile(MultipartFile file, Long datasetId, String username, String datasetName);
+    void createFile(byte[] bytes, String datasetId, String username, String filename, String type);
 
-    void editFile(Long id);
+    Page<DataFile> getFilesByDatasetId(Long id);
 }

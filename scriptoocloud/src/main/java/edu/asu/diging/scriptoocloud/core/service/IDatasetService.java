@@ -1,23 +1,26 @@
 package edu.asu.diging.scriptoocloud.core.service;
 
-import edu.asu.diging.scriptoocloud.core.exceptions.DatasetException;
+import edu.asu.diging.scriptoocloud.core.exceptions.DatasetStorageException;
 import edu.asu.diging.scriptoocloud.core.model.IDataset;
+import edu.asu.diging.scriptoocloud.core.model.impl.Dataset;
 import edu.asu.diging.simpleusers.core.model.IUser;
+import org.springframework.data.domain.Page;
+
 import java.util.List;
 
 public interface IDatasetService {
 
-    boolean createDataset(String name, IUser user) throws DatasetException;
+    void createDataset(String name, IUser user) throws DatasetStorageException;
 
-    boolean editDataset(Long id, String newName, String oldName, String username) throws DatasetException;
+    void editDataset(Long id, String newName);
 
-    boolean deleteDataset(Long id) throws DatasetException ;
+    void deleteDataset(Long id, String username) throws DatasetStorageException;
 
     IDataset findById(Long id);
 
     List<IDataset> findAll();
 
-    List<IDataset> findAllByUsername(String username);
+    Page<Dataset> findAllByUser(IUser user);
 
-    boolean deleteFileFromDataset(Long datasetId, Long fileId) throws DatasetException;
+    boolean deleteFileFromDataset(Long datasetId, Long fileId) throws DatasetStorageException;
 }

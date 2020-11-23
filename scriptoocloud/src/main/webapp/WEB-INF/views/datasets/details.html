@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{layouts/main}"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Dataset Details | ScripToo Cloud</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div id="wrapper">
+        <section class="container main-page-content ">
+            <div class="row">
+                <h2><strong>Dataset</strong> Details</h2>
+                <div class="alert alert-success"
+                     th:if="${not #strings.isEmpty(successMessage)}">
+                    <p th:text="${successMessage}">
+                </div>
+                <div class="alert alert-danger"
+                     th:if="${not #strings.isEmpty(errorMessage)}">
+                    <p th:text="${errorMessage}">
+                </div>
+                <div class="row tabular-row">
+                    <div class="col-md-12">
+                        <div>
+                            <div class="inline">
+                                <span><i class="fas fa-folder fa-2x"></i></span>
+                            </div>
+                            <div class="inline">
+                                <h3 th:text="${dataset.name}"></h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 file-list">
+                        <ul>
+                            <li th:each="file : ${files}">
+                                <span class="file-name-span">
+                                    <i class="fas fa-file"></i>
+                                </span>
+                                [[${file.name}]]
+                                <form method="POST"
+                                      class="inline"
+                                      th:action="@{|/datasets/deleteFile|}">
+                                    <input type="hidden" name="fileId"
+                                           th:value="${file.id}"/>
+                                    <input type="hidden" name="datasetId"
+                                           th:value="${dataset.id}"/>
+                                    <button type="submit"
+                                            class="btn btn-file">
+                                        <i class="far fa-times-circle"></i>
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class=" row add-file">
+                        <div class="col-md-12">
+                            <form method="POST"
+                                  class="file-upload-form"
+                                  th:action="@{|/datasets/uploadFile|}"
+                                  enctype="multipart/form-data">
+                                <input type="file" name="file"/>
+                                <input type="hidden" name="fileUploadDatasetId"
+                                       th:value="${dataset.id}">
+                                <button type="submit" class="btn btn-file">
+                                    Add Files To Dataset
+                                    <i class="fas fa-file-medical"></i>
+                                </button>
+                                <div class="text-danger bg-danger no-file custom-error"
+                                     th:if="${not #strings.isEmpty(noFileMessage)}">
+                                    <p th:text="${noFileMessage}"></p>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+</body>
+</html>

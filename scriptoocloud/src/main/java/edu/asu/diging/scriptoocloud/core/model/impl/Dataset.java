@@ -3,6 +3,9 @@ package edu.asu.diging.scriptoocloud.core.model.impl;
 import edu.asu.diging.scriptoocloud.core.model.IDataset;
 import edu.asu.diging.simpleusers.core.model.IUser;
 import edu.asu.diging.simpleusers.core.model.impl.SimpleUser;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -16,7 +19,7 @@ public class Dataset implements IDataset {
     @ManyToOne
     @JoinColumn(name="username", nullable=false)
     private SimpleUser user;
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, mappedBy="dataset", orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy="dataset", orphanRemoval = true)
     private Set<DataFile> files;
 
     @Override
@@ -40,7 +43,9 @@ public class Dataset implements IDataset {
     }
 
     @Override
-    public void setUser(IUser user) {this.user = (SimpleUser)user;}
+    public void setUser(IUser user) {
+        this.user = (SimpleUser)user;
+    }
 
     @Override
     public String getUsername() {
@@ -51,7 +56,9 @@ public class Dataset implements IDataset {
         return this.files;
     }
 
-    public void addFile(DataFile dataFile) {files.add(dataFile);}
+    public void addFile(DataFile dataFile) {
+        files.add(dataFile);
+    }
 
     public void removeFile(DataFile dataFile){
         files.remove(dataFile);

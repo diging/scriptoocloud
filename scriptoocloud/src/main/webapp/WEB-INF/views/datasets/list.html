@@ -23,8 +23,8 @@
             <div class="row">
                 <div class="col-md-12">
                     <h2>Your <strong>Datasets</strong></h2>
-                    <div th:if="${not #strings.isEmpty(noDatasets)}">
-                        <h3 th:text="${noDatasets}"></h3>
+                    <div th:if="${#lists.isEmpty(dbDatasets)}">
+                        <h3>You Have No Datasets Yet</h3>
                     </div>
                     <div>
                         <form
@@ -34,6 +34,14 @@
                             th:object="${dataset}">
                             <div class="alert alert-danger" th:if="${#fields.hasErrors('*')}">
                                 <p th:each="err : ${#fields.errors('*')}" th:text="${err}"></p>
+                            </div>
+                            <div class="alert alert-success"
+                                 th:if="${not #strings.isEmpty(successMessage)}">
+                                <p th:text="${successMessage}">
+                            </div>
+                            <div class="alert alert-danger"
+                                 th:if="${not #strings.isEmpty(errorMessage)}">
+                                <p th:text="${errorMessage}">
                             </div>
                             <div class="row">
                                 <div class="form-group">
@@ -60,18 +68,14 @@
                                         value="Create"/>
                                 </div>
                             </div>
-                            <p class="text-danger bg-danger custom-error"
-                               th:if="${not #strings.isEmpty(noDatasetName)}"
-                               th:text="${noDatasetName}">
-                            </p>
                         </form>
 
                     </div>
                     <div th:unless="${#lists.isEmpty(dbDatasets)}">
                         <div class="row tabular-row" th:each="ds,iterStat : ${dbDatasets}">
-                            <div class="col-md-10">
-                                <form th:action="@{|/datasets/edit|}" method="POST">
-
+                            <div class="col-md-6">
+                                <form th:action="@{|/datasets/edit|}"
+                                      th:object="${datasetEditForm}" method="POST">
                                     <div class="col-md-6">
                                         <div>
                                             <div class="inline">
@@ -79,29 +83,35 @@
                                             </div>
                                             <div class="inline">
                                                 <input type="hidden" name="editSetId"
+                                                       th:name="id"
                                                        th:value="${ds.id}">
                                                 <input type="hidden" name="editIndex"
+                                                       th:name="index"
                                                        th:value="${iterStat.index}">
+                                                <input type="hidden" name="oldName"
+                                                       th:name="oldName"
+                                                       th:value="${ds.name}">
                                                 <label>
-                                                    <input name="editSetName" class="fieldInput"
-                                                           th:value="${ds.name}">
+                                                    <input type="text"
+                                                           class="fieldInput"
+                                                           th:name="newName"
+                                                           th:value="${ds.name}"/>
                                                 </label>
                                             </div>
-                                            <p class="text-danger bg-danger custom-error"
-                                               th:if="${not #strings.isEmpty(editErrorMessage)  and
-                                               #strings.equals(iterStat.index, errorIndex)}"
-                                               th:text="${editErrorMessage}">
-                                            </p>
+                                            <div class="alert alert-danger"
+                                                 th:if="${#fields.hasErrors('*') and #strings.equals(iterStat.index, errorIndex)}">
+                                                <p th:each="err : ${#fields.errors('*')}" th:text="${err}"></p>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-md-6 center">
                                         <button type="submit" class="btn btn-clear">
-                                            <i class="fas fa-edit"></i> Edit This Dataset
+                                            <i class="fas fa-edit"></i> Rename This Dataset
                                         </button>
                                     </div>
                                 </form>
                             </div>
-                            <div class="col-md-2 center">
+                            <div class="col-md-3 center">
                                 <button type="button"
                                         class="btn btn-clear delModalBtn"
                                         data-toggle="modal"
@@ -110,55 +120,10 @@
                                     <i class="fas fa-trash-alt"></i> Delete This Dataset
                                 </button>
                             </div>
-                            <div class="row">
-                                <div class="col-md-12 file-list"
-                                     th:unless="${#sets.isEmpty(ds.files)}">
-                                    <ul>
-                                        <li th:each="file : ${ds.files}"
-                                            th:inline="text">
-                                        <span class="file-name-span">
-                                            <i class="fas fa-file"></i>
-                                        </span>
-                                            [[${file.name}]]
-                                            <form method="POST"
-                                                  class="inline"
-                                                  th:action="@{/datasets/deleteFile}">
-                                                <input type="hidden" name="fileId"
-                                                       th:value="${file.id}"/>
-                                                <input type="hidden" name="datasetId"
-                                                       th:value="${ds.id}"/>
-                                                <button type="submit" class="btn btn-file">
-                                                    <i class="far fa-times-circle"></i>
-                                                </button>
-                                            </form>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class=" row add-file">
-                                <div class="col-md-12">
-                                    <form method="POST"
-                                          class="file-upload-form"
-                                          th:action="@{/datasets/uploadFile}"
-                                          enctype="multipart/form-data">
-                                        <input type="file" name="file"/>
-                                        <input type="hidden" name="fileUploadDatasetId"
-                                               th:value="${ds.id}">
-                                        <input type="hidden" name="fileUploadDatasetIndex"
-                                               th:value="${iterStat.index}">
-                                        <input type="hidden" name="fileUploadDatasetName"
-                                               th:value="${ds.name}">
-                                        <button type="submit" class="btn btn-file"
-                                                th:inline="text">
-                                            [[${#strings.concat('Add Files To: ', ds.name)}]]
-                                            <i class="fas fa-file-medical"></i>
-                                        </button>
-                                        <p class="text-danger bg-danger no-file custom-error"
-                                           th:if="${#strings.equals(iterStat.index, noFileIndex)}"
-                                           th:text="${noFileMessage}">
-                                        </p>
-                                    </form>
-                                </div>
+                            <div class="col-md-3 center">
+                                <a class="link-btn" th:href="@{/datasets/{id}(id=${ds.id})}">
+                                    <i class="fas fa-file"></i> Add Files To This Dataset
+                                </a>
                             </div>
                         </div>
                     </div>

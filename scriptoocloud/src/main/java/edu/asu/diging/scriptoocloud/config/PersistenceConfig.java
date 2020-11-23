@@ -45,10 +45,7 @@ public class PersistenceConfig {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource());
-        em.setPackagesToScan(new String[] {
-                "edu.asu.diging.scriptoocloud.core.model",
-                "edu.asu.diging.scriptoocloud.core.data",
-                "edu.asu.diging.simpleusers.core.model" });
+        em.setPackagesToScan(new String[] {"edu.asu.diging.scriptoocloud.core.model", "edu.asu.diging.simpleusers.core.model" });
 
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
