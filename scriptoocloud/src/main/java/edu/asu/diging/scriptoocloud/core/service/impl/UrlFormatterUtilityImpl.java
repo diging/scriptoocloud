@@ -14,11 +14,9 @@ public class UrlFormatterUtilityImpl implements UrlFormatterUtility {
     @Override
     public String urlToFolderName(String url) throws MalformedURLException{ 
         URL urlWrapper = new URL(url);
-
-        String folderName = "";
         
         Scanner scanner = new Scanner(urlWrapper.getHost()).useDelimiter("\\.");
-        folderName += scanner.next();
+        String folderName = scanner.next();
         while(scanner.hasNext()){
             folderName += "_" + scanner.next();
         }

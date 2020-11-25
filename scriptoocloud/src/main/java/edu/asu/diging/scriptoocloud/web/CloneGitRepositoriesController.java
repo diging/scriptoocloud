@@ -23,24 +23,26 @@ import edu.asu.diging.scriptoocloud.core.service.GitRepositoryManager;
 
 @Controller
 public class CloneGitRepositoriesController {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());   
     
     @Autowired
     private GitRepositoryManager gitRepositoryManager;
-    private Logger logger = LoggerFactory.getLogger(getClass());    
+ 
     
-    @RequestMapping(value = "/repositories/clone", method = RequestMethod.GET)
+    @RequestMapping(value = "/admin/repositories/clone", method = RequestMethod.GET)
     public String clone(Model model) {
         model.addAttribute("clone", new CloneForm());
-        return "repositories/clone";
+        return "/admin/repositories/clone";
     }
   
-    @RequestMapping(value = "/repositories/clone", method = RequestMethod.POST)
+    @RequestMapping(value = "/admin//repositories/clone", method = RequestMethod.POST)
     public String clone(@Valid @ModelAttribute("clone") CloneForm cloneForm, BindingResult result, 
                            RedirectAttributes redirectAttributes, Model model, Principal principal){                                          
       
         if(result.hasErrors()){
             model.addAttribute("clone",cloneForm);
-            return "/repositories/clone";
+            return "/admin/repositories/clone";
         } 
         
         String user =  principal.getName();     
@@ -51,13 +53,13 @@ public class CloneGitRepositoriesController {
             logger.error("No git repository found at provided URL " + cloneForm.getUrl());
             redirectAttributes.addAttribute("formResponse","No such git repository found");
             model.addAttribute("clone",cloneForm);
-            return "redirect:/repositories/clone";
+            return "redirect:/admin/repositories/clone";
         } catch(MalformedURLException e){
             logger.error("Malformed URL made it past validator " + cloneForm.getUrl());
-            return "/repositories/clone";
+            return "/admin/repositories/clone";
        }
        redirectAttributes.addAttribute("formResponse","Successfully cloned");
-       return "redirect:/repositories/clone";
+       return "redirect:/admin/repositories/clone";
     }
     
 }

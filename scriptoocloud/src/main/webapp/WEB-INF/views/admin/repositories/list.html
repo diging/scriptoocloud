@@ -26,7 +26,7 @@
     <span th:text="${repo.requester}" ></span> 
     </li>
 
-    <form th:action="@{|/repositories/delete/${repo.id}|}" method="POST">
+    <form th:action="@{|/admin/repositories/delete/${repo.id}|}" method="POST">
     <button style="padding:0px" class="btn btn-link"><i class="fas fa-trash"></i> Delete Repository </button>
     </form> 
    </ul>

@@ -44,26 +44,28 @@ public class GitRepositoryService implements GitRepositoryManager{
     public void cloneRepository(String gitUrl, String requester) throws InvalidGitUrlException, MalformedURLException{
         String folderName = urlFormatter.urlToFolderName(gitUrl);
 
-        ZonedDateTime creationDate = ZonedDateTime.now();                                   
-      
-        GitRepositoryImpl gitRepository = new GitRepositoryImpl();
-        gitRepository.setUrl(gitUrl);
-        gitRepository.setRequester(requester);
-        gitRepository.setCreationDate(creationDate);
-        gitRepository.setFolderName(folderName);
+        ZonedDateTime creationDate = ZonedDateTime.now();       
         
-        GitRepositoryImpl repositoryEntity = gitRepositoryJpa.findByUrl(gitUrl);
+        GitRepositoryImpl repositoryEntity = gitRepositoryJpa.findByUrl(gitUrl);  
         
         if(repositoryEntity != null){
             repositoryEntity.setUrl(gitUrl);
             repositoryEntity.setRequester(requester);
             repositoryEntity.setCreationDate(creationDate);
             repositoryEntity.setFolderName(folderName);
-            gitRepositoryJpa.save(repositoryEntity);
+            File file = new File(path + repositoryEntity.getFolderName());
+            deleteFilesService.deleteDirectoryContents(file);
+        }                          
+        else{
+            repositoryEntity = new GitRepositoryImpl();
+            repositoryEntity.setUrl(gitUrl);
+            repositoryEntity.setRequester(requester);
+            repositoryEntity.setCreationDate(creationDate);
+            repositoryEntity.setFolderName(folderName);
         }
-        
+ 
         jGitService.clone(path + folderName, gitUrl);
-        gitRepositoryJpa.save(gitRepository);
+        gitRepositoryJpa.save(repositoryEntity);
     }
 
     @Override
@@ -73,7 +75,7 @@ public class GitRepositoryService implements GitRepositoryManager{
         repoModels.iterator().forEachRemaining(r -> reposList.add(r));
         return reposList;
     }
-        
+ 
     @Override
     public void deleteRepository(Long id){
         GitRepositoryImpl gitRepository = gitRepositoryJpa.findById(id).get();

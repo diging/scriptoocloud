@@ -65,13 +65,13 @@
             <!-- If Admin, show Clone repo page -->
             <div class="pull-right nav header-nav" sec:authorize="hasRole('ADMIN')"
                  role="presentation">
-                <a class="account-button sign-in-out" th:href="@{/repositories/clone}">Clone</a>
+                <a class="account-button sign-in-out" th:href="@{/admin/repositories/clone}">Clone</a>
             </div>
             
             <!-- If Admin, show Repo management page -->
             <div class="pull-right nav header-nav" sec:authorize="hasRole('ADMIN')"
                  role="presentation">
-                <a class="account-button sign-in-out" th:href="@{/repositories/list}">Mange Repositories</a>
+                <a class="account-button sign-in-out" th:href="@{/admin/repositories/list}">Mange Repositories</a>
             </div>
 
             <!-- If logged in, show logout -->

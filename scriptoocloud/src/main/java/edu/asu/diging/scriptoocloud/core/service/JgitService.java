@@ -4,6 +4,6 @@ import edu.asu.diging.scriptoocloud.core.exceptions.InvalidGitUrlException;
 
 public interface JgitService {
 
-    void clone(String filename, String url) throws InvalidGitUrlException;
+    void clone(String localRepoFolderName, String url) throws InvalidGitUrlException;
 
 }
