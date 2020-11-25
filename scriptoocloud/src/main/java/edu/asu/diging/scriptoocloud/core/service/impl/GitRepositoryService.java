@@ -52,10 +52,14 @@ public class GitRepositoryService implements GitRepositoryManager{
         gitRepository.setCreationDate(creationDate);
         gitRepository.setFolderName(folderName);
         
-        GitRepository repositoryEntity = gitRepositoryJpa.findByUrl(gitUrl);
+        GitRepositoryImpl repositoryEntity = gitRepositoryJpa.findByUrl(gitUrl);
         
         if(repositoryEntity != null){
-            deleteRepository(repositoryEntity.getId());
+            repositoryEntity.setUrl(gitUrl);
+            repositoryEntity.setRequester(requester);
+            repositoryEntity.setCreationDate(creationDate);
+            repositoryEntity.setFolderName(folderName);
+            gitRepositoryJpa.save(repositoryEntity);
         }
         
         jGitService.clone(path + folderName, gitUrl);
