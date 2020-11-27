@@ -15,7 +15,7 @@ public class DeleteGitRepositoryController {
     @Autowired
     private GitRepositoryManager gitRepositoryManager;
 
-    @RequestMapping(value = "/admin//repositories/delete/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/admin/repositories/delete/{id}", method = RequestMethod.POST)
     public String deleteRepo(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {   
         gitRepositoryManager.deleteRepository(id);
         redirectAttributes.addAttribute("formResponse","Succesfully deleted repository");

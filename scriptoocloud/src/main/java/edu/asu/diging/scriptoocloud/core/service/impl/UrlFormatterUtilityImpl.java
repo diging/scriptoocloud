@@ -20,7 +20,7 @@ public class UrlFormatterUtilityImpl implements UrlFormatterUtility {
     /*
      * Converts remote git url's to folder names 
      * 
-     * @param url of format www.web.com/path/etc
+     * @param  url of format www.web.com/path/etc
      * @return url of format www_web_com_path_etc
      */
     @Override
