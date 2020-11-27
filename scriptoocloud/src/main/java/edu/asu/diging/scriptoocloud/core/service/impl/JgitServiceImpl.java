@@ -13,12 +13,27 @@ import edu.asu.diging.scriptoocloud.core.exceptions.InvalidGitUrlException;
 import edu.asu.diging.scriptoocloud.core.service.DeleteFilesService;
 import edu.asu.diging.scriptoocloud.core.service.JgitService;
 
+
+/*
+ * Clones remote git repositories to file system utilizing the JGit dependency
+ * 
+ * @author Jason Ormsby
+*/
+
 @Service
 class JgitServiceImpl implements JgitService{
 
     @Autowired
     private DeleteFilesService deleteFilesService;
 
+    /*
+     * Creates folder in file system and clones a remote git repository to it
+     * 
+     * @param   localRepoFolderName         Name for new folder that will store cloned remote git repository 
+     * @param   remoteGitRepoUrl            nonmalformed Url passed by user that points to remote git repository
+     * @throws  InvalidGitUrlException      If remote repository doesn't exist 
+     *                                      or jgit encounters failure related to copying remote repository at url
+    */
     @Override
     public void clone(String localRepoFolderName, String remoteGitRepoUrl) throws InvalidGitUrlException{
         try{

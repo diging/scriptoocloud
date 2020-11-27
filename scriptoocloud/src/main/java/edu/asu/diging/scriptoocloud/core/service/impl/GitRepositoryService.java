@@ -20,6 +20,12 @@ import edu.asu.diging.scriptoocloud.core.service.GitRepositoryManager;
 import edu.asu.diging.scriptoocloud.core.service.JgitService;
 import edu.asu.diging.scriptoocloud.core.service.UrlFormatterUtility;
 
+/*
+ * Clones remote git repositories and facilitates transactional events related to git repositories in file system
+ * 
+ * @author Jason Ormsby
+ */
+
 @Service
 @Transactional
 @PropertySource("classpath:config.properties")
@@ -40,6 +46,13 @@ public class GitRepositoryService implements GitRepositoryManager{
     @Value("${git.repositories.path}")
     public String path;
 
+   /*
+    * Handles requests to clone remote git repositories and stores an entity, or updates an entity, 
+    * with information related to the request and repository
+    * 
+    * @param   gitUrl       nonmalformed url of remote git repository 
+    * @param   requester    username in current session that made the request
+    */
     @Override
     public void cloneRepository(String gitUrl, String requester) throws InvalidGitUrlException, MalformedURLException{
         String folderName = urlFormatter.urlToFolderName(gitUrl);
@@ -67,7 +80,12 @@ public class GitRepositoryService implements GitRepositoryManager{
         jGitService.clone(path + folderName, gitUrl);
         gitRepositoryJpa.save(repositoryEntity);
     }
-
+    
+   /*
+    * Lets you view metadata of all git repositories on the file system
+    * 
+    * @return A list of GitRepository objects in database
+    */
     @Override
     public ArrayList<GitRepository> listRepositories(){
         Iterable<GitRepositoryImpl> repoModels = gitRepositoryJpa.findAll();
@@ -76,6 +94,11 @@ public class GitRepositoryService implements GitRepositoryManager{
         return reposList;
     }
  
+    /*
+    * Removes git repository from file system and erases metadata from database related to it
+    * @param    id  id of specific entity in sequential id column to be deleted
+    *     
+    */
     @Override
     public void deleteRepository(Long id){
         GitRepositoryImpl gitRepository = gitRepositoryJpa.findById(id).get();
