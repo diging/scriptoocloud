@@ -27,6 +27,12 @@ import edu.asu.diging.scriptoocloud.core.data.GitRepositoryRepository;
 import edu.asu.diging.scriptoocloud.core.exceptions.InvalidGitUrlException;
 import edu.asu.diging.scriptoocloud.core.service.DeleteFilesService;
 
+/*
+ * 
+ * 
+ * @author Jason Ormsby
+*/
+
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { AnnotationConfigContextLoader.class})
 @TestPropertySource("classpath:config.properties")

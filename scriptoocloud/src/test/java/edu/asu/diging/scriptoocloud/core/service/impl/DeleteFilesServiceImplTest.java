@@ -14,8 +14,17 @@ import org.junit.jupiter.api.io.TempDir;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 
+/*
+ * 
+ * 
+ * @author Jason Ormsby
+*/
+
 class DeleteFilesServiceImplTest {
 
+    /*
+     * New temporary directory generated for every test
+     */
     @TempDir
     protected Path folder;
 
@@ -31,8 +40,11 @@ class DeleteFilesServiceImplTest {
     public void test_deleteDirectoryContents_deleteFile() throws IOException{
         File file = new File(folder+"myfile");
         file.createNewFile();
+        
         Assertions.assertEquals(true, file.exists());
+        
         serviceToTest.deleteDirectoryContents(file);
+        
         Assertions.assertEquals(false, file.exists());
     }   
     
@@ -40,14 +52,20 @@ class DeleteFilesServiceImplTest {
     public void test_deleteDirectoryContents_deleteFolderAndContents() throws IOException{
         Files.write(folder.resolve("myfile"), "abc".getBytes());
         File file = folder.resolve("myfile").toFile();
+        
         Assertions.assertEquals(true, file.exists());
-        serviceToTest.deleteDirectoryContents(file);
+        Assertions.assertEquals(true, folder.toFile().exists());
+        
+        serviceToTest.deleteDirectoryContents(folder.toFile());
+        
         Assertions.assertEquals(false, file.exists());
+        Assertions.assertEquals(false, folder.toFile().exists());
     }   
     
     @Test
     public void test_deleteDirectoryContents_noSuchFile() throws IOException{
         File file = new File("NotOnDrive");
+
         Assertions.assertEquals(false, file.exists());
         Assertions.assertDoesNotThrow(()->serviceToTest.deleteDirectoryContents(file));
     } 

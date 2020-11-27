@@ -32,6 +32,12 @@ import edu.asu.diging.scriptoocloud.core.service.DeleteFilesService;
 import edu.asu.diging.scriptoocloud.core.service.JgitService;
 import edu.asu.diging.scriptoocloud.core.service.UrlFormatterUtility;
 
+/*
+ * Tests git repository manager, transactional events are verfied
+ * 
+ * @author Jason Ormsby
+*/
+
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { AnnotationConfigContextLoader.class})
 @TestPropertySource("classpath:config.properties")
@@ -74,7 +80,6 @@ class GitRepositoryManagerServiceTest {
             ()->serviceToTest.cloneRepository("https://github.com/diging/scriptoocloud", "admin"));  
             
         GitRepositoryImpl repo  = new GitRepositoryImpl();
-        Mockito.when(gitRepositoryJpa.save(repo)).thenReturn(repo);
         
         Mockito.verify(jGitService).clone(Mockito.any(),Mockito.any());
         Mockito.verify(gitRepositoryJpa).save(Mockito.any());

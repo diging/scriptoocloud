@@ -13,6 +13,12 @@ import org.mockito.MockitoAnnotations;
 
 import edu.asu.diging.scriptoocloud.core.data.GitRepositoryRepository;
 
+/*
+ * 
+ * 
+ * @author Jason Ormsby
+*/
+
 class UrlFormatterUtilityImplTest {
 
     @InjectMocks
