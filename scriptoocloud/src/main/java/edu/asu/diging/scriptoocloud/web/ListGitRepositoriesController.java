@@ -16,7 +16,7 @@ public class ListGitRepositoriesController {
     @Autowired
     private GitRepositoryManager gitRepositoryManager;
  
-    @RequestMapping(value = "/admin//repositories/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/admin/repositories/list", method = RequestMethod.GET)
     public String listRepos(Model model) {
         model.addAttribute("repos", gitRepositoryManager.listRepositories());
         return "/admin/repositories/list";

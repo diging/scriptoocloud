@@ -36,7 +36,7 @@ public class CloneGitRepositoriesController {
         return "/admin/repositories/clone";
     }
   
-    @RequestMapping(value = "/admin//repositories/clone", method = RequestMethod.POST)
+    @RequestMapping(value = "/admin/repositories/clone", method = RequestMethod.POST)
     public String clone(@Valid @ModelAttribute("clone") CloneForm cloneForm, BindingResult result, 
                            RedirectAttributes redirectAttributes, Model model, Principal principal){                                          
       
