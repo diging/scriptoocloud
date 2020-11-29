@@ -10,7 +10,7 @@ public class DatasetEditForm {
     private Long id;
     private int index;
     private String oldName;
-    @NotEmpty(message="Dataset name cannot be empty")
+    @NotEmpty(message = "Dataset name cannot be empty")
     private String newName;
 
     public Long getId() {

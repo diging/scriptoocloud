@@ -24,7 +24,8 @@ public class FileSystemService implements IFileSystemService {
     private String rootLocationString;
 
     @Autowired
-    public FileSystemService() { }
+    public FileSystemService() {
+    }
 
     /**
      * Creates the dataset (and its required directories) on the filesystem.
@@ -55,8 +56,8 @@ public class FileSystemService implements IFileSystemService {
     /**
      * A helper method to create a Path given a username and dataset name.
      *
-     * @param username    The username of the owner of the dataset.
-     * @param datasetId   The id of the dataset.
+     * @param username  The username of the owner of the dataset.
+     * @param datasetId The id of the dataset.
      * @return Returns a Path.
      */
     @Override
@@ -140,7 +141,7 @@ public class FileSystemService implements IFileSystemService {
      */
     @Override
     public void createFileInDirectory(String username, String datasetId, String filename,
-                                       byte[] bytes) throws DataFileStorageException {
+                                      byte[] bytes) throws DataFileStorageException {
 
         Path destinationFile = Paths.get(rootLocationString).resolve(
                 Paths.get(username, datasetId, filename))

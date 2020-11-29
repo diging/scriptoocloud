@@ -1,13 +1,13 @@
 package edu.asu.diging.scriptoocloud.web;
 
 import edu.asu.diging.scriptoocloud.core.model.IDataset;
+import edu.asu.diging.scriptoocloud.core.model.impl.DataFile;
 import edu.asu.diging.scriptoocloud.core.service.IDataFileService;
 import edu.asu.diging.scriptoocloud.core.service.IDatasetService;
-import edu.asu.diging.scriptoocloud.core.service.impl.DatasetService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,14 +22,13 @@ import java.security.Principal;
 @Controller
 public class AddDataFileController {
 
-    private final IDatasetService iDatasetService;
     private final IDataFileService iDataFileService;
+    private final IDatasetService iDatasetService;
 
     @Autowired
-    public AddDataFileController(IDatasetService iDatasetService,
-                                 IDataFileService iDataFileService) {
-        this.iDatasetService = iDatasetService;
+    public AddDataFileController(IDataFileService iDataFileService, IDatasetService iDatasetService) {
         this.iDataFileService = iDataFileService;
+        this.iDatasetService = iDatasetService;
     }
 
     @RequestMapping(value = "datasets/uploadFile", method = RequestMethod.POST)
@@ -40,12 +39,15 @@ public class AddDataFileController {
                              Model model) {
         String username = principal.getName();
         String datasetIdString = request.getParameter("fileUploadDatasetId");
-        Long datasetId = Long.parseLong(datasetIdString);
         if (!multipartFile.isEmpty()) {
             model.addAttribute("file", multipartFile);
         } else {
-            redirectAttributes.addFlashAttribute("noFileMessage", "Please Choose a File");
-            return "redirect:/datasets/" + datasetId;
+            model.addAttribute("noFileMessage", "Please Choose a File");
+            IDataset dataset = iDatasetService.findById(Long.parseLong(datasetIdString));
+            Page<DataFile> files = iDataFileService.getFilesByDatasetId(Long.parseLong(datasetIdString));
+            model.addAttribute("dataset", dataset);
+            model.addAttribute("files", files);
+            return "datasets/details";
         }
         try {
             byte[] bytes = multipartFile.getBytes();
@@ -55,6 +57,6 @@ public class AddDataFileController {
         } catch (IOException e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Error: File could not be Uploaded");
         }
-        return "redirect:/datasets/" + datasetId;
+        return "redirect:/datasets/" + datasetIdString;
     }
 }

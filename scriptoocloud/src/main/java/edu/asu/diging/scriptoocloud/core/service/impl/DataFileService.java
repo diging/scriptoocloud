@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * The Service class associated with user-uploaded DataFiles.  The class handles storing the
- * files on the file system and storing DataFile data in the database.
+ * files on the file system (using the FileSystemService) and storing DataFile data in the database.
  */
 
 @Transactional
@@ -40,8 +40,8 @@ public class DataFileService implements IDataFileService {
     }
 
     /**
-     * Creates a file on the filesystem and, if successful, stores the DataFile
-     * data in the database. A Dataset has many DataFiles and a DataFile belongs to one Dataset.
+     * Creates a file on the filesystem and stores the DataFile
+     * in the database. A Dataset has many DataFiles and a DataFile belongs to one Dataset.
      *
      * @param bytes     The byte array representation of a MultipartFile
      * @param datasetId The primary key of the Dataset as a String.
@@ -61,7 +61,12 @@ public class DataFileService implements IDataFileService {
         newFile.setName(filename);
         newFile.setType(type);
         newFile.setCreatedAt(OffsetDateTime.now());
-        Optional<Dataset> dataset = datasetRepository.findById(Long.parseLong(datasetId));
+        Optional<Dataset> dataset;
+        try {
+            dataset = datasetRepository.findById(Long.parseLong(datasetId));
+        } catch (NumberFormatException e){
+            throw new DataFileStorageException("Dataset Id could not be parsed to a long");
+        }
         if (dataset.isPresent()) {
             dataset.get().addFile(newFile);
             newFile.setDataset(dataset.get());
@@ -74,7 +79,7 @@ public class DataFileService implements IDataFileService {
      * Returns the Set of DataFiles belonging to a Dataset
      *
      * @param datasetId The Dataset id
-     * @return The Set of DataFiles
+     * @return The Pageable Set of DataFiles
      */
     @Override
     public Page<DataFile> getFilesByDatasetId(Long datasetId) {

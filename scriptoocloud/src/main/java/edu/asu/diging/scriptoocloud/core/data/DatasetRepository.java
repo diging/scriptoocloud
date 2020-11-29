@@ -17,4 +17,6 @@ public interface DatasetRepository extends PagingAndSortingRepository<Dataset, L
     Optional<Dataset> findById(Long id);
 
     Page<Dataset> findAllByUser(IUser user, Pageable pageable);
+
+    Page<Dataset> findAll(Pageable pageable);
 }

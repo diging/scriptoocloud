@@ -45,9 +45,9 @@ public class DatasetService implements IDatasetService {
     /**
      * Creates the dataset in the filesystem, then in the database.
      *
-     * @param name The name of the dataset.
+     * @param name The name of the Dataset.
      * @param user The IUser who owns the dataset
-     * @throws DatasetStorageException Exception thrown if dataset with same name already exists.
+     * @throws DatasetStorageException Exception thrown if dataset cannot be created.
      */
     @Override
     public void createDataset(String name, IUser user) throws DatasetStorageException {
@@ -72,8 +72,7 @@ public class DatasetService implements IDatasetService {
      * Edits the dataset name in the database (Dataset path uses id).
      *
      * @param id       The id of the dataset to edit.
-     * @param newName  The new name of the dataset to edit.
-     * @throws DatasetStorageException If Dataset directories couldn't be edited.
+     * @param newName  The new name of the dataset being edited.
      */
     @Override
     public void editDataset(Long id, String newName) {
@@ -128,21 +127,19 @@ public class DatasetService implements IDatasetService {
     /**
      * Finds all datasets in the database (Likely for admin use).
      *
-     * @return Returns a List of all IDatasets corresponding to Datasets in the database.
+     * @return Returns Page lists of all Datasets in the database.
      */
     @Override
-    public List<IDataset> findAll() {
-        Iterable<Dataset> datasets = datasetRepository.findAll();
-        List<IDataset> results = new ArrayList<>();
-        datasets.iterator().forEachRemaining(results::add);
-        return results;
+    public Page<Dataset> findAll() {
+        Pageable pageable = PageRequest.of(0, 20);
+        return datasetRepository.findAll(pageable);
     }
 
     /**
      * Finds all Datasets in the database for a particular user
      *
      * @param user The user or owner of the Dataset.
-     * @return Returns a List of all IDatasets for a given user corresponding to Datasets in the database.
+     * @return Returns Page lists of all Datasets in the database for a given user.
      */
     @Override
     public Page<Dataset> findAllByUser(IUser user) {

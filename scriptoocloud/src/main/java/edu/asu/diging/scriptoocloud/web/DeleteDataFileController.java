@@ -22,15 +22,20 @@ public class DeleteDataFileController {
     @RequestMapping(value = "datasets/deleteFile", method = RequestMethod.POST)
     public String deleteFile(HttpServletRequest request,
                              RedirectAttributes redirectAttributes) {
-
-        Long fileId = Long.parseLong(request.getParameter("fileId"));
-        Long datasetId = Long.parseLong(request.getParameter("datasetId"));
+        String datasetIdString = request.getParameter("datasetId");
         try {
+            Long fileId = Long.parseLong(request.getParameter("fileId"));
+            Long datasetId = Long.parseLong(datasetIdString);
             iDatasetService.deleteFileFromDataset(datasetId, fileId);
         } catch (DatasetStorageException e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Error: File could not be deleted");
+            return "redirect:/datasets/" + datasetIdString;
+        } catch (NumberFormatException e){
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Error: File could not be deleted. Id could not be parsed to a Long value");
+            return "redirect:/datasets/" + datasetIdString;
         }
         redirectAttributes.addFlashAttribute("successMessage", "File Successfully Deleted");
-        return "redirect:/datasets/" + datasetId;
+        return "redirect:/datasets/" + datasetIdString;
     }
 }

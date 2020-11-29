@@ -33,11 +33,11 @@ public class FieldNotSameValidator implements ConstraintValidator<FieldNotSame, 
 
             valid = firstObj != null && secondObj != null && !firstObj.equals(secondObj);
         } catch (IllegalAccessException e) {
-            logger.error("An IllegalAccessException Occurred in Validating Dataset edit. Ingoring.", e);
+            logger.error("An IllegalAccessException Occurred in Validating Dataset edit. Ignoring.", e);
         } catch (InvocationTargetException e){
-            logger.error("An InvocationTargetException Occurred in Validating Dataset edit. Ingoring.", e);
+            logger.error("An InvocationTargetException Occurred in Validating Dataset edit. Ignoring.", e);
         } catch (NoSuchMethodException e){
-            logger.error("An NoSuchMethodException Occurred in Validating Dataset edit. Ingoring.", e);
+            logger.error("An NoSuchMethodException Occurred in Validating Dataset edit. Ignoring.", e);
         }
         if (!valid) {
             context.buildConstraintViolationWithTemplate(message).addPropertyNode(oldName)

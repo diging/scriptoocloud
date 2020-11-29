@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 
@@ -44,23 +45,30 @@ public class AddDatasetController {
     @RequestMapping(value = "datasets/add", method = RequestMethod.POST)
     public String post(@Valid @ModelAttribute("dataset") DatasetForm datasetForm,
                        BindingResult result,
+                       RedirectAttributes redirectAttributes,
                        Model model,
                        Principal principal) {
         String username = principal.getName();
         IUser user = userManager.findByUsername(username);
         datasetForm.setUsername(username);
         if (result.hasErrors()) {
+            Page<Dataset> dbDatasets = iDatasetService.findAllByUser(user);
+            model.addAttribute("dbDatasets", dbDatasets);
+            model.addAttribute("dataset", datasetForm);
+            model.addAttribute("datasetEditForm", new DatasetEditForm());
             return "datasets/list";
         }
         try {
             iDatasetService.createDataset(datasetForm.getName(), user);
-            model.addAttribute("successMessage", "Dataset successfully created");
         } catch (DatasetStorageException e) {
+            Page<Dataset> dbDatasets = iDatasetService.findAllByUser(user);
+            model.addAttribute("dbDatasets", dbDatasets);
+            model.addAttribute("dataset", datasetForm);
+            model.addAttribute("datasetEditForm", new DatasetEditForm());
             model.addAttribute("errorMessage", "There was an error creating the dataset");
+            return "datasets/list";
         }
-        Page<Dataset> dbDatasets = iDatasetService.findAllByUser(user);
-        model.addAttribute("dbDatasets", dbDatasets);
-        model.addAttribute("dataset", datasetForm);
-        return "datasets/list";
+        redirectAttributes.addFlashAttribute("successMessage", "Dataset successfully created");
+        return "redirect:/datasets/list";
     }
 }

@@ -6,8 +6,6 @@ import edu.asu.diging.scriptoocloud.core.model.impl.Dataset;
 import edu.asu.diging.simpleusers.core.model.IUser;
 import org.springframework.data.domain.Page;
 
-import java.util.List;
-
 public interface IDatasetService {
 
     void createDataset(String name, IUser user) throws DatasetStorageException;
@@ -18,7 +16,7 @@ public interface IDatasetService {
 
     IDataset findById(Long id);
 
-    List<IDataset> findAll();
+    Page<Dataset> findAll();
 
     Page<Dataset> findAllByUser(IUser user);
 
