@@ -16,13 +16,12 @@ public class RepositoryUrlConstraintValidator implements ConstraintValidator<Rep
     public void initialize(RepositoryUrlConstraint constraintAnnotation) {}
 
     public boolean isValid(String urlField, ConstraintValidatorContext context) {
-        boolean valid = true;
         try {
             URL url = new URL(urlField);
-        } catch(final Exception ignore){
-            logger.error("Malformed URL provided");
-            valid = false;    
+        } catch(Exception e){
+            logger.warn("Malformed URL provided",e);
+            return false;    
         }
-        return valid;
+        return true;
     }
 }

@@ -5,6 +5,8 @@ import java.net.MalformedURLException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -42,15 +44,22 @@ public class GitRepositoryService implements GitRepositoryManager{
     
     @Autowired
     private JgitService jGitService;
-
+   
     @Value("${git.repositories.path}")
     public String path;
-
+   
+    @PostConstruct
+    private void validatePathProperty(){
+        if(!path.substring(path.length()-1).equals("/")){
+            path += "/";
+        }
+    }
+    
    /*
     * Handles requests to clone remote git repositories and stores an entity, or updates an entity, 
     * with information related to the request and repository
     * 
-    * @param   gitUrl       nonmalformed url of remote git repository 
+    * @param   gitUrl       non-malformed url of remote git repository 
     * @param   requester    username in current session that made the request
     */
     @Override
@@ -60,23 +69,18 @@ public class GitRepositoryService implements GitRepositoryManager{
         ZonedDateTime creationDate = ZonedDateTime.now();       
         
         GitRepositoryImpl repositoryEntity = gitRepositoryJpa.findByUrl(gitUrl);  
-        
-        if(repositoryEntity != null){
-            repositoryEntity.setUrl(gitUrl);
-            repositoryEntity.setRequester(requester);
-            repositoryEntity.setCreationDate(creationDate);
-            repositoryEntity.setFolderName(folderName);
-            File file = new File(path + repositoryEntity.getFolderName());
-            deleteFilesService.deleteDirectoryContents(file);
-        }                          
-        else{
+        if(repositoryEntity == null){
             repositoryEntity = new GitRepositoryImpl();
-            repositoryEntity.setUrl(gitUrl);
-            repositoryEntity.setRequester(requester);
-            repositoryEntity.setCreationDate(creationDate);
-            repositoryEntity.setFolderName(folderName);
         }
- 
+        else{
+            deleteFilesService.deleteDirectoryContents(new File(path + repositoryEntity.getFolderName()));
+        }
+        
+        repositoryEntity.setUrl(gitUrl);
+        repositoryEntity.setRequester(requester);
+        repositoryEntity.setCreationDate(creationDate);
+        repositoryEntity.setFolderName(folderName);
+  
         jGitService.clone(path + folderName, gitUrl);
         gitRepositoryJpa.save(repositoryEntity);
     }

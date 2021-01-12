@@ -53,9 +53,11 @@ public class CloneGitRepositoriesController {
             logger.error("No git repository found at provided URL " + cloneForm.getUrl());
             redirectAttributes.addAttribute("formResponse","No such git repository found");
             model.addAttribute("clone",cloneForm);
-            return "redirect:/admin/repositories/clone";
+            return "/admin/repositories/clone";
         } catch(MalformedURLException e){
             logger.error("Malformed URL made it past validator " + cloneForm.getUrl());
+            redirectAttributes.addAttribute("formResponse","Provided URL is Malformed");
+            model.addAttribute("clone",cloneForm);
             return "/admin/repositories/clone";
        }
        redirectAttributes.addAttribute("formResponse","Successfully cloned");
