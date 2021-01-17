@@ -10,6 +10,7 @@ import edu.asu.diging.scriptoocloud.core.service.IDatasetService;
 import edu.asu.diging.simpleusers.core.model.IUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -56,11 +57,10 @@ public class DatasetService implements IDatasetService {
         dataset.setName(name);
         dataset.setUser(user);
         Dataset savedDataset = datasetRepository.save(dataset);
-        Long savedDatasetId = savedDataset.getId();
 
         // create directories on the file system (using Dataset id)
         try {
-            fileSystemService.addDatasetDirectories(String.valueOf(savedDatasetId),
+            fileSystemService.addDatasetDirectories(String.valueOf(savedDataset.getId()),
                     user.getUsername());
         } catch (DatasetStorageException e) {
             throw new DatasetStorageException(
@@ -71,8 +71,8 @@ public class DatasetService implements IDatasetService {
     /**
      * Edits the dataset name in the database (Dataset path uses id).
      *
-     * @param id       The id of the dataset to edit.
-     * @param newName  The new name of the dataset being edited.
+     * @param id      The id of the dataset to edit.
+     * @param newName The new name of the dataset being edited.
      */
     @Override
     public void editDataset(Long id, String newName) {
@@ -88,7 +88,7 @@ public class DatasetService implements IDatasetService {
     /**
      * Deletes the dataset in the filesystem, then in the database.
      *
-     * @param id The id of the dataset to delete.
+     * @param id       The id of the dataset to delete.
      * @param username The username of the owner of the Dataset
      * @throws DatasetStorageException If the Dataset couldn't be deleted
      */
@@ -103,10 +103,7 @@ public class DatasetService implements IDatasetService {
         // Then delete Dataset and its files from the database
         Optional<Dataset> dataset = datasetRepository.findById(id);
         if (dataset.isPresent()) {
-            Set<DataFile> files = dataset.get().getFiles();
-            for (DataFile file : files) {
-                dataFileRepository.deleteById(file.getId());
-            }
+            dataFileRepository.deleteAllById(id);
         } else {
             throw new DatasetStorageException("Dataset removed from filesystem not found in database");
         }
@@ -125,26 +122,36 @@ public class DatasetService implements IDatasetService {
     }
 
     /**
+     * Finds and returns a Page of Datasets for a User
+     *
+     * @param pageable The Pageable to calculate page size and current page
+     * @param user     The user associated with the Dataset
+     * @return The Page of Datasets
+     */
+    @Override
+    public Page<Dataset> findPaginatedDatasets(Pageable pageable, IUser user) {
+        int pageSize = pageable.getPageSize();
+        int currentPage = pageable.getPageNumber();
+        int startItem = currentPage * pageSize;
+
+        List<Dataset> datasets = datasetRepository.findAllByUser(user);
+
+        return getDatasets(pageSize, currentPage, startItem, datasets);
+    }
+
+    /**
      * Finds all datasets in the database (Likely for admin use).
      *
      * @return Returns Page lists of all Datasets in the database.
      */
     @Override
-    public Page<Dataset> findAll() {
-        Pageable pageable = PageRequest.of(0, 20);
-        return datasetRepository.findAll(pageable);
-    }
+    public Page<Dataset> findAll(Pageable pageable) {
+        int pageSize = pageable.getPageSize();
+        int currentPage = pageable.getPageNumber();
+        int startItem = currentPage * pageSize;
 
-    /**
-     * Finds all Datasets in the database for a particular user
-     *
-     * @param user The user or owner of the Dataset.
-     * @return Returns Page lists of all Datasets in the database for a given user.
-     */
-    @Override
-    public Page<Dataset> findAllByUser(IUser user) {
-        Pageable pageable = PageRequest.of(0, 20);
-        return datasetRepository.findAllByUser(user, pageable);
+        List<Dataset> datasets = datasetRepository.findAll();
+        return getDatasets(pageSize, currentPage, startItem, datasets);
     }
 
     /**
@@ -162,32 +169,52 @@ public class DatasetService implements IDatasetService {
 
         Optional<Dataset> dataset = datasetRepository.findById(datasetId);
         Optional<DataFile> dataFile = dataFileRepository.findById(fileId);
-        if (dataset.isPresent() && dataFile.isPresent()) {
-            String username = dataset.get().getUsername();
-            String fileName = dataFile.get().getName();
-
-            // Remove join from dataset
-            dataset.get().getFiles().remove(dataFile.get());
-            datasetRepository.save(dataset.get());
-
-            // delete file from database
-            dataFileRepository.deleteById(fileId);
-
-            try {
-                // Removes file from file system
-                String pathString = fileSystemService.createPath(username,
-                        String.valueOf(datasetId)).toString();
-                File fileToBeDeleted = Paths.get(pathString, fileName).toFile();
-                return fileToBeDeleted.delete();
-            } catch (InvalidPathException e) {
-                throw new DatasetStorageException("Path to file could not be found", e);
-            } catch (UnsupportedOperationException e) {
-                throw new DatasetStorageException("Could not convert path to File", e);
-            } catch (SecurityException e) {
-                throw new DatasetStorageException("File was created, but could not be deleted", e);
-            }
-        } else {
+        if (!dataset.isPresent() || !dataFile.isPresent()) {
             throw new DatasetStorageException("Could not find DataFile/Dataset in the database");
         }
+        String username = dataset.get().getUsername();
+        String fileName = dataFile.get().getName();
+
+        // Remove join from dataset
+        dataset.get().getFiles().remove(dataFile.get());
+        datasetRepository.save(dataset.get());
+
+        // delete file from database
+        dataFileRepository.deleteById(fileId);
+
+        try {
+            // Removes file from file system
+            String pathString = fileSystemService.createPath(username,
+                    String.valueOf(datasetId)).toString();
+            File fileToBeDeleted = Paths.get(pathString, fileName).toFile();
+            return fileSystemService.deleteDirectoryOrFile(fileToBeDeleted);
+        } catch (InvalidPathException e) {
+            throw new DatasetStorageException("Path to file could not be found", e);
+        } catch (UnsupportedOperationException e) {
+            throw new DatasetStorageException("Could not convert path to File", e);
+        } catch (SecurityException e) {
+            throw new DatasetStorageException("File was created, but could not be deleted", e);
+        }
+    }
+
+    /**
+     * Returns a page of Datasets
+     *
+     * @param pageSize    The Page size
+     * @param currentPage The current Page
+     * @param startItem   The index of the starting Dataset for the Page
+     * @param datasets    The List of Datasets
+     * @return The Page of Datasets
+     */
+    private Page<Dataset> getDatasets(int pageSize, int currentPage, int startItem, List<Dataset> datasets) {
+        List<Dataset> list;
+
+        if (datasets.size() < startItem) {
+            list = Collections.emptyList();
+        } else {
+            int toIndex = Math.min(startItem + pageSize, datasets.size());
+            list = datasets.subList(startItem, toIndex);
+        }
+        return new PageImpl<>(list, PageRequest.of(currentPage, pageSize), datasets.size());
     }
 }

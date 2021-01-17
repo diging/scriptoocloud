@@ -45,11 +45,11 @@ public class FileSystemService implements IFileSystemService {
                 Files.createDirectories(path);
             }
         } catch (IOException e) {
-            throw new DatasetStorageException("IOException occurred in addDatasetDirectories", e);
+            throw new DatasetStorageException("IOException occurred when attempting to add the Dataset", e);
         } catch (UnsupportedOperationException e) {
-            throw new DatasetStorageException("UnsupportedOperationException occurred in addDatasetDirectories", e);
+            throw new DatasetStorageException("UnsupportedOperationException occurred when attempting to add the Dataset", e);
         } catch (SecurityException e) {
-            throw new DatasetStorageException("SecurityException occurred in addDatasetDirectories", e);
+            throw new DatasetStorageException("SecurityException occurred when attempting to add the Dataset", e);
         }
     }
 
@@ -63,24 +63,16 @@ public class FileSystemService implements IFileSystemService {
     @Override
     public Path createPath(String username, String datasetId) {
         Path path;
-        if (datasetId != null) {
-            try {
+        try {
+            if (datasetId != null) {
                 path = Paths.get(this.rootLocationString, username, datasetId);
-                String pathName = StringUtils.cleanPath(Objects.requireNonNull(path).toString());
-                path = Paths.get(pathName);
-                return path;
-            } catch (InvalidPathException e) {
-                throw new DatasetStorageException("An InvalidPathException occurred in createPath with null datasetName", e);
-            }
-        } else {
-            try {
+            } else {
                 path = Paths.get(this.rootLocationString, username);
-                String pathName = StringUtils.cleanPath(Objects.requireNonNull(path).toString());
-                path = Paths.get(pathName);
-            } catch (InvalidPathException e) {
-                throw new DatasetStorageException("An InvalidPathException occurred in createPath with datasetName present", e);
             }
-            return path;
+            return Paths.get(StringUtils.cleanPath(Objects.requireNonNull(path).toString()));
+        } catch (InvalidPathException e) {
+            throw new DatasetStorageException(
+                    "An InvalidPathException occurred in createPath with null datasetName", e);
         }
     }
 
@@ -96,9 +88,10 @@ public class FileSystemService implements IFileSystemService {
         Path path = createPath(username, String.valueOf(id));
         File directory = path.toFile();
         try {
-            deleteDirectory(directory);
+            deleteDirectoryOrFile(directory);
         } catch (SecurityException e) {
-            throw new DatasetStorageException("A SecurityException occurred in deleteDatasetDirectories", e);
+            throw new DatasetStorageException(
+                    "A SecurityException occurred when attempting to delete the Dataset from the file system", e);
         }
     }
 
@@ -110,7 +103,7 @@ public class FileSystemService implements IFileSystemService {
      * @throws DatasetStorageException if directory cannot be deleted.
      */
     @Override
-    public boolean deleteDirectory(File directoryToBeDeleted) throws DatasetStorageException {
+    public boolean deleteDirectoryOrFile(File directoryToBeDeleted) throws DatasetStorageException {
 
         File[] allContents;
         try {
@@ -120,7 +113,7 @@ public class FileSystemService implements IFileSystemService {
         }
         if (allContents != null) {
             for (File file : allContents) {
-                deleteDirectory(file);
+                deleteDirectoryOrFile(file);
             }
         }
         try {

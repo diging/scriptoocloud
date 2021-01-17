@@ -8,16 +8,19 @@ import edu.asu.diging.simpleusers.core.model.IUser;
 import edu.asu.diging.simpleusers.core.service.IUserManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Controller
 public class EditDatasetController {
@@ -31,25 +34,37 @@ public class EditDatasetController {
         this.userManager = userManager;
     }
 
-    @RequestMapping(value = "datasets/edit", method = RequestMethod.POST)
-    public String edit(@Valid @ModelAttribute("datasetEditForm") DatasetEditForm datasetEditForm,
+    @RequestMapping(value = "datasets/{id}/edit", method = RequestMethod.POST)
+    public String edit(@PathVariable("id") Long datasetId,
+                       @Valid @ModelAttribute("datasetEditForm") DatasetEditForm datasetEditForm,
                        BindingResult result,
                        RedirectAttributes redirectAttributes,
-                       Principal principal,
-                       Model model) {
+                       Model model,
+                       @RequestParam("page") Optional<Integer> page,
+                       @RequestParam("size") Optional<Integer> size,
+                       Principal principal) {
         // Duplicate Dataset names are okay, but editing a Dataset to have the same name
         // that it already has (same id, same name) is an error.
-        if (result.hasErrors()){
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(5);
+        if (result.hasErrors()) {
             String username = principal.getName();
             IUser user = userManager.findByUsername(username);
-            Page<Dataset> dbDatasets = iDatasetService.findAllByUser(user);
+            Page<Dataset> dbDatasets = iDatasetService.findPaginatedDatasets(PageRequest.of(currentPage - 1, pageSize), user);
             model.addAttribute("dbDatasets", dbDatasets);
+            int totalPages = dbDatasets.getTotalPages();
+            if (totalPages > 0) {
+                List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+                        .boxed()
+                        .collect(Collectors.toList());
+                model.addAttribute("pageNumbers", pageNumbers);
+            }
             model.addAttribute("dataset", new DatasetForm());
             model.addAttribute("datasetEditForm", datasetEditForm);
             model.addAttribute("errorIndex", datasetEditForm.getIndex());
             return "datasets/list";
         } else {
-            iDatasetService.editDataset(datasetEditForm.getId(), datasetEditForm.getNewName());
+            iDatasetService.editDataset(datasetId, datasetEditForm.getNewName());
         }
         redirectAttributes.addFlashAttribute("successMessage", "Dataset successfully edited");
         return "redirect:/datasets/list";

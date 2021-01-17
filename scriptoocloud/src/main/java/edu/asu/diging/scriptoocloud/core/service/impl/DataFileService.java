@@ -1,6 +1,8 @@
 package edu.asu.diging.scriptoocloud.core.service.impl;
 
 import java.time.OffsetDateTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import edu.asu.diging.scriptoocloud.core.data.DataFileRepository;
@@ -11,6 +13,7 @@ import edu.asu.diging.scriptoocloud.core.model.impl.Dataset;
 import edu.asu.diging.scriptoocloud.core.service.IFileSystemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,16 +30,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class DataFileService implements IDataFileService {
 
     private final DataFileRepository dataFileRepository;
+
     private final DatasetRepository datasetRepository;
-    private final IFileSystemService iFileSystemService;
+    private final IFileSystemService fileSystemService;
 
     @Autowired
     public DataFileService(DataFileRepository dataFileRepository,
                            DatasetRepository datasetRepository,
-                           IFileSystemService iFileSystemService) {
+                           IFileSystemService fileSystemService) {
         this.dataFileRepository = dataFileRepository;
         this.datasetRepository = datasetRepository;
-        this.iFileSystemService = iFileSystemService;
+        this.fileSystemService = fileSystemService;
     }
 
     /**
@@ -52,7 +56,7 @@ public class DataFileService implements IDataFileService {
     @Override
     public void createFile(byte[] bytes, String datasetId, String username, String filename, String type) {
         try {
-            iFileSystemService.createFileInDirectory(username, datasetId, filename, bytes);
+            fileSystemService.createFileInDirectory(username, datasetId, filename, bytes);
         } catch (DataFileStorageException e) {
             throw new DataFileStorageException("File could not be saved in the file system", e);
         }
@@ -64,26 +68,42 @@ public class DataFileService implements IDataFileService {
         Optional<Dataset> dataset;
         try {
             dataset = datasetRepository.findById(Long.parseLong(datasetId));
-        } catch (NumberFormatException e){
-            throw new DataFileStorageException("Dataset Id could not be parsed to a long");
+        } catch (NumberFormatException e) {
+            throw new DataFileStorageException("Dataset Id could not be parsed to a long", e);
         }
         if (dataset.isPresent()) {
             dataset.get().addFile(newFile);
             newFile.setDataset(dataset.get());
             datasetRepository.save(dataset.get());
             dataFileRepository.save(newFile);
+        } else {
+            throw new DataFileStorageException("Dataset not found");
         }
     }
 
     /**
-     * Returns the Set of DataFiles belonging to a Dataset
+     * Finds and returns a page of DataFiles
      *
+     * @param pageable  The Pageable to calculate page size and current page
      * @param datasetId The Dataset id
-     * @return The Pageable Set of DataFiles
+     * @return The Page of DataFiles
      */
     @Override
-    public Page<DataFile> getFilesByDatasetId(Long datasetId) {
-        Pageable pageable = PageRequest.of(0, 20);
-        return dataFileRepository.findAllByDataset_Id(datasetId, pageable);
+    public Page<DataFile> findPaginatedFiles(Pageable pageable, Long datasetId) {
+        int pageSize = pageable.getPageSize();
+        int currentPage = pageable.getPageNumber();
+        int startItem = currentPage * pageSize;
+
+        List<DataFile> files = dataFileRepository.findAllByDataset_Id(datasetId);
+
+        List<DataFile> list;
+
+        if (files.size() < startItem) {
+            list = Collections.emptyList();
+        } else {
+            int toIndex = Math.min(startItem + pageSize, files.size());
+            list = files.subList(startItem, toIndex);
+        }
+        return new PageImpl<>(list, PageRequest.of(currentPage, pageSize), files.size());
     }
 }

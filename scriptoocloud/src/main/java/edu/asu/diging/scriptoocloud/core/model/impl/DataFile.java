@@ -6,12 +6,12 @@ import java.time.OffsetDateTime;
 @Entity
 public class DataFile {
     @Id
-    @GeneratedValue(strategy= GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     private String name;
     private String type;
     @ManyToOne
-    @JoinColumn(name="dataset_id", nullable=false)
+    @JoinColumn(name = "dataset_id", nullable = false)
     private Dataset dataset;
     private OffsetDateTime createdAt;
 
@@ -55,4 +55,7 @@ public class DataFile {
         this.createdAt = createdAt;
     }
 
+    public Object getOwner() {
+        return this.dataset.getUsername();
+    }
 }

@@ -507,7 +507,7 @@ input.fieldInput:focus {
 
 .file-list ul {
     list-style: none;
-    padding:0;
+    padding: 0;
 }
 
 .file-list ul li {
@@ -566,4 +566,13 @@ span.file-name-span {
 
 .no-file {
     width: 200px;
+}
+
+.pagination > li > a, .pagination > li > span {
+    color: #8c1d40;
+}
+
+.pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover {
+    background-color: #8c1d40;
+    border-color: #8c1d40;
 }

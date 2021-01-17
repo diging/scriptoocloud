@@ -14,8 +14,8 @@ public interface IFileSystemService {
 
     void deleteDatasetDirectories(Long id, String username) throws SecurityException;
 
-    boolean deleteDirectory(File directoryToBeDeleted) throws DatasetStorageException;
+    boolean deleteDirectoryOrFile(File directoryToBeDeleted) throws DatasetStorageException;
 
     void createFileInDirectory(String username, String datasetId, String filename,
-                                       byte[] bytes) throws DataFileStorageException;
+                               byte[] bytes) throws DataFileStorageException;
 }
