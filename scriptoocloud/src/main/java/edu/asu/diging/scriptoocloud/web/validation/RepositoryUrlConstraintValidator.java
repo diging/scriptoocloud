@@ -1,5 +1,6 @@
 package edu.asu.diging.scriptoocloud.web.validation;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.validation.ConstraintValidator;
@@ -18,7 +19,7 @@ public class RepositoryUrlConstraintValidator implements ConstraintValidator<Rep
     public boolean isValid(String urlField, ConstraintValidatorContext context) {
         try {
             URL url = new URL(urlField);
-        } catch(Exception e){
+        } catch(MalformedURLException e){
             logger.warn("Malformed URL provided",e);
             return false;    
         }

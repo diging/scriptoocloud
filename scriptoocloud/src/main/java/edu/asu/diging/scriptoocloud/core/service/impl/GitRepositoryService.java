@@ -48,6 +48,10 @@ public class GitRepositoryService implements GitRepositoryManager{
     @Value("${git.repositories.path}")
     public String path;
    
+   /*
+    * Checks system path property has trailing slash to facilitate concatenation with new file names
+    * 
+    */
     @PostConstruct
     private void validatePathProperty(){
         if(!path.substring(path.length()-1).equals("/")){

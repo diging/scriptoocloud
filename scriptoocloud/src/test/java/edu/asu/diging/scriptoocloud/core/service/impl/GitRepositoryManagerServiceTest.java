@@ -70,7 +70,7 @@ class GitRepositoryManagerServiceTest {
         ReflectionTestUtils.setField(serviceToTest, "path", path);
     }
    
-   @Test
+    @Test
     public void test_cloneRepository_clone() throws MalformedURLException, InvalidGitUrlException {
         Mockito.when(urlFormatter.urlToFolderName("https://github.com/diging/scriptoocloud"))
             .thenReturn("github.com_diging_scriptoocloud");

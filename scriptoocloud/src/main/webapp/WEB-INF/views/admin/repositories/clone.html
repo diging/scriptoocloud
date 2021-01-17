@@ -8,6 +8,7 @@
 
 	   <h1>Clone a Remote Repository</h1>
         <div class="text-success" th:text = "${param.formResponse}"></div> 
+        <div class="text-danger" th:text = "${formResponseFailure}"></div> 
         
         <form action="#" id = "repoForm" th:action="@{/admin/repositories/clone}" method="POST" th:object="${clone}">
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />

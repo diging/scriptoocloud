@@ -61,9 +61,8 @@ class JgitServiceImplTest {
         Assertions.assertDoesNotThrow(()->serviceToTest.clone(folderName, "https://github.com/diging/scriptoocloud"));
       
         Assertions.assertTrue(file.exists());
-        
-        DeleteFilesServiceImpl deleteFilesService = new DeleteFilesServiceImpl();
-        deleteFilesService.deleteDirectoryContents(file);
+
+        recursiveDelete(file);
     }
     
     @Test
@@ -77,7 +76,7 @@ class JgitServiceImplTest {
         Mockito.verify(deleteFilesService).deleteDirectoryContents(Mockito.any());
         Assertions.assertTrue(file.exists());  
         DeleteFilesServiceImpl deleteFilesService = new DeleteFilesServiceImpl();
-        deleteFilesService.deleteDirectoryContents(file);  
+        recursiveDelete(file); 
         Assertions.assertFalse(file.exists());                 
     }   
     
@@ -92,8 +91,21 @@ class JgitServiceImplTest {
         Mockito.verify(deleteFilesService).deleteDirectoryContents(Mockito.any());
         Assertions.assertTrue(file.exists());  
         DeleteFilesServiceImpl deleteFilesService = new DeleteFilesServiceImpl();
-        deleteFilesService.deleteDirectoryContents(file);  
+        recursiveDelete(file);
         Assertions.assertFalse(file.exists());      
     } 
+    
+    public void recursiveDelete(File file){
+        if(file.isDirectory()){
+            File directorycontents[] = file.listFiles();
+            for(File fileItem : directorycontents){
+                recursiveDelete(fileItem);     
+            }
+            file.delete();
+        }
+        else{
+            file.delete();
+        }
+    }
 
 }

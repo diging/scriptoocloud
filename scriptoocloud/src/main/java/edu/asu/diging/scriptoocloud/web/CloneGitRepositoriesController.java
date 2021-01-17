@@ -5,6 +5,7 @@ import java.security.Principal;
 
 import javax.validation.Valid;
 
+import org.eclipse.jgit.api.errors.JGitInternalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,14 +52,19 @@ public class CloneGitRepositoriesController {
             gitRepositoryManager.cloneRepository(cloneForm.getUrl(), user);       
         } catch(InvalidGitUrlException e){
             logger.error("No git repository found at provided URL " + cloneForm.getUrl());
-            redirectAttributes.addAttribute("formResponse","No such git repository found");
+            model.addAttribute("formResponseFailure","No such git repository found");
             model.addAttribute("clone",cloneForm);
             return "/admin/repositories/clone";
         } catch(MalformedURLException e){
             logger.error("Malformed URL made it past validator " + cloneForm.getUrl());
-            redirectAttributes.addAttribute("formResponse","Provided URL is Malformed");
+            model.addAttribute("formResponseFailure","Provided URL is Malformed");
             model.addAttribute("clone",cloneForm);
             return "/admin/repositories/clone";
+       } catch (JGitInternalException e){
+            logger.error("JGit command execution failure, check system configurations ", e);
+            model.addAttribute("formResponseFailure","JGit internal failure");
+            model.addAttribute("clone",cloneForm);
+            return "/admin/repositories/clone";        
        }
        redirectAttributes.addAttribute("formResponse","Successfully cloned");
        return "redirect:/admin/repositories/clone";

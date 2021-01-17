@@ -33,15 +33,13 @@ class JgitServiceImpl implements JgitService{
      * @param   remoteGitRepoUrl            nonmalformed Url passed by user that points to remote git repository
      * @throws  InvalidGitUrlException      If remote repository doesn't exist 
      *                                      or jgit encounters failure related to copying remote repository at url
+     * @throws  JGitInternalException       JGit command execution failure at low level                                       
     */
     @Override
-    public void clone(String localRepoFolderName, String remoteGitRepoUrl) throws InvalidGitUrlException{
+    public void clone(String localRepoFolderName, String remoteGitRepoUrl) throws InvalidGitUrlException, JGitInternalException{
         try{
             Git.cloneRepository().setURI(remoteGitRepoUrl).setDirectory(new File(localRepoFolderName)).call().close();
         } catch(GitAPIException e){
-            deleteFilesService.deleteDirectoryContents(new File(localRepoFolderName));
-            throw new InvalidGitUrlException(e);
-        } catch(JGitInternalException e){
             deleteFilesService.deleteDirectoryContents(new File(localRepoFolderName));
             throw new InvalidGitUrlException(e);
         }
