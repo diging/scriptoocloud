@@ -32,12 +32,12 @@ class DeleteFilesServiceImplTest {
     private DeleteFilesServiceImpl serviceToTest;
     
     @BeforeEach
-    public void init(){
+    public void init() {
         MockitoAnnotations.initMocks(this);   
     }
     
     @Test
-    public void test_deleteDirectoryContents_deleteFile() throws IOException{
+    public void test_deleteDirectoryContents_deleteFile() throws IOException {
         File file = new File(folder+"myfile");
         file.createNewFile();
         
@@ -49,7 +49,7 @@ class DeleteFilesServiceImplTest {
     }   
     
     @Test
-    public void test_deleteDirectoryContents_deleteFolderAndContents() throws IOException{
+    public void test_deleteDirectoryContents_deleteFolderAndContents() throws IOException {
         Files.write(folder.resolve("myfile"), "abc".getBytes());
         File file = folder.resolve("myfile").toFile();
         
@@ -63,7 +63,7 @@ class DeleteFilesServiceImplTest {
     }   
     
     @Test
-    public void test_deleteDirectoryContents_noSuchFile() throws IOException{
+    public void test_deleteDirectoryContents_noSuchFile() throws IOException {
         File file = new File("NotOnDrive");
 
         Assertions.assertEquals(false, file.exists());

@@ -33,22 +33,22 @@ class UrlFormatterUtilityImplTest {
     } 
     
     @Test
-    public void test_urlToFolderName_goodUrlWww() throws MalformedURLException{
+    public void test_urlToFolderName_goodUrlWww() throws MalformedURLException {
         Assertions.assertEquals("www_website_com_path_path", serviceToTest.urlToFolderName("https://www.website.com/path/path"));
     }   
     
     @Test
-    public void test_urlToFolderName_goodUrlNoWww() throws MalformedURLException{
+    public void test_urlToFolderName_goodUrlNoWww() throws MalformedURLException {
         Assertions.assertEquals("website_com_path_path", serviceToTest.urlToFolderName("https://website.com/path/path"));
     }   
     
     @Test
-    public void test_urlToFolderName_noProtocol(){
+    public void test_urlToFolderName_noProtocol() {
         Assertions.assertThrows(MalformedURLException.class, ()->serviceToTest.urlToFolderName("www.website.com/path/path") );
     }   
     
     @Test
-    public void test_urlToFolderName_badUrl(){
+    public void test_urlToFolderName_badUrl() {
         Assertions.assertThrows(MalformedURLException.class, ()->serviceToTest.urlToFolderName("website/path/path") );
     }   
 

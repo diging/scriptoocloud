@@ -21,7 +21,7 @@ import edu.asu.diging.scriptoocloud.core.service.JgitService;
 */
 
 @Service
-class JgitServiceImpl implements JgitService{
+class JgitServiceImpl implements JgitService {
 
     @Autowired
     private DeleteFilesService deleteFilesService;

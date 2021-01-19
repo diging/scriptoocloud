@@ -48,12 +48,12 @@ class JgitServiceImplTest {
     private JgitServiceImpl serviceToTest;
     
     @BeforeEach
-    public void init(){
+    public void init() {
         MockitoAnnotations.initMocks(this);  
     }
     
     @Test
-    public void test_clone_success(){
+    public void test_clone_success() {
 
         String folderName = path + "clone_success";
         File file = new File(folderName);
@@ -66,7 +66,7 @@ class JgitServiceImplTest {
     }
     
     @Test
-    public void test_clone_noSuchRepository(){
+    public void test_clone_noSuchRepository() {
         String folderName = path + "no_such_repository";
         File file = new File(folderName);
 
@@ -81,7 +81,7 @@ class JgitServiceImplTest {
     }   
     
     @Test
-    public void test_clone_badUrl(){
+    public void test_clone_badUrl() {
         String folderName = path + "bad_url";
         File file = new File(folderName);
 
@@ -95,7 +95,7 @@ class JgitServiceImplTest {
         Assertions.assertFalse(file.exists());      
     } 
     
-    public void recursiveDelete(File file){
+    public void recursiveDelete(File file) {
         if(file.isDirectory()){
             File directorycontents[] = file.listFiles();
             for(File fileItem : directorycontents){
