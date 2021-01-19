@@ -22,7 +22,7 @@ import edu.asu.diging.scriptoocloud.core.service.ProjectManager;
 @Service
 public class ProjectManagerImpl implements ProjectManager {
 	
-	private static final Logger LOGGER=LoggerFactory.getLogger(ProjectManager.class);
+	private final Logger logger=LoggerFactory.getLogger(getClass());
 
     @Autowired
     private ProjectRepository projectRepo;
@@ -50,7 +50,7 @@ public class ProjectManagerImpl implements ProjectManager {
         	Project project = projectRepo.findById(id);
         	projectRepo.delete((ProjectImpl)project);
         } catch (IllegalArgumentException e) {
-        	LOGGER.error("Project does not exist.");
+        	logger.error("Project does not exist.");
         }
     }
     
