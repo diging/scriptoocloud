@@ -12,7 +12,7 @@ import edu.asu.diging.scriptoocloud.core.service.DeleteFilesService;
  */
 
 @Service
-public class DeleteFilesServiceImpl implements DeleteFilesService{
+public class DeleteFilesServiceImpl implements DeleteFilesService {
 
 
     /*
@@ -21,15 +21,14 @@ public class DeleteFilesServiceImpl implements DeleteFilesService{
      * @param   file    Directory or file to be deleted 
      */
     @Override
-    public void deleteDirectoryContents(File file){
-        if(file.isDirectory()){
+    public void deleteDirectoryContents(File file) {
+        if(file.isDirectory()) {
             File directorycontents[] = file.listFiles();
-            for(File fileItem : directorycontents){
+            for (File fileItem : directorycontents) {
                 deleteDirectoryContents(fileItem);     
             }
             file.delete();
-        }
-        else{
+        } else {
             file.delete();
         }
     }    

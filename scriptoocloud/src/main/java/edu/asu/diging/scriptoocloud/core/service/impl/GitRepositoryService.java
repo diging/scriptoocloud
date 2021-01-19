@@ -31,7 +31,7 @@ import edu.asu.diging.scriptoocloud.core.service.UrlFormatterUtility;
 @Service
 @Transactional
 @PropertySource("classpath:config.properties")
-public class GitRepositoryService implements GitRepositoryManager{
+public class GitRepositoryService implements GitRepositoryManager {
 
     @Autowired
     private DeleteFilesService deleteFilesService;
@@ -53,8 +53,8 @@ public class GitRepositoryService implements GitRepositoryManager{
     * 
     */
     @PostConstruct
-    private void validatePathProperty(){
-        if(!path.substring(path.length()-1).equals("/")){
+    private void validatePathProperty() {
+        if(!path.endsWith("/")) {
             path += "/";
         }
     }
@@ -67,16 +67,15 @@ public class GitRepositoryService implements GitRepositoryManager{
     * @param   requester    username in current session that made the request
     */
     @Override
-    public void cloneRepository(String gitUrl, String requester) throws InvalidGitUrlException, MalformedURLException{
+    public void cloneRepository(String gitUrl, String requester) throws InvalidGitUrlException, MalformedURLException {
         String folderName = urlFormatter.urlToFolderName(gitUrl);
 
         ZonedDateTime creationDate = ZonedDateTime.now();       
         
         GitRepositoryImpl repositoryEntity = gitRepositoryJpa.findByUrl(gitUrl);  
-        if(repositoryEntity == null){
+        if(repositoryEntity == null) {
             repositoryEntity = new GitRepositoryImpl();
-        }
-        else{
+        } else {
             deleteFilesService.deleteDirectoryContents(new File(path + repositoryEntity.getFolderName()));
         }
         
@@ -95,7 +94,7 @@ public class GitRepositoryService implements GitRepositoryManager{
     * @return A list of GitRepository objects in database
     */
     @Override
-    public ArrayList<GitRepository> listRepositories(){
+    public ArrayList<GitRepository> listRepositories() {
         Iterable<GitRepositoryImpl> repoModels = gitRepositoryJpa.findAll();
         ArrayList<GitRepository> reposList = new ArrayList<>();
         repoModels.iterator().forEachRemaining(r -> reposList.add(r));
@@ -108,7 +107,7 @@ public class GitRepositoryService implements GitRepositoryManager{
     *     
     */
     @Override
-    public void deleteRepository(Long id){
+    public void deleteRepository(Long id) {
         GitRepositoryImpl gitRepository = gitRepositoryJpa.findById(id).get();
         gitRepositoryJpa.deleteById(gitRepository.getId());
         File file = new File(path + gitRepository.getFolderName());

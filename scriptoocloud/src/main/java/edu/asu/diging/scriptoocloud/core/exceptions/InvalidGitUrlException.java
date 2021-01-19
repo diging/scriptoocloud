@@ -7,15 +7,15 @@ public class InvalidGitUrlException extends Exception {
      */
     private static final long serialVersionUID = 1L;
 
-    public InvalidGitUrlException(){
+    public InvalidGitUrlException() {
         super();
     }
 
-    public InvalidGitUrlException(Throwable e){
+    public InvalidGitUrlException(Throwable e) {
         super(e);
     }
 
-    public InvalidGitUrlException(String message){
+    public InvalidGitUrlException(String message) {
         super(message);
     }
 }

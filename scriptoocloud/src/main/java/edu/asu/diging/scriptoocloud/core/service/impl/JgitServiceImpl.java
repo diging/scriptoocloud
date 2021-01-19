@@ -36,10 +36,10 @@ class JgitServiceImpl implements JgitService{
      * @throws  JGitInternalException       JGit command execution failure at low level                                       
     */
     @Override
-    public void clone(String localRepoFolderName, String remoteGitRepoUrl) throws InvalidGitUrlException, JGitInternalException{
-        try{
+    public void clone(String localRepoFolderName, String remoteGitRepoUrl) throws InvalidGitUrlException, JGitInternalException {
+        try {
             Git.cloneRepository().setURI(remoteGitRepoUrl).setDirectory(new File(localRepoFolderName)).call().close();
-        } catch(GitAPIException e){
+        } catch(GitAPIException e) {
             deleteFilesService.deleteDirectoryContents(new File(localRepoFolderName));
             throw new InvalidGitUrlException(e);
         }

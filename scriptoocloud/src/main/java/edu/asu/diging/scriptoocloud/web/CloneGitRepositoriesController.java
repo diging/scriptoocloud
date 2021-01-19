@@ -41,7 +41,7 @@ public class CloneGitRepositoriesController {
     public String clone(@Valid @ModelAttribute("clone") CloneForm cloneForm, BindingResult result, 
                            RedirectAttributes redirectAttributes, Model model, Principal principal){                                          
       
-        if(result.hasErrors()){
+        if(result.hasErrors()) {
             model.addAttribute("clone",cloneForm);
             return "/admin/repositories/clone";
         } 
@@ -50,17 +50,17 @@ public class CloneGitRepositoriesController {
                             
         try {                     
             gitRepositoryManager.cloneRepository(cloneForm.getUrl(), user);       
-        } catch(InvalidGitUrlException e){
+        } catch(InvalidGitUrlException e) {
             logger.error("No git repository found at provided URL " + cloneForm.getUrl());
             model.addAttribute("formResponseFailure","No such git repository found");
             model.addAttribute("clone",cloneForm);
             return "/admin/repositories/clone";
-        } catch(MalformedURLException e){
+        } catch(MalformedURLException e) {
             logger.error("Malformed URL made it past validator " + cloneForm.getUrl());
             model.addAttribute("formResponseFailure","Provided URL is Malformed");
             model.addAttribute("clone",cloneForm);
             return "/admin/repositories/clone";
-       } catch (JGitInternalException e){
+       } catch (JGitInternalException e) {
             logger.error("JGit command execution failure, check system configurations ", e);
             model.addAttribute("formResponseFailure","JGit internal failure");
             model.addAttribute("clone",cloneForm);
