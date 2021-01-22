@@ -25,7 +25,6 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import edu.asu.diging.scriptoocloud.core.data.GitRepositoryRepository;
 import edu.asu.diging.scriptoocloud.core.exceptions.InvalidGitUrlException;
-import edu.asu.diging.scriptoocloud.core.service.DeleteFilesService;
 
 /*
  * 
@@ -42,7 +41,7 @@ class JgitServiceImplTest {
     private String path;
 
     @Mock
-    private DeleteFilesService deleteFilesService;
+    private FileSystemService deleteFilesService;
 
     @InjectMocks
     private JgitServiceImpl serviceToTest;
@@ -73,9 +72,8 @@ class JgitServiceImplTest {
         Assertions.assertThrows(InvalidGitUrlException.class,
             ()->serviceToTest.clone(folderName, "github.com/test"));
 
-        Mockito.verify(deleteFilesService).deleteDirectoryContents(Mockito.any());
+        Mockito.verify(deleteFilesService).deleteDirectoryOrFile(Mockito.any());
         Assertions.assertTrue(file.exists());  
-        DeleteFilesServiceImpl deleteFilesService = new DeleteFilesServiceImpl();
         recursiveDelete(file); 
         Assertions.assertFalse(file.exists());                 
     }   
@@ -88,9 +86,8 @@ class JgitServiceImplTest {
         Assertions.assertThrows(InvalidGitUrlException.class,
             ()->serviceToTest.clone(folderName, "githubcom/test"));
 
-        Mockito.verify(deleteFilesService).deleteDirectoryContents(Mockito.any());
+        Mockito.verify(deleteFilesService).deleteDirectoryOrFile(Mockito.any());
         Assertions.assertTrue(file.exists());  
-        DeleteFilesServiceImpl deleteFilesService = new DeleteFilesServiceImpl();
         recursiveDelete(file);
         Assertions.assertFalse(file.exists());      
     } 

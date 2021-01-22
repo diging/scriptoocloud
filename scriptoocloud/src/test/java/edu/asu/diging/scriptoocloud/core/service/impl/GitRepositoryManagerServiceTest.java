@@ -28,7 +28,6 @@ import edu.asu.diging.scriptoocloud.core.data.GitRepositoryRepository;
 import edu.asu.diging.scriptoocloud.core.exceptions.InvalidGitUrlException;
 import edu.asu.diging.scriptoocloud.core.model.GitRepository;
 import edu.asu.diging.scriptoocloud.core.model.impl.GitRepositoryImpl;
-import edu.asu.diging.scriptoocloud.core.service.DeleteFilesService;
 import edu.asu.diging.scriptoocloud.core.service.JgitService;
 import edu.asu.diging.scriptoocloud.core.service.UrlFormatterUtility;
 
@@ -50,7 +49,7 @@ class GitRepositoryManagerServiceTest {
     private GitRepositoryRepository gitRepositoryJpa;
     
     @Mock
-    private DeleteFilesService deleteFilesService;
+    private FileSystemService deleteFilesService;
     
     @Mock
     private UrlFormatterUtility urlFormatter;
@@ -106,6 +105,6 @@ class GitRepositoryManagerServiceTest {
         Assertions.assertDoesNotThrow(()->serviceToTest.deleteRepository((long) 0));
         
         Mockito.verify(gitRepositoryJpa).deleteById(Mockito.any());
-        Mockito.verify(deleteFilesService).deleteDirectoryContents(Mockito.any());
+        Mockito.verify(deleteFilesService).deleteDirectoryOrFile(Mockito.any());
     } 
 }

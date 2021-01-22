@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import edu.asu.diging.scriptoocloud.core.exceptions.InvalidGitUrlException;
-import edu.asu.diging.scriptoocloud.core.service.DeleteFilesService;
 import edu.asu.diging.scriptoocloud.core.service.JgitService;
 
 
@@ -24,7 +23,7 @@ import edu.asu.diging.scriptoocloud.core.service.JgitService;
 class JgitServiceImpl implements JgitService {
 
     @Autowired
-    private DeleteFilesService deleteFilesService;
+    private FileSystemService fileSystemService;
 
     /*
      * Creates folder in file system and clones a remote git repository to it
@@ -40,7 +39,7 @@ class JgitServiceImpl implements JgitService {
         try {
             Git.cloneRepository().setURI(remoteGitRepoUrl).setDirectory(new File(localRepoFolderName)).call().close();
         } catch(GitAPIException e) {
-            deleteFilesService.deleteDirectoryContents(new File(localRepoFolderName));
+            fileSystemService.deleteDirectoryOrFile(new File(localRepoFolderName));
             throw new InvalidGitUrlException(e);
         }
     }

@@ -17,7 +17,6 @@ import edu.asu.diging.scriptoocloud.core.data.GitRepositoryRepository;
 import edu.asu.diging.scriptoocloud.core.exceptions.InvalidGitUrlException;
 import edu.asu.diging.scriptoocloud.core.model.GitRepository;
 import edu.asu.diging.scriptoocloud.core.model.impl.GitRepositoryImpl;
-import edu.asu.diging.scriptoocloud.core.service.DeleteFilesService;
 import edu.asu.diging.scriptoocloud.core.service.GitRepositoryManager;
 import edu.asu.diging.scriptoocloud.core.service.JgitService;
 import edu.asu.diging.scriptoocloud.core.service.UrlFormatterUtility;
@@ -32,9 +31,9 @@ import edu.asu.diging.scriptoocloud.core.service.UrlFormatterUtility;
 @Transactional
 @PropertySource("classpath:config.properties")
 public class GitRepositoryService implements GitRepositoryManager {
-
+    
     @Autowired
-    private DeleteFilesService deleteFilesService;
+    private FileSystemService fileSystemService;
     
     @Autowired
     private UrlFormatterUtility urlFormatter;
@@ -76,7 +75,7 @@ public class GitRepositoryService implements GitRepositoryManager {
         if(repositoryEntity == null) {
             repositoryEntity = new GitRepositoryImpl();
         } else {
-            deleteFilesService.deleteDirectoryContents(new File(path + repositoryEntity.getFolderName()));
+            fileSystemService.deleteDirectoryOrFile(new File(path + repositoryEntity.getFolderName()));
         }
         
         repositoryEntity.setUrl(gitUrl);
@@ -111,7 +110,7 @@ public class GitRepositoryService implements GitRepositoryManager {
         GitRepositoryImpl gitRepository = gitRepositoryJpa.findById(id).get();
         gitRepositoryJpa.deleteById(gitRepository.getId());
         File file = new File(path + gitRepository.getFolderName());
-        deleteFilesService.deleteDirectoryContents(file);
+        fileSystemService.deleteDirectoryOrFile(file);
     } 
     
 }
