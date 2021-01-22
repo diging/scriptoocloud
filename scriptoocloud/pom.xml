@@ -27,6 +27,10 @@
 		<testPathValue></testPathValue>
 
 		<log.level>info</log.level>
+		
+		<docker.engine.host></docker.engine.host>
+		<docker.tls></docker.tls>
+		<docker.dockerfile.path></docker.dockerfile.path>
 
 		<tomcat.deploy.path></tomcat.deploy.path>
 		<tomcat.app.name>scriptoocloud</tomcat.app.name>
@@ -236,6 +240,20 @@
 			<artifactId>javax.servlet-api</artifactId>
 			<version>3.1.0</version>
 			<scope>provided</scope>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.github.docker-java/docker-java -->
+		<dependency>
+			<groupId>com.github.docker-java</groupId>
+			<artifactId>docker-java</artifactId>
+			<version>3.2.5</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.github.docker-java/docker-java-transport-httpclient5 -->
+		<dependency>
+			<groupId>com.github.docker-java</groupId>
+			<artifactId>docker-java-transport-httpclient5</artifactId>
+			<version>3.2.5</version>
 		</dependency>
 
 		<dependency>
