@@ -1,6 +1,8 @@
 package edu.asu.diging.scriptoocloud.core.service.impl;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -42,6 +44,20 @@ class JgitServiceImpl implements JgitService {
             fileSystemService.deleteDirectoryOrFile(new File(localRepoFolderName));
             throw new InvalidGitUrlException(e);
         }
+        
+        //Place a tar of the repository inside the root for docker
+        try {
+            Git git = Git.open(new File(localRepoFolderName));
+            FileOutputStream out = new FileOutputStream("docker.tar");
+            Repository db = git.getRepository();
+            git.archive().setTree(db.resolve("HEAD")).setOutputStream(out).call();
+        } catch (IOException e) {
+            fileSystemService.deleteDirectoryOrFile(new File(localRepoFolderName));
+            throw new InvalidGitUrlException(e);
+        } catch (GitAPIException e) {
+            fileSystemService.deleteDirectoryOrFile(new File(localRepoFolderName));
+            throw new InvalidGitUrlException(e);
+        }
+        
     }
-
 }
