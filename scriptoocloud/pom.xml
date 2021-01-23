@@ -23,6 +23,9 @@
 		<db.user>db-user</db.user>
 		<db.password>db-password</db.password>
 
+		<git.repositories.path></git.repositories.path>
+		<testPathValue></testPathValue>
+
 		<log.level>info</log.level>
 
 		<tomcat.deploy.path></tomcat.deploy.path>
@@ -86,6 +89,13 @@
 		</dependency>
 
 		<!-- Spring Security -->
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-test -->
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-test</artifactId>
+		    <version>${spring-security-version}</version>
+		    <scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
@@ -228,6 +238,11 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.eclipse.jgit</groupId>
+			<artifactId>org.eclipse.jgit</artifactId>
+			<version>3.5.0.201409260305-r</version>
+		</dependency>
 
 	</dependencies>
 
@@ -242,8 +257,19 @@
 					<exclude>**/*.ttf</exclude>
 					<exclude>**/*.woff2</exclude>
 				</excludes>
-			</resource>
+			</resource>	
 		</resources>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<filtering>true</filtering>
+				<excludes>
+					<exclude>**/*.woff</exclude>
+					<exclude>**/*.ttf</exclude>
+					<exclude>**/*.woff2</exclude>
+				</excludes>
+			</testResource>		
+		</testResources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

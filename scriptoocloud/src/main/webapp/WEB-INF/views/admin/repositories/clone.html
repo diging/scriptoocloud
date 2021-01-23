@@ -1,0 +1,30 @@
+<html layout:decorate="~{layouts/main}">
+  <head>
+    <title>Authority Matcher</title>
+  </head>
+  <body>
+   <div layout:fragment="content">
+      <div class="jumbotron col-md-12">
+
+	   <h1>Clone a Remote Repository</h1>
+        <div class="text-success" th:text = "${param.formResponse}"></div> 
+        <div class="text-danger" th:text = "${formResponseFailure}"></div> 
+        
+        <form action="#" id = "repoForm" th:action="@{/admin/repositories/clone}" method="POST" th:object="${clone}">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+            
+            <p class="text-danger" id = "errorWindow"></p>
+            
+            <label>URL:</label>
+            <input path="url" th:field="*{url}" class="form-control input-sm"></input>
+           
+            <p class="text-danger" th:errors ="*{url}"></p>
+        
+            <div style="padding-top: 20px;">
+            </div>
+	        <button class="btn btn-sm btn-primary pull-right">Clone</button>
+        </form>               
+      </div>
+   </div>
+  </body>
+</html>
