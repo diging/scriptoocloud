@@ -18,6 +18,7 @@ import edu.asu.diging.scriptoocloud.config.SimpleUsersConfig;
 import edu.asu.diging.scriptoocloud.core.model.Project;
 import edu.asu.diging.scriptoocloud.core.model.impl.ProjectImpl;
 import edu.asu.diging.scriptoocloud.core.service.ProjectManager;
+import edu.asu.diging.scriptoocloud.core.service.impl.nullIDException;
 
 
 @Controller
@@ -34,8 +35,13 @@ public class RemoveProjectController {
     @RequestMapping(value = "/auth/projects/remove/{id}", method=RequestMethod.POST)
     public String post(@PathVariable("id") int id,Model model) {
         
-        projectManager.deleteProject(id); 
+    	try {
+        	projectManager.deleteProject(id); 
+        	return "redirect:/";
+        }catch (nullIDException err) {
+        	model.addAttribute("deletionFailure","ID is NULL");
+        	return "redirect:/";
+        }
       
-        return "redirect:/";
     }
 }
