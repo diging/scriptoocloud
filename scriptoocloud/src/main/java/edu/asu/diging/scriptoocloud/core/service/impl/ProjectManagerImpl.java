@@ -3,6 +3,7 @@ package edu.asu.diging.scriptoocloud.core.service.impl;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.NonUniqueResultException;
 import javax.transaction.Transactional;
@@ -47,14 +48,24 @@ public class ProjectManagerImpl implements ProjectManager {
     public void deleteProject(long id) {
    
         try {
-        	Project project = projectRepo.findById(id);
-        	projectRepo.delete((ProjectImpl)project);
-        } catch (IllegalArgumentException e) {
+        	// long is a primitive data type, so we must convert to an object data type Long to check for null. 
+        	Long checkId = id;
+        	if(checkId == null) {
+        		throw new nullIDException("Project does not exist.");
+        	} else {
+        		projectRepo.deleteById(id);
+        	}
+        } catch (nullIDException err) {
         	logger.error("Project does not exist.");
         }
     }
     
-    /* (non-Javadoc)
+    private Exception deleteNullIdException() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+/* (non-Javadoc)
     * 
     */
    @Override
