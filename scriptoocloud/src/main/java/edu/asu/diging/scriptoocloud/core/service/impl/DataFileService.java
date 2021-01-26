@@ -1,20 +1,17 @@
 package edu.asu.diging.scriptoocloud.core.service.impl;
 
 import java.time.OffsetDateTime;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import edu.asu.diging.scriptoocloud.core.data.DataFileRepository;
 import edu.asu.diging.scriptoocloud.core.data.DatasetRepository;
 import edu.asu.diging.scriptoocloud.core.exceptions.DataFileStorageException;
+import edu.asu.diging.scriptoocloud.core.exceptions.FileSystemStorageException;
 import edu.asu.diging.scriptoocloud.core.model.impl.DataFile;
 import edu.asu.diging.scriptoocloud.core.model.impl.Dataset;
 import edu.asu.diging.scriptoocloud.core.service.IFileSystemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import edu.asu.diging.scriptoocloud.core.service.IDataFileService;
@@ -54,10 +51,10 @@ public class DataFileService implements IDataFileService {
      * @param type      The file type
      */
     @Override
-    public void createFile(byte[] bytes, String datasetId, String username, String filename, String type) {
+    public void createFile(byte[] bytes, String datasetId, String username, String filename, String type) throws DataFileStorageException {
         try {
             fileSystemService.createFileInDirectory(username, datasetId, filename, bytes);
-        } catch (DataFileStorageException e) {
+        } catch (FileSystemStorageException e) {
             throw new DataFileStorageException("File could not be saved in the file system", e);
         }
 
@@ -72,10 +69,9 @@ public class DataFileService implements IDataFileService {
             throw new DataFileStorageException("Dataset Id could not be parsed to a long", e);
         }
         if (dataset.isPresent()) {
-            dataset.get().addFile(newFile);
             newFile.setDataset(dataset.get());
+            dataset.get().addFile(dataFileRepository.save(newFile));
             datasetRepository.save(dataset.get());
-            dataFileRepository.save(newFile);
         } else {
             throw new DataFileStorageException("Dataset not found");
         }
@@ -84,26 +80,12 @@ public class DataFileService implements IDataFileService {
     /**
      * Finds and returns a page of DataFiles
      *
-     * @param pageable  The Pageable to calculate page size and current page
+     * @param pageable  The Pageable to display only DataFiles for requested page
      * @param datasetId The Dataset id
      * @return The Page of DataFiles
      */
     @Override
-    public Page<DataFile> findPaginatedFiles(Pageable pageable, Long datasetId) {
-        int pageSize = pageable.getPageSize();
-        int currentPage = pageable.getPageNumber();
-        int startItem = currentPage * pageSize;
-
-        List<DataFile> files = dataFileRepository.findAllByDataset_Id(datasetId);
-
-        List<DataFile> list;
-
-        if (files.size() < startItem) {
-            list = Collections.emptyList();
-        } else {
-            int toIndex = Math.min(startItem + pageSize, files.size());
-            list = files.subList(startItem, toIndex);
-        }
-        return new PageImpl<>(list, PageRequest.of(currentPage, pageSize), files.size());
+    public Page<DataFile> findFiles(Pageable pageable, Long datasetId) {
+        return dataFileRepository.findAllByDatasetId(datasetId, pageable);
     }
 }

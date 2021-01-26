@@ -7,8 +7,6 @@ import edu.asu.diging.scriptoocloud.core.model.impl.Dataset;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
@@ -16,7 +14,6 @@ import java.util.Optional;
 
 @Component
 public class CustomPermissionEvaluator implements PermissionEvaluator {
-    private static final GrantedAuthority ADMIN_AUTHORITY = new SimpleGrantedAuthority("ROLE_ADMIN");
 
     @Autowired
     private DatasetRepository datasetRepository;
@@ -34,24 +31,21 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
         if ((auth == null) || (targetType == null) || !(permission instanceof String)) {
             return false;
         }
-        if (targetType.equals("Dataset")) {
+        if (targetType.equals(edu.asu.diging.scriptoocloud.core.model.impl.Dataset.class.getSimpleName())) {
             Optional<Dataset> dataset = datasetRepository.findById((Long) targetId);
             if (dataset.isPresent()) {
-                // return true if Dataset owner is making the request or if user making request is admin
-                return dataset.get().getUsername().equals(auth.getName()) || isAdmin(auth);
+                // return true if Dataset owner is making the request
+                return dataset.get().getUsername().equals(auth.getName());
             }
         }
-        if (targetType.equals("DataFile")) {
+        if (targetType.equals(edu.asu.diging.scriptoocloud.core.model.impl.DataFile.class.getSimpleName())) {
             Optional<DataFile> dataFile = dataFileRepository.findById((Long) targetId);
             if (dataFile.isPresent()) {
-                // return true if DataFile owner is making the request or if user making request is admin
-                return dataFile.get().getOwner().equals(auth.getName()) || isAdmin(auth);
+                // return true if DataFile owner is making the request
+                return dataFile.get().getOwner().equals(auth.getName());
             }
         }
         return false;
     }
 
-    private boolean isAdmin(Authentication authentication) {
-        return authentication.getAuthorities().contains(ADMIN_AUTHORITY);
-    }
 }

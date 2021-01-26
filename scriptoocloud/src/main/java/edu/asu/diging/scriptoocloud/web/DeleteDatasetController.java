@@ -3,6 +3,7 @@ package edu.asu.diging.scriptoocloud.web;
 import edu.asu.diging.scriptoocloud.core.exceptions.DatasetStorageException;
 import edu.asu.diging.scriptoocloud.core.service.IDatasetService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,13 +23,14 @@ public class DeleteDatasetController {
     }
 
     @RequestMapping(value = "datasets/{id}/delete", method = RequestMethod.POST)
-    public String delete(@PathVariable("id") String datasetId,
+    @PreAuthorize("hasPermission(#datasetId, 'Dataset', 'delete')")
+    public String delete(@PathVariable("id") Long datasetId,
                          RedirectAttributes redirectAttributes,
                          Model model,
                          Principal principal) {
         String username = principal.getName();
         try {
-            iDatasetService.deleteDataset(Long.parseLong(datasetId), username);
+            iDatasetService.deleteDataset(datasetId, username);
         } catch (DatasetStorageException e) {
             model.addAttribute("ErrorMessage", "Error: Could not delete Dataset");
             return "redirect:/datasets/list";

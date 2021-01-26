@@ -9,6 +9,7 @@ import edu.asu.diging.simpleusers.core.service.IUserManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -35,6 +36,7 @@ public class EditDatasetController {
     }
 
     @RequestMapping(value = "datasets/{id}/edit", method = RequestMethod.POST)
+    @PreAuthorize("hasPermission(#datasetId, 'Dataset', 'edit')")
     public String edit(@PathVariable("id") Long datasetId,
                        @Valid @ModelAttribute("datasetEditForm") DatasetEditForm datasetEditForm,
                        BindingResult result,
@@ -50,7 +52,7 @@ public class EditDatasetController {
         if (result.hasErrors()) {
             String username = principal.getName();
             IUser user = userManager.findByUsername(username);
-            Page<Dataset> dbDatasets = iDatasetService.findPaginatedDatasets(PageRequest.of(currentPage - 1, pageSize), user);
+            Page<Dataset> dbDatasets = iDatasetService.findDatasets(PageRequest.of(currentPage - 1, pageSize), user);
             model.addAttribute("dbDatasets", dbDatasets);
             int totalPages = dbDatasets.getTotalPages();
             if (totalPages > 0) {

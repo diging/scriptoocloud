@@ -7,6 +7,9 @@ import java.util.ArrayList;
 
 import javax.annotation.PostConstruct;
 
+import edu.asu.diging.scriptoocloud.core.exceptions.DataFileStorageException;
+import edu.asu.diging.scriptoocloud.core.exceptions.DatasetStorageException;
+import edu.asu.diging.scriptoocloud.core.exceptions.FileSystemStorageException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -66,7 +69,7 @@ public class GitRepositoryService implements GitRepositoryManager {
     * @param   requester    username in current session that made the request
     */
     @Override
-    public void cloneRepository(String gitUrl, String requester) throws InvalidGitUrlException, MalformedURLException {
+    public void cloneRepository(String gitUrl, String requester) throws InvalidGitUrlException, MalformedURLException, FileSystemStorageException {
         String folderName = urlFormatter.urlToFolderName(gitUrl);
 
         ZonedDateTime creationDate = ZonedDateTime.now();       
@@ -106,7 +109,7 @@ public class GitRepositoryService implements GitRepositoryManager {
     *     
     */
     @Override
-    public void deleteRepository(Long id) {
+    public void deleteRepository(Long id) throws FileSystemStorageException {
         GitRepositoryImpl gitRepository = gitRepositoryJpa.findById(id).get();
         gitRepositoryJpa.deleteById(gitRepository.getId());
         File file = new File(path + gitRepository.getFolderName());

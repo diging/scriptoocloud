@@ -2,6 +2,7 @@ package edu.asu.diging.scriptoocloud.core.service.impl;
 
 import java.io.File;
 
+import edu.asu.diging.scriptoocloud.core.exceptions.FileSystemStorageException;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.JGitInternalException;
@@ -35,7 +36,7 @@ class JgitServiceImpl implements JgitService {
      * @throws  JGitInternalException       JGit command execution failure at low level                                       
     */
     @Override
-    public void clone(String localRepoFolderName, String remoteGitRepoUrl) throws InvalidGitUrlException, JGitInternalException {
+    public void clone(String localRepoFolderName, String remoteGitRepoUrl) throws InvalidGitUrlException, JGitInternalException, FileSystemStorageException {
         try {
             Git.cloneRepository().setURI(remoteGitRepoUrl).setDirectory(new File(localRepoFolderName)).call().close();
         } catch(GitAPIException e) {

@@ -21,10 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.validation.Valid;
 
 import java.security.Principal;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Controller
 @PropertySource("classpath:/config.properties")
@@ -42,29 +39,6 @@ public class AddDatasetController {
         this.userManager = userManager;
     }
 
-    @RequestMapping(value = "datasets/list", method = RequestMethod.GET)
-    public String get(Model model,
-                      @RequestParam("page") Optional<Integer> page,
-                      @RequestParam("size") Optional<Integer> size,
-                      Principal principal) {
-        int currentPage = page.orElse(1);
-        int pageSize = size.orElse(Integer.parseInt(paginationSize));
-        String username = principal.getName();
-        model.addAttribute("dataset", new DatasetForm());
-        model.addAttribute("datasetEditForm", new DatasetEditForm());
-        IUser user = userManager.findByUsername(username);
-        Page<Dataset> dbDatasets = iDatasetService.findPaginatedDatasets(PageRequest.of(currentPage - 1, pageSize),user);
-        model.addAttribute("dbDatasets", dbDatasets);
-        int totalPages = dbDatasets.getTotalPages();
-        if (totalPages > 0) {
-            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
-                    .boxed()
-                    .collect(Collectors.toList());
-            model.addAttribute("pageNumbers", pageNumbers);
-        }
-        return "datasets/list";
-    }
-
     @RequestMapping(value = "datasets/add", method = RequestMethod.POST)
     public String post(@Valid @ModelAttribute("dataset") DatasetForm datasetForm,
                        BindingResult result,
@@ -74,12 +48,12 @@ public class AddDatasetController {
                        @RequestParam("size") Optional<Integer> size,
                        Principal principal) {
         int currentPage = page.orElse(1);
-        int pageSize = size.orElse(5);
+        int pageSize = size.orElse(Integer.parseInt(paginationSize));
         String username = principal.getName();
         IUser user = userManager.findByUsername(username);
         datasetForm.setUsername(username);
         if (result.hasErrors()) {
-            Page<Dataset> dbDatasets = iDatasetService.findPaginatedDatasets(PageRequest.of(currentPage - 1, pageSize),user);
+            Page<Dataset> dbDatasets = iDatasetService.findDatasets(PageRequest.of(currentPage - 1, pageSize),user);
             model.addAttribute("dbDatasets", dbDatasets);
             model.addAttribute("dataset", datasetForm);
             model.addAttribute("datasetEditForm", new DatasetEditForm());
@@ -88,7 +62,7 @@ public class AddDatasetController {
         try {
             iDatasetService.createDataset(datasetForm.getName(), user);
         } catch (DatasetStorageException e) {
-            Page<Dataset> dbDatasets = iDatasetService.findPaginatedDatasets(PageRequest.of(currentPage - 1, pageSize),user);
+            Page<Dataset> dbDatasets = iDatasetService.findDatasets(PageRequest.of(currentPage - 1, pageSize),user);
             model.addAttribute("dbDatasets", dbDatasets);
             model.addAttribute("dataset", datasetForm);
             model.addAttribute("datasetEditForm", new DatasetEditForm());

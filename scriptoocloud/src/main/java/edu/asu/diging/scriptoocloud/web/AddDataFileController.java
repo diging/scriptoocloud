@@ -1,5 +1,6 @@
 package edu.asu.diging.scriptoocloud.web;
 
+import edu.asu.diging.scriptoocloud.core.exceptions.DataFileStorageException;
 import edu.asu.diging.scriptoocloud.core.model.impl.DataFile;
 import edu.asu.diging.scriptoocloud.core.service.IDataFileService;
 import edu.asu.diging.scriptoocloud.core.service.IDatasetService;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,7 +44,9 @@ public class AddDataFileController {
     }
 
     @RequestMapping(value = "datasets/{id}/upload", method = RequestMethod.POST)
-    public String uploadFile(@PathVariable("id") String datasetId,
+    // Make sure user owns Dataset in which files are uploaded
+    @PreAuthorize("hasPermission(#datasetId, 'Dataset', 'edit')")
+    public String uploadFile(@PathVariable("id") Long datasetId,
                              @RequestParam("file") MultipartFile multipartFile,
                              RedirectAttributes redirectAttributes,
                              Principal principal,
@@ -55,8 +59,8 @@ public class AddDataFileController {
         String username = principal.getName();
         if (multipartFile.isEmpty()) {
             model.addAttribute("noFileMessage", "Please Choose a File");
-            model.addAttribute("dataset", datasetService.findById(Long.parseLong(datasetId)));
-            Page<DataFile> filesPage = dataFileService.findPaginatedFiles(PageRequest.of(currentPage - 1, pageSize), Long.parseLong(datasetId));
+            model.addAttribute("dataset", datasetService.findById(datasetId));
+            Page<DataFile> filesPage = dataFileService.findFiles(PageRequest.of(currentPage - 1, pageSize), datasetId);
             model.addAttribute("filesPage", filesPage);
             int totalPages = filesPage.getTotalPages();
             if (totalPages > 0) {
@@ -69,11 +73,13 @@ public class AddDataFileController {
         }
         try {
             byte[] bytes = multipartFile.getBytes();
-            dataFileService.createFile(bytes, datasetId, username,
+            dataFileService.createFile(bytes, Long.toString(datasetId), username,
                     multipartFile.getOriginalFilename(), multipartFile.getContentType());
             redirectAttributes.addFlashAttribute("successMessage", "File Successfully Uploaded");
         } catch (IOException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Error: File could not be Uploaded");
+            redirectAttributes.addFlashAttribute("errorMessage", "There was an error reading the file");
+        } catch (DataFileStorageException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "There was an error saving the file");
         }
         return "redirect:/datasets/{id}";
     }

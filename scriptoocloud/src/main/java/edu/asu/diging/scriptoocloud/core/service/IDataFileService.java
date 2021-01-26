@@ -1,12 +1,13 @@
 package edu.asu.diging.scriptoocloud.core.service;
 
+import edu.asu.diging.scriptoocloud.core.exceptions.DataFileStorageException;
 import edu.asu.diging.scriptoocloud.core.model.impl.DataFile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface IDataFileService {
 
-    void createFile(byte[] bytes, String datasetId, String username, String filename, String type);
+    void createFile(byte[] bytes, String datasetId, String username, String filename, String type) throws DataFileStorageException;
 
-    Page<DataFile> findPaginatedFiles(Pageable pageable, Long datasetId);
+    Page<DataFile> findFiles(Pageable pageable, Long datasetId);
 }
