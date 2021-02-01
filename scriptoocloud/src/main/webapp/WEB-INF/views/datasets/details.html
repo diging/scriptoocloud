@@ -60,7 +60,7 @@
                         <div class="col-md-12">
                             <form method="POST"
                                   class="file-upload-form"
-                                  th:action="@{/datasets/{id}/upload(id=${dataset.id})}"
+                                  th:action="@{/datasets/{id}/upload?{name}={token}(id=${dataset.id}, name=${_csrf.parameterName}, token=${_csrf.token})}"
                                   enctype="multipart/form-data">
                                 <input type="file" name="file"/>
                                 <input type="hidden" name="fileUploadDatasetId"

@@ -28,7 +28,7 @@ import java.util.Optional;
 public class AddDatasetController {
 
     @Value("${pageSize}")
-    private String paginationSize;
+    private int paginationSize;
 
     private final IDatasetService iDatasetService;
     private final IUserManager userManager;
@@ -48,12 +48,12 @@ public class AddDatasetController {
                        @RequestParam("size") Optional<Integer> size,
                        Principal principal) {
         int currentPage = page.orElse(1);
-        int pageSize = size.orElse(Integer.parseInt(paginationSize));
+        int pageSize = size.orElse(paginationSize);
         String username = principal.getName();
         IUser user = userManager.findByUsername(username);
         datasetForm.setUsername(username);
         if (result.hasErrors()) {
-            Page<Dataset> dbDatasets = iDatasetService.findDatasets(PageRequest.of(currentPage - 1, pageSize),user);
+            Page<Dataset> dbDatasets = iDatasetService.findDatasets(PageRequest.of(currentPage - 1, pageSize), user);
             model.addAttribute("dbDatasets", dbDatasets);
             model.addAttribute("dataset", datasetForm);
             model.addAttribute("datasetEditForm", new DatasetEditForm());
@@ -62,7 +62,7 @@ public class AddDatasetController {
         try {
             iDatasetService.createDataset(datasetForm.getName(), user);
         } catch (DatasetStorageException e) {
-            Page<Dataset> dbDatasets = iDatasetService.findDatasets(PageRequest.of(currentPage - 1, pageSize),user);
+            Page<Dataset> dbDatasets = iDatasetService.findDatasets(PageRequest.of(currentPage - 1, pageSize), user);
             model.addAttribute("dbDatasets", dbDatasets);
             model.addAttribute("dataset", datasetForm);
             model.addAttribute("datasetEditForm", new DatasetEditForm());

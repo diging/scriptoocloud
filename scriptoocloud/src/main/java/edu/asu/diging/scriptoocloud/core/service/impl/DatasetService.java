@@ -95,10 +95,10 @@ public class DatasetService implements IDatasetService {
         // Delete Dataset Directories and files from the filesystem
         try {
             fileSystemService.deleteDatasetDirectories(id, username);
-        } catch (SecurityException e) {
-            throw new DatasetStorageException("Read access to directory was denied", e);
         } catch (FileSystemStorageException e) {
             throw new DatasetStorageException("An invalid path prevented Dataset deletion", e);
+        } catch (SecurityException e) {
+            throw new DatasetStorageException("Read access to directory was denied", e);
         }
         // Then delete Dataset and its files from the database
         Optional<Dataset> dataset = datasetRepository.findById(id);
@@ -149,8 +149,8 @@ public class DatasetService implements IDatasetService {
      * @param datasetId The primary key of the Dataset
      * @param fileId    The primary key of the DataFile
      * @return boolean indicating success of deleting file
-     * @throws DatasetStorageException Exception detailing errors with the file and file system.
-     * @throws DatasetNotFoundException Exception if Dataset not found in the database.
+     * @throws DatasetStorageException   Exception detailing errors with the file and file system.
+     * @throws DatasetNotFoundException  Exception if Dataset not found in the database.
      * @throws DataFileNotFoundException Exception if DataFile not found in the database.
      */
     @Override

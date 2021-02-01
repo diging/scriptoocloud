@@ -45,26 +45,11 @@
     </filter-mapping>
 
     <!-- spring security -->
-
-    <!-- Added for file upload -->
-    <filter>
-        <filter-name>MultipartFilter</filter-name>
-        <filter-class>org.springframework.web.multipart.support.MultipartFilter</filter-class>
-    </filter>
-    <!-- End -->
-
     <filter>
         <filter-name>springSecurityFilterChain</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy
         </filter-class>
     </filter>
-
-    <!-- Added for file upload -->
-    <filter-mapping>
-        <filter-name>MultipartFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-    <!-- End -->
 
     <filter-mapping>
         <filter-name>springSecurityFilterChain</filter-name>
@@ -89,14 +74,6 @@
             <param-value>edu.asu.diging.scriptoocloud.config.MvcConfig</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
-
-        <!-- Added to support file uploads -->
-        <multipart-config>
-            <location>/tmp</location>
-            <max-file-size>26214400</max-file-size>
-            <max-request-size>31457280</max-request-size>
-            <file-size-threshold>0</file-size-threshold>
-        </multipart-config>
     </servlet>
 
     <servlet-mapping>

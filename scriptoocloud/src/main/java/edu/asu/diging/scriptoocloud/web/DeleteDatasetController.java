@@ -34,9 +34,6 @@ public class DeleteDatasetController {
         } catch (DatasetStorageException e) {
             model.addAttribute("ErrorMessage", "Error: Could not delete Dataset");
             return "redirect:/datasets/list";
-        } catch (NumberFormatException e) {
-            model.addAttribute("ErrorMessage", "Error: Dataset index not found");
-            return "redirect:/datasets/list";
         }
         redirectAttributes.addFlashAttribute("successMessage", "Dataset successfully deleted");
         return "redirect:/datasets/list";

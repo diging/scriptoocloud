@@ -7,6 +7,7 @@ import edu.asu.diging.scriptoocloud.web.forms.DatasetForm;
 import edu.asu.diging.simpleusers.core.model.IUser;
 import edu.asu.diging.simpleusers.core.service.IUserManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,6 +26,9 @@ import java.util.stream.IntStream;
 
 @Controller
 public class EditDatasetController {
+
+    @Value("${pageSize}")
+    private int paginationSize;
 
     private final IDatasetService iDatasetService;
     private final IUserManager userManager;
@@ -45,10 +49,8 @@ public class EditDatasetController {
                        @RequestParam("page") Optional<Integer> page,
                        @RequestParam("size") Optional<Integer> size,
                        Principal principal) {
-        // Duplicate Dataset names are okay, but editing a Dataset to have the same name
-        // that it already has (same id, same name) is an error.
         int currentPage = page.orElse(1);
-        int pageSize = size.orElse(5);
+        int pageSize = size.orElse(paginationSize);
         if (result.hasErrors()) {
             String username = principal.getName();
             IUser user = userManager.findByUsername(username);

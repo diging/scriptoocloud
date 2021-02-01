@@ -56,15 +56,15 @@ public class FileSystemService implements IFileSystemService {
      * A helper method to create a Path given a username and dataset name.
      *
      * @param username  The username of the owner of the dataset.
-     * @param datasetId The id of the dataset.
+     * @param directory The directory name.
      * @return Returns a Path.
      * @throws InvalidPathException Exception if the path cannot be created.
      */
     @Override
-    public Path createPath(String username, String datasetId) throws InvalidPathException {
+    public Path createPath(String username, String directory) throws InvalidPathException {
         Path path;
-        if (datasetId != null) {
-            path = Paths.get(this.rootLocationString, username, datasetId);
+        if (directory != null) {
+            path = Paths.get(this.rootLocationString, username, directory);
         } else {
             path = Paths.get(this.rootLocationString, username);
         }

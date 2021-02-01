@@ -32,7 +32,7 @@ import java.util.stream.IntStream;
 public class AddDataFileController {
 
     @Value("${pageSize}")
-    private String paginationSize;
+    private int paginationSize;
 
     private final IDataFileService dataFileService;
     private final IDatasetService datasetService;
@@ -55,7 +55,7 @@ public class AddDataFileController {
                              @RequestParam("size") Optional<Integer> size) {
         redirectAttributes.addAttribute("id", datasetId);
         int currentPage = page.orElse(1);
-        int pageSize = size.orElse(Integer.parseInt(paginationSize));
+        int pageSize = size.orElse(paginationSize);
         String username = principal.getName();
         if (multipartFile.isEmpty()) {
             model.addAttribute("noFileMessage", "Please Choose a File");
