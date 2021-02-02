@@ -7,6 +7,12 @@ import edu.asu.diging.simpleusers.core.model.impl.SimpleUser;
 import javax.persistence.*;
 import java.util.Set;
 
+/**
+ * Entity class for user-supplied Datasets. Implements {@code IDataset}.
+ * {@code SimpleUser} has many {@code Dataset}s and a {@code Dataset} has many {@code DataFiles}.
+ *
+ * @author John Coronite
+ */
 @Entity
 public class Dataset implements IDataset {
 
@@ -20,46 +26,84 @@ public class Dataset implements IDataset {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "dataset", orphanRemoval = true)
     private Set<DataFile> files;
 
-    @Override
-    public Long getId() {
-        return id;
-    }
-
+    /**
+     * Set the {@code Dataset} id.
+     *
+     * @param id The {@code Dataset} id.
+     */
     @Override
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Get the {@code Dataset} id.
+     *
+     * @return The {@code Dataset} id.
+     */
     @Override
-    public String getName() {
-        return name;
+    public Long getId() {
+        return id;
     }
 
+    /**
+     * Set the {@code Dataset} name.
+     *
+     * @param name The {@code Dataset} name.
+     */
     @Override
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Get the {@code Dataset} name.
+     *
+     * @return The {@code Dataset} name.
+     */
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Set the {@code Dataset}'s associated {@code SimpleUser}.
+     *
+     * @param user The {@code SimpleUser} associated with the Dataset.
+     */
     @Override
     public void setUser(IUser user) {
         this.user = (SimpleUser) user;
     }
 
+    /**
+     * Get the {@code Dataset}'s associated {@code SimpleUser} username.
+     *
+     * @return The username of the {@code SimpleUser} associated with the {@code Dataset}.
+     */
     @Override
     public String getUsername() {
         return user.getUsername();
     }
 
+    /**
+     * Get the {@code Set} of {@code DataFile}s belonging to the {@code Dataset}.
+     *
+     * @return The {@code Set} of {@code DataFile}s belonging to the {@code Dataset}.
+     */
+    @Override
     public Set<DataFile> getFiles() {
         return this.files;
     }
 
-    public void addFile(DataFile dataFile) {
+    /**
+     * Add a {@code DataFile} to the {@code Dataset}.
+     *
+     * @param dataFile The {@code DataFile} to add.
+     */
+    @Override
+    public Long addFile(DataFile dataFile) {
         files.add(dataFile);
+        return dataFile.getId();
     }
-
-    public void removeFile(DataFile dataFile) {
-        files.remove(dataFile);
-    }
-
 }

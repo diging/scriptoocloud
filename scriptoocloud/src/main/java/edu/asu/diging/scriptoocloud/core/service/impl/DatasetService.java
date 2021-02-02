@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.nio.file.Paths;
+import java.util.Locale;
 import java.util.Optional;
 
 /**
@@ -28,6 +29,8 @@ import java.util.Optional;
 @Transactional
 @Service
 public class DatasetService implements IDatasetService {
+
+    private final String DIR_NAME = Dataset.class.getSimpleName().toLowerCase(Locale.ROOT);
 
     private final FileSystemService fileSystemService;
     private final DatasetRepository datasetRepository;
@@ -47,10 +50,11 @@ public class DatasetService implements IDatasetService {
      *
      * @param name The name of the Dataset.
      * @param user The IUser who owns the dataset
+     * @return The Dataset which was created.
      * @throws DatasetStorageException Exception thrown if dataset cannot be created.
      */
     @Override
-    public void createDataset(String name, IUser user) throws DatasetStorageException {
+    public Dataset createDataset(String name, IUser user) throws DatasetStorageException {
 
         Dataset dataset = new Dataset();
         dataset.setName(name);
@@ -59,11 +63,12 @@ public class DatasetService implements IDatasetService {
 
         // create directories on the file system (using Dataset id)
         try {
-            fileSystemService.addDatasetDirectories(String.valueOf(savedDataset.getId()),
-                    user.getUsername());
+            fileSystemService.addDirectories(user.getUsername(), DIR_NAME,
+                    String.valueOf(savedDataset.getId()));
         } catch (FileSystemStorageException e) {
             throw new DatasetStorageException("An IOException prevented the Dataset from being created", e);
         }
+        return savedDataset;
     }
 
     /**
@@ -92,20 +97,22 @@ public class DatasetService implements IDatasetService {
      */
     @Override
     public void deleteDataset(Long id, String username) throws DatasetStorageException {
-        // Delete Dataset Directories and files from the filesystem
-        try {
-            fileSystemService.deleteDatasetDirectories(id, username);
-        } catch (FileSystemStorageException e) {
-            throw new DatasetStorageException("An invalid path prevented Dataset deletion", e);
-        } catch (SecurityException e) {
-            throw new DatasetStorageException("Read access to directory was denied", e);
-        }
-        // Then delete Dataset and its files from the database
+
+        // Delete Dataset and its files from the database
         Optional<Dataset> dataset = datasetRepository.findById(id);
         if (dataset.isPresent()) {
             dataFileRepository.deleteAllByDatasetId(id);
         }
         datasetRepository.deleteById(id);
+
+        // Then delete Dataset Directories and files from the filesystem
+        try {
+            fileSystemService.deleteDirectories(username, DIR_NAME, Long.toString(id));
+        } catch (FileSystemStorageException e) {
+            throw new DatasetStorageException("An invalid path prevented Dataset deletion", e);
+        } catch (SecurityException e) {
+            throw new DatasetStorageException("Read access to directory was denied", e);
+        }
     }
 
     /**
@@ -177,7 +184,7 @@ public class DatasetService implements IDatasetService {
 
         try {
             // Removes file from file system
-            String pathString = fileSystemService.createPath(username,
+            String pathString = fileSystemService.createPath(username, DIR_NAME,
                     String.valueOf(datasetId)).toString();
             File fileToBeDeleted = Paths.get(pathString, fileName).toFile();
             return fileSystemService.deleteDirectoryOrFile(fileToBeDeleted);

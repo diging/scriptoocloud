@@ -11,7 +11,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface IDatasetService {
 
-    void createDataset(String name, IUser user) throws DatasetStorageException;
+    Dataset createDataset(String name, IUser user) throws DatasetStorageException;
 
     void editDataset(Long id, String newName);
 

@@ -4,6 +4,8 @@ import edu.asu.diging.scriptoocloud.core.exceptions.DataFileStorageException;
 import edu.asu.diging.scriptoocloud.core.model.impl.DataFile;
 import edu.asu.diging.scriptoocloud.core.service.IDataFileService;
 import edu.asu.diging.scriptoocloud.core.service.IDatasetService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +33,8 @@ import java.util.stream.IntStream;
 @PropertySource("classpath:/config.properties")
 public class AddDataFileController {
 
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     @Value("${pageSize}")
     private int paginationSize;
 
@@ -43,7 +47,7 @@ public class AddDataFileController {
         this.datasetService = datasetService;
     }
 
-    @RequestMapping(value = "datasets/{id}/upload", method = RequestMethod.POST)
+    @RequestMapping(value = "auth/datasets/{id}/upload", method = RequestMethod.POST)
     // Make sure user owns Dataset in which files are uploaded
     @PreAuthorize("hasPermission(#datasetId, 'Dataset', 'edit')")
     public String uploadFile(@PathVariable("id") Long datasetId,
@@ -60,7 +64,8 @@ public class AddDataFileController {
         if (multipartFile.isEmpty()) {
             model.addAttribute("noFileMessage", "Please Choose a File");
             model.addAttribute("dataset", datasetService.findById(datasetId));
-            Page<DataFile> filesPage = dataFileService.findFiles(PageRequest.of(currentPage - 1, pageSize), datasetId);
+            Page<DataFile> filesPage = dataFileService.findFiles(PageRequest.of(
+                    currentPage - 1, pageSize), datasetId);
             model.addAttribute("filesPage", filesPage);
             int totalPages = filesPage.getTotalPages();
             if (totalPages > 0) {
@@ -69,18 +74,24 @@ public class AddDataFileController {
                         .collect(Collectors.toList());
                 model.addAttribute("pageNumbers", pageNumbers);
             }
-            return "datasets/details";
+            return "auth/datasets/details";
         }
         try {
             byte[] bytes = multipartFile.getBytes();
-            dataFileService.createFile(bytes, Long.toString(datasetId), username,
+            DataFile newFile = dataFileService.createFile(bytes, Long.toString(datasetId), username,
                     multipartFile.getOriginalFilename(), multipartFile.getContentType());
-            redirectAttributes.addFlashAttribute("successMessage", "File Successfully Uploaded");
+            redirectAttributes.addFlashAttribute("successMessage",
+                    "File with name: " + newFile.getName() + " and id: " + newFile.getId() +
+                            " Successfully Uploaded");
         } catch (IOException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "There was an error reading the file");
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "There was an error reading the file");
+            logger.error("ERROR: Could not read DataFile", e);
         } catch (DataFileStorageException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "There was an error saving the file");
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "There was an error saving the file");
+            logger.error("ERROR: could not save DataFile", e);
         }
-        return "redirect:/datasets/{id}";
+        return "redirect:/auth/datasets/{id}";
     }
 }

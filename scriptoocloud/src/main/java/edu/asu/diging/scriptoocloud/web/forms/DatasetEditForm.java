@@ -5,7 +5,6 @@ import javax.validation.constraints.NotEmpty;
 public class DatasetEditForm {
 
     private Long id;
-    private int index;
     @NotEmpty(message = "Dataset name cannot be empty")
     private String newName;
 
@@ -15,14 +14,6 @@ public class DatasetEditForm {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
     }
 
     public String getNewName() {

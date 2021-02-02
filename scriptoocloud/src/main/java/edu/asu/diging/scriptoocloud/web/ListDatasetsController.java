@@ -39,7 +39,7 @@ public class ListDatasetsController {
         this.userManager = userManager;
     }
 
-    @RequestMapping(value = "datasets/list", method = RequestMethod.GET)
+    @RequestMapping(value = "auth/datasets/list", method = RequestMethod.GET)
     public String get(Model model,
                       @RequestParam("page") Optional<Integer> page,
                       @RequestParam("size") Optional<Integer> size,
@@ -59,6 +59,6 @@ public class ListDatasetsController {
                     .collect(Collectors.toList());
             model.addAttribute("pageNumbers", pageNumbers);
         }
-        return "datasets/list";
+        return "auth/datasets/list";
     }
 }

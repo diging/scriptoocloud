@@ -31,14 +31,14 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
         if ((auth == null) || (targetType == null) || !(permission instanceof String)) {
             return false;
         }
-        if (targetType.equals(edu.asu.diging.scriptoocloud.core.model.impl.Dataset.class.getSimpleName())) {
+        if (targetType.equals(Dataset.class.getSimpleName())) {
             Optional<Dataset> dataset = datasetRepository.findById((Long) targetId);
             if (dataset.isPresent()) {
                 // return true if Dataset owner is making the request
                 return dataset.get().getUsername().equals(auth.getName());
             }
         }
-        if (targetType.equals(edu.asu.diging.scriptoocloud.core.model.impl.DataFile.class.getSimpleName())) {
+        if (targetType.equals(DataFile.class.getSimpleName())) {
             Optional<DataFile> dataFile = dataFileRepository.findById((Long) targetId);
             if (dataFile.isPresent()) {
                 // return true if DataFile owner is making the request

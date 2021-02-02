@@ -40,7 +40,7 @@ public class DatasetController {
         this.iDataFileService = iDataFileService;
     }
 
-    @RequestMapping(value = "datasets/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "auth/datasets/{id}", method = RequestMethod.GET)
     @PreAuthorize("hasPermission(#id, 'Dataset', 'create')")
     public String get(@PathVariable("id") Long id,
                       Model model,
@@ -59,6 +59,6 @@ public class DatasetController {
                     .collect(Collectors.toList());
             model.addAttribute("pageNumbers", pageNumbers);
         }
-        return "datasets/details";
+        return "auth/datasets/details";
     }
 }

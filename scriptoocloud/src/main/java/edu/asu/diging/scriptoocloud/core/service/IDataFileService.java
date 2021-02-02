@@ -7,7 +7,8 @@ import org.springframework.data.domain.Pageable;
 
 public interface IDataFileService {
 
-    void createFile(byte[] bytes, String datasetId, String username, String filename, String type) throws DataFileStorageException;
+    DataFile createFile(byte[] bytes, String datasetId, String username, String filename,
+                        String type) throws DataFileStorageException;
 
     Page<DataFile> findFiles(Pageable pageable, Long datasetId);
 }

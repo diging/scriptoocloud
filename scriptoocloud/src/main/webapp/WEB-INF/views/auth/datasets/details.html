@@ -39,10 +39,10 @@
                                 <span class="file-name-span">
                                     <i class="fas fa-file"></i>
                                 </span>
-                                [[${file.name}]]
+                                [[${file.name} + ' (file id: ' + ${file.id} + ')']]
                                 <form method="POST"
                                       class="inline"
-                                      th:action="@{/datasets/{id}/files/{fileId}/delete(id=${dataset.id}, fileId=${file.id})}">
+                                      th:action="@{/auth/datasets/{id}/files/{fileId}/delete(id=${dataset.id}, fileId=${file.id})}">
                                     <input type="hidden" name="fileId"
                                            th:value="${file.id}"/>
                                     <input type="hidden" name="datasetId"
@@ -60,7 +60,7 @@
                         <div class="col-md-12">
                             <form method="POST"
                                   class="file-upload-form"
-                                  th:action="@{/datasets/{id}/upload?{name}={token}(id=${dataset.id}, name=${_csrf.parameterName}, token=${_csrf.token})}"
+                                  th:action="@{/auth/datasets/{id}/upload?{name}={token}(id=${dataset.id}, name=${_csrf.parameterName}, token=${_csrf.token})}"
                                   enctype="multipart/form-data">
                                 <input type="file" name="file"/>
                                 <input type="hidden" name="fileUploadDatasetId"
@@ -80,8 +80,8 @@
                         <ul th:if="${filesPage.totalPages > 0}" class="pagination">
                             <li class="page-item" th:each="pageNumber : ${pageNumbers}"
                                 th:class="${pageNumber == filesPage.number + 1} ? active">
-                                <a th:href="@{/datasets/{id}(size=${filesPage.size}, page=${pageNumber}, id=${dataset.id})}"
-                                   th:text=${pageNumber}></a>
+                                <a th:href="@{/auth/datasets/{id}(size=${filesPage.size}, page=${pageNumber}, id=${dataset.id})}"
+                                   th:text="${pageNumber}"></a>
                             </li>
                         </ul>
                     </div>

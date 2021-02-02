@@ -3,6 +3,8 @@ package edu.asu.diging.scriptoocloud.core.model;
 import edu.asu.diging.scriptoocloud.core.model.impl.DataFile;
 import edu.asu.diging.simpleusers.core.model.IUser;
 
+import java.util.Set;
+
 public interface IDataset {
 
     void setId(Long id);
@@ -17,8 +19,7 @@ public interface IDataset {
 
     String getUsername();
 
-    void addFile(DataFile dataFile);
+    Set<DataFile> getFiles();
 
-    void removeFile(DataFile dataFile);
-
+    Long addFile(DataFile dataFile);
 }

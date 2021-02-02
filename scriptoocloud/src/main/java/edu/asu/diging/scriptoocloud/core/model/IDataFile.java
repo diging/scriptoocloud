@@ -1,5 +1,9 @@
 package edu.asu.diging.scriptoocloud.core.model;
 
+import edu.asu.diging.scriptoocloud.core.model.impl.Dataset;
+
+import java.time.OffsetDateTime;
+
 public interface IDataFile {
 
     void setId(Long id);
@@ -14,8 +18,13 @@ public interface IDataFile {
 
     String getType();
 
-    void setDataset(IDataset dataset);
+    void setDataset(Dataset dataset);
 
     IDataset getDataset();
 
+    void setCreatedAt(OffsetDateTime createdAt);
+
+    OffsetDateTime getCreatedAt();
+
+    String getOwner();
 }

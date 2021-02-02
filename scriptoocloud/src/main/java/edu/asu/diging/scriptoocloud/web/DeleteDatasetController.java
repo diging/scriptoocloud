@@ -2,6 +2,8 @@ package edu.asu.diging.scriptoocloud.web;
 
 import edu.asu.diging.scriptoocloud.core.exceptions.DatasetStorageException;
 import edu.asu.diging.scriptoocloud.core.service.IDatasetService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -15,6 +17,9 @@ import java.security.Principal;
 
 @Controller
 public class DeleteDatasetController {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     private final IDatasetService iDatasetService;
 
     @Autowired
@@ -22,7 +27,7 @@ public class DeleteDatasetController {
         this.iDatasetService = iDatasetService;
     }
 
-    @RequestMapping(value = "datasets/{id}/delete", method = RequestMethod.POST)
+    @RequestMapping(value = "auth/datasets/{id}/delete", method = RequestMethod.POST)
     @PreAuthorize("hasPermission(#datasetId, 'Dataset', 'delete')")
     public String delete(@PathVariable("id") Long datasetId,
                          RedirectAttributes redirectAttributes,
@@ -33,9 +38,10 @@ public class DeleteDatasetController {
             iDatasetService.deleteDataset(datasetId, username);
         } catch (DatasetStorageException e) {
             model.addAttribute("ErrorMessage", "Error: Could not delete Dataset");
-            return "redirect:/datasets/list";
+            logger.error("ERROR: DataSet could not be deleted.", e);
+            return "redirect:/auth/datasets/list";
         }
         redirectAttributes.addFlashAttribute("successMessage", "Dataset successfully deleted");
-        return "redirect:/datasets/list";
+        return "redirect:/auth/datasets/list";
     }
 }

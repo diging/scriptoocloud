@@ -1,6 +1,7 @@
 package edu.asu.diging.scriptoocloud.core.service.impl;
 
 import java.time.OffsetDateTime;
+import java.util.Locale;
 import java.util.Optional;
 
 import edu.asu.diging.scriptoocloud.core.data.DataFileRepository;
@@ -51,18 +52,15 @@ public class DataFileService implements IDataFileService {
      * @param type      The file type
      */
     @Override
-    public void createFile(byte[] bytes, String datasetId, String username, String filename, String type) throws DataFileStorageException {
-        try {
-            fileSystemService.createFileInDirectory(username, datasetId, filename, bytes);
-        } catch (FileSystemStorageException e) {
-            throw new DataFileStorageException("File could not be saved in the file system", e);
-        }
+    public DataFile createFile(byte[] bytes, String datasetId, String username, String filename,
+                               String type) throws DataFileStorageException {
 
         DataFile newFile = new DataFile();
         newFile.setName(filename);
         newFile.setType(type);
         newFile.setCreatedAt(OffsetDateTime.now());
         Optional<Dataset> dataset;
+        Long dataFileId;
         try {
             dataset = datasetRepository.findById(Long.parseLong(datasetId));
         } catch (NumberFormatException e) {
@@ -70,11 +68,27 @@ public class DataFileService implements IDataFileService {
         }
         if (dataset.isPresent()) {
             newFile.setDataset(dataset.get());
-            dataset.get().addFile(dataFileRepository.save(newFile));
+            dataFileId = dataset.get().addFile(dataFileRepository.save(newFile));
             datasetRepository.save(dataset.get());
         } else {
             throw new DataFileStorageException("Dataset not found");
         }
+
+        // Save file with unique name (its id) and maintain the file type extension
+        String indexBasedFilename = dataFileId + filename.substring(filename.lastIndexOf("."));
+        try {
+            fileSystemService.createFileInDirectory(username,
+                    Dataset.class.getSimpleName().toLowerCase(Locale.ROOT), datasetId,
+                    indexBasedFilename, bytes);
+        } catch (FileSystemStorageException e) {
+            // Saving the DataFile in the filesystem failed.
+            // Make sure the file just saved in the database doesn't remain in the database
+            dataset.get().getFiles().remove(newFile);
+            dataFileRepository.deleteById(dataFileId);
+            datasetRepository.save(dataset.get());
+            throw new DataFileStorageException("File could not be saved in the file system", e);
+        }
+        return newFile;
     }
 
     /**

@@ -7,6 +7,8 @@ import edu.asu.diging.scriptoocloud.web.forms.DatasetEditForm;
 import edu.asu.diging.scriptoocloud.web.forms.DatasetForm;
 import edu.asu.diging.simpleusers.core.model.IUser;
 import edu.asu.diging.simpleusers.core.service.IUserManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -27,6 +29,8 @@ import java.util.Optional;
 @PropertySource("classpath:/config.properties")
 public class AddDatasetController {
 
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     @Value("${pageSize}")
     private int paginationSize;
 
@@ -39,7 +43,7 @@ public class AddDatasetController {
         this.userManager = userManager;
     }
 
-    @RequestMapping(value = "datasets/add", method = RequestMethod.POST)
+    @RequestMapping(value = "auth/datasets/add", method = RequestMethod.POST)
     public String post(@Valid @ModelAttribute("dataset") DatasetForm datasetForm,
                        BindingResult result,
                        RedirectAttributes redirectAttributes,
@@ -57,19 +61,20 @@ public class AddDatasetController {
             model.addAttribute("dbDatasets", dbDatasets);
             model.addAttribute("dataset", datasetForm);
             model.addAttribute("datasetEditForm", new DatasetEditForm());
-            return "datasets/list";
+            return "auth/datasets/list";
         }
         try {
-            iDatasetService.createDataset(datasetForm.getName(), user);
+            Dataset savedDataset = iDatasetService.createDataset(datasetForm.getName(), user);
+            redirectAttributes.addFlashAttribute("successMessage", "Dataset: " + savedDataset.getName() + " successfully created");
         } catch (DatasetStorageException e) {
             Page<Dataset> dbDatasets = iDatasetService.findDatasets(PageRequest.of(currentPage - 1, pageSize), user);
             model.addAttribute("dbDatasets", dbDatasets);
             model.addAttribute("dataset", datasetForm);
             model.addAttribute("datasetEditForm", new DatasetEditForm());
             model.addAttribute("errorMessage", "There was an error creating the dataset");
-            return "datasets/list";
+            logger.error("ERROR: could not create Dataset", e);
+            return "auth/datasets/list";
         }
-        redirectAttributes.addFlashAttribute("successMessage", "Dataset successfully created");
-        return "redirect:/datasets/list";
+        return "redirect:/auth/datasets/list";
     }
 }

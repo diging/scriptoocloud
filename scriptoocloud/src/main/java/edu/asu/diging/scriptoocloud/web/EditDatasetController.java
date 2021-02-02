@@ -39,7 +39,7 @@ public class EditDatasetController {
         this.userManager = userManager;
     }
 
-    @RequestMapping(value = "datasets/{id}/edit", method = RequestMethod.POST)
+    @RequestMapping(value = "auth/datasets/{id}/edit", method = RequestMethod.POST)
     @PreAuthorize("hasPermission(#datasetId, 'Dataset', 'edit')")
     public String edit(@PathVariable("id") Long datasetId,
                        @Valid @ModelAttribute("datasetEditForm") DatasetEditForm datasetEditForm,
@@ -54,7 +54,8 @@ public class EditDatasetController {
         if (result.hasErrors()) {
             String username = principal.getName();
             IUser user = userManager.findByUsername(username);
-            Page<Dataset> dbDatasets = iDatasetService.findDatasets(PageRequest.of(currentPage - 1, pageSize), user);
+            Page<Dataset> dbDatasets = iDatasetService.findDatasets(PageRequest.of(
+                    currentPage - 1, pageSize), user);
             model.addAttribute("dbDatasets", dbDatasets);
             int totalPages = dbDatasets.getTotalPages();
             if (totalPages > 0) {
@@ -65,12 +66,12 @@ public class EditDatasetController {
             }
             model.addAttribute("dataset", new DatasetForm());
             model.addAttribute("datasetEditForm", datasetEditForm);
-            model.addAttribute("errorIndex", datasetEditForm.getIndex());
-            return "datasets/list";
+            model.addAttribute("errorId", datasetEditForm.getId());
+            return "auth/datasets/list";
         } else {
             iDatasetService.editDataset(datasetId, datasetEditForm.getNewName());
         }
         redirectAttributes.addFlashAttribute("successMessage", "Dataset successfully edited");
-        return "redirect:/datasets/list";
+        return "redirect:/auth/datasets/list";
     }
 }

@@ -27,16 +27,17 @@ public class FileSystemService implements IFileSystemService {
     }
 
     /**
-     * Creates the dataset (and its required directories) on the filesystem.
+     * Creates directories on the filesystem.
      *
-     * @param id       The id of the dataset.
-     * @param username The username of the dataset.
+     * @param username The username to be used as a directory name.
+     * @param type     The directory type (e.g., Dataset, etc.)
+     * @param id       The id to be used as a directory name.
      * @throws FileSystemStorageException The exception thrown if the directory could not be created.
      */
     @Override
-    public void addDatasetDirectories(String id, String username) throws FileSystemStorageException {
+    public void addDirectories(String username, String type, String id) throws FileSystemStorageException {
         // First, the correct directory must be created
-        Path path = createPath(username, id);
+        Path path = createPath(username, type, id);
         File directory = path.toFile();
         // if the Path was created successfully, create the directory
         try {
@@ -53,35 +54,38 @@ public class FileSystemService implements IFileSystemService {
     }
 
     /**
-     * A helper method to create a Path given a username and dataset name.
+     * A helper method to create a Path given a username and unique id.
      *
-     * @param username  The username of the owner of the dataset.
-     * @param directory The directory name.
+     * @param username The username of the owner of the dataset.
+     * @param type     The directory type (e.g., Dataset, etc.)
+     * @param id       The id name.
      * @return Returns a Path.
      * @throws InvalidPathException Exception if the path cannot be created.
      */
     @Override
-    public Path createPath(String username, String directory) throws InvalidPathException {
+    public Path createPath(String username, String type, String id) throws InvalidPathException {
         Path path;
-        if (directory != null) {
-            path = Paths.get(this.rootLocationString, username, directory);
+        if (id != null) {
+            path = Paths.get(this.rootLocationString, username, type, id);
         } else {
-            path = Paths.get(this.rootLocationString, username);
+            path = Paths.get(this.rootLocationString, username, type);
         }
         return Paths.get(StringUtils.cleanPath(Objects.requireNonNull(path).toString()));
     }
 
     /**
-     * Deletes a dataset on the filesystem.
+     * Deletes a directory on the filesystem.
      *
-     * @param id The id of the dataset.
+     * @param username The name (primary key) of the user / owner of the Dataset
+     * @param type     The directory type (e.g., Dataset, etc.)
+     * @param id       The id of the type to which the file belongs.
      * @throws FileSystemStorageException throws an exception if the directory could not be deleted.
      */
     @Override
-    public void deleteDatasetDirectories(Long id, String username) throws FileSystemStorageException {
+    public void deleteDirectories(String username, String type, String id) throws FileSystemStorageException {
 
         try {
-            Path path = createPath(username, String.valueOf(id));
+            Path path = createPath(username, type, id);
             File directory = path.toFile();
             deleteDirectoryOrFile(directory);
         } catch (InvalidPathException e) {
@@ -123,20 +127,23 @@ public class FileSystemService implements IFileSystemService {
     }
 
     /**
-     * Stores the user-uploaded file on the file system.
+     * Stores the user-uploaded file on the file system in the form:
+     * [username]/[directory_type]/[directory_type_id]/[filename]
      *
-     * @param username  The name (primary key) of the user / owner of the Dataset to which
-     *                  the file belongs.
-     * @param datasetId The id of the Dataset to which the file belongs.
-     * @param filename  The name of the file to be stored.
+     * @param username The name (primary key) of the user / owner of the Dataset to which
+     *                 the file belongs.
+     * @param type     The directory type (e.g., Dataset, etc.)
+     * @param id       The id of the type to which the file belongs.
+     * @param filename The name of the file to be stored.
+     * @param bytes    The array of bytes making up the file.
      * @throws FileSystemStorageException If the file could not be stored on the file system.
      */
     @Override
-    public void createFileInDirectory(String username, String datasetId, String filename,
+    public void createFileInDirectory(String username, String type, String id, String filename,
                                       byte[] bytes) throws FileSystemStorageException {
 
         Path destinationFile = Paths.get(rootLocationString).resolve(
-                Paths.get(username, datasetId, filename))
+                Paths.get(username, type, id, filename))
                 .normalize().toAbsolutePath();
         try (InputStream inputStream = new ByteArrayInputStream(bytes)) {
             Files.copy(inputStream, destinationFile, StandardCopyOption.REPLACE_EXISTING);
