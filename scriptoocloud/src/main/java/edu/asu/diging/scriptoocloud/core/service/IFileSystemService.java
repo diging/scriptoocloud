@@ -4,7 +4,9 @@ import edu.asu.diging.scriptoocloud.core.exceptions.DataFileStorageException;
 import edu.asu.diging.scriptoocloud.core.exceptions.DatasetStorageException;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Optional;
 
 public interface IFileSystemService {
 
@@ -18,4 +20,5 @@ public interface IFileSystemService {
 
     void createFileInDirectory(String username, String datasetId, String filename,
                                byte[] bytes) throws DataFileStorageException;
+
 }

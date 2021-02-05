@@ -3,7 +3,13 @@ package edu.asu.diging.scriptoocloud.core.service.impl;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
+
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.JGitInternalException;
@@ -37,27 +43,14 @@ class JgitServiceImpl implements JgitService {
      * @throws  JGitInternalException       JGit command execution failure at low level                                       
     */
     @Override
-    public void clone(String localRepoFolderName, String remoteGitRepoUrl) throws InvalidGitUrlException, JGitInternalException {
+    public void clone(String localRepoFolderName, String remoteGitRepoUrl) throws InvalidGitUrlException, JGitInternalException, IOException {
         try {
             Git.cloneRepository().setURI(remoteGitRepoUrl).setDirectory(new File(localRepoFolderName)).call().close();
+            new TarWriter().writeDir(new File("C:/tester"));
         } catch(GitAPIException e) {
             fileSystemService.deleteDirectoryOrFile(new File(localRepoFolderName));
             throw new InvalidGitUrlException(e);
         }
-        
-        //Place a tar of the repository inside the root for docker
-        try {
-            Git git = Git.open(new File(localRepoFolderName));
-            FileOutputStream out = new FileOutputStream("docker.tar");
-            Repository db = git.getRepository();
-            git.archive().setTree(db.resolve("HEAD")).setOutputStream(out).call();
-        } catch (IOException e) {
-            fileSystemService.deleteDirectoryOrFile(new File(localRepoFolderName));
-            throw new InvalidGitUrlException(e);
-        } catch (GitAPIException e) {
-            fileSystemService.deleteDirectoryOrFile(new File(localRepoFolderName));
-            throw new InvalidGitUrlException(e);
-        }
-        
     }
+    
 }

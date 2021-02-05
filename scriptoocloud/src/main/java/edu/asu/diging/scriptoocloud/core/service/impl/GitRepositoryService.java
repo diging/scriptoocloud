@@ -1,12 +1,14 @@
 package edu.asu.diging.scriptoocloud.core.service.impl;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 
 import javax.annotation.PostConstruct;
 
+import org.eclipse.jgit.api.errors.JGitInternalException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -83,7 +85,18 @@ public class GitRepositoryService implements GitRepositoryManager {
         repositoryEntity.setCreationDate(creationDate);
         repositoryEntity.setFolderName(folderName);
   
-        jGitService.clone(path + folderName, gitUrl);
+        try {
+            jGitService.clone(path + folderName, gitUrl);
+        } catch (JGitInternalException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (InvalidGitUrlException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         gitRepositoryJpa.save(repositoryEntity);
     }
     
