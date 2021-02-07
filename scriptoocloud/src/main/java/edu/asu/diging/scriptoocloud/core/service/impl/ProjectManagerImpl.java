@@ -18,6 +18,7 @@ import edu.asu.diging.scriptoocloud.core.data.ProjectRepository;
 import edu.asu.diging.scriptoocloud.core.model.Project;
 import edu.asu.diging.scriptoocloud.core.model.impl.ProjectImpl;
 import edu.asu.diging.scriptoocloud.core.service.ProjectManager;
+import edu.asu.diging.simpleusers.core.model.IUser;
 
 @Transactional
 @Service
@@ -31,10 +32,11 @@ public class ProjectManagerImpl implements ProjectManager {
     /* (non-Javadoc)
      * @see edu.asu.diging.scriptoocloud.core.service.impl.ProjectManager#createProject(java.lang.String, java.lang.String)
      */
-    @Override
-    public Project createProject(String name, String description) {
+	@Override
+    public Project createProject(String name, String description, IUser user) {
         Project project = new ProjectImpl();
         project.setName(name);
+        project.setUser(user);
         project.setDescription(description);
         project.setCreationDate(ZonedDateTime.now());
         

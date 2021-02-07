@@ -2,6 +2,8 @@ package edu.asu.diging.scriptoocloud.core.model;
 
 import java.time.ZonedDateTime;
 
+import edu.asu.diging.simpleusers.core.model.IUser;
+
 public interface Project {
 
     long getId();
@@ -19,5 +21,9 @@ public interface Project {
     ZonedDateTime getCreationDate();
 
     void setCreationDate(ZonedDateTime creationDate);
+
+	void setUser(IUser user);
+
+	String getUsername();
 
 }

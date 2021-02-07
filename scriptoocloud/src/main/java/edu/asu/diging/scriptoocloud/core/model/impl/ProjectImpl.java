@@ -8,6 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import edu.asu.diging.scriptoocloud.core.model.Project;
+import edu.asu.diging.simpleusers.core.model.IUser;
+import edu.asu.diging.simpleusers.core.model.impl.SimpleUser;
 
 @Entity
 public class ProjectImpl implements Project {
@@ -19,6 +21,8 @@ public class ProjectImpl implements Project {
     private String name;
     private String description;
     private ZonedDateTime creationDate;
+    
+    private SimpleUser user;
     
     /* (non-Javadoc)
      * @see edu.asu.diging.scriptoocloud.core.model.impl.Project#getId()
@@ -75,6 +79,16 @@ public class ProjectImpl implements Project {
     @Override
     public void setCreationDate(ZonedDateTime creationDate) {
         this.creationDate = creationDate;
+    }
+    
+	@Override
+    public void setUser(IUser user) {
+    	this.user = (SimpleUser) user;
+    }
+	
+	@Override
+    public String getUsername() {
+    	return user.getUsername();
     }
     
     
