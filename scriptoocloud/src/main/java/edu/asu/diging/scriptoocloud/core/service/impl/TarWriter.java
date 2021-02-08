@@ -15,12 +15,12 @@ public class TarWriter {
     private FileOutputStream out;
     private TarArchiveOutputStream tOut;    
     
-    public TarWriter() throws IOException{        
-        out = new FileOutputStream("C:/mytar.tar");        
+    public TarWriter(String outPath) throws IOException{        
+        out = new FileOutputStream(outPath + ".tar");        
         tOut = new TarArchiveOutputStream(out);
     }
 
-    public void writeEntry(File file) throws IOException{
+    private void writeEntry(File file) throws IOException{
         Path sourcePath = FileSystems.getDefault().getPath(file.getPath());
         byte[] sourceBytes = Files.readAllBytes(sourcePath);
        
