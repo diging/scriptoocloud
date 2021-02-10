@@ -1,8 +1,10 @@
 package edu.asu.diging.scriptoocloud.core.service.impl;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,7 +17,12 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.JGitInternalException;
 import org.eclipse.jgit.lib.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import edu.asu.diging.scriptoocloud.core.exceptions.InvalidGitUrlException;
 import edu.asu.diging.scriptoocloud.core.service.JgitService;
@@ -32,6 +39,11 @@ class JgitServiceImpl implements JgitService {
 
     @Autowired
     private FileSystemService fileSystemService;
+    
+    @Autowired
+    private DockerService dockerService;
+    
+
 
     /*
      * Creates folder in file system and clones a remote git repository to it
@@ -47,10 +59,15 @@ class JgitServiceImpl implements JgitService {
         try {
             Git.cloneRepository().setURI(remoteGitRepoUrl).setDirectory(new File(localRepoFolderName)).call().close();
             new TarWriter(localRepoFolderName).writeDir(new File(localRepoFolderName));
+            dockerService.buildImage("");
+            //return imageId;
         } catch(GitAPIException e) {
             fileSystemService.deleteDirectoryOrFile(new File(localRepoFolderName));
             throw new InvalidGitUrlException(e);
-        }
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } 
     }
     
 }

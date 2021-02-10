@@ -24,7 +24,11 @@ public class TarWriter {
         Path sourcePath = FileSystems.getDefault().getPath(file.getPath());
         byte[] sourceBytes = Files.readAllBytes(sourcePath);
        
+       
+       /////need to remove parent
         TarArchiveEntry tarEntry = new TarArchiveEntry(file);
+       
+       
         tarEntry.setSize(sourceBytes.length);
        
         tOut.putArchiveEntry(tarEntry);
@@ -36,7 +40,6 @@ public class TarWriter {
         File[] fileTree = rootFile.listFiles();
         
         for( File file : fileTree ){
-            System.out.println(file.getName());
             if(file.isDirectory()){
                 writeDir(file);
                 continue;
