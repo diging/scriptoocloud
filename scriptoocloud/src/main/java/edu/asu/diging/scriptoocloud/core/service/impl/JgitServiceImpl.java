@@ -58,8 +58,9 @@ class JgitServiceImpl implements JgitService {
     public void clone(String localRepoFolderName, String remoteGitRepoUrl) throws InvalidGitUrlException, JGitInternalException, IOException {
         try {
             Git.cloneRepository().setURI(remoteGitRepoUrl).setDirectory(new File(localRepoFolderName)).call().close();
+           
             new TarWriter(localRepoFolderName).writeDir(new File(localRepoFolderName));
-            dockerService.buildImage("");
+            System.out.print(dockerService.buildImage(""));
             //return imageId;
         } catch(GitAPIException e) {
             fileSystemService.deleteDirectoryOrFile(new File(localRepoFolderName));
