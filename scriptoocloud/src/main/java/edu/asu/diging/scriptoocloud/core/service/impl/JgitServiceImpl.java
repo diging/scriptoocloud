@@ -8,7 +8,7 @@ import java.io.OutputStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
+import java.util.Optional;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
@@ -55,13 +55,12 @@ class JgitServiceImpl implements JgitService {
      * @throws  JGitInternalException       JGit command execution failure at low level                                       
     */
     @Override
-    public void clone(String localRepoFolderName, String remoteGitRepoUrl) throws InvalidGitUrlException, JGitInternalException, IOException {
+    public Optional<String> clone(String localRepoFolderName, String remoteGitRepoUrl) throws InvalidGitUrlException, JGitInternalException, IOException {
         try {
             Git.cloneRepository().setURI(remoteGitRepoUrl).setDirectory(new File(localRepoFolderName)).call().close();
-           
             new TarWriter(localRepoFolderName).writeDir(new File(localRepoFolderName));
-            System.out.print(dockerService.buildImage(""));
-            //return imageId;
+            String imageId = dockerService.buildImage(localRepoFolderName);
+            return Optional.of(imageId);
         } catch(GitAPIException e) {
             fileSystemService.deleteDirectoryOrFile(new File(localRepoFolderName));
             throw new InvalidGitUrlException(e);
@@ -69,6 +68,7 @@ class JgitServiceImpl implements JgitService {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } 
+        return null;
     }
     
 }

@@ -21,7 +21,6 @@ public class TarWriter {
         tOut = new TarArchiveOutputStream(out);
         tOut.setLongFileMode(TarArchiveOutputStream.LONGFILE_POSIX);
         len = outPath.length();
-                System.out.print(outPath +"[][]"+len);
     }
 
     private void writeEntry(File file) throws IOException{
@@ -33,11 +32,7 @@ public class TarWriter {
         String alteredPath = file.getPath();
 
         alteredPath = alteredPath.substring(len);
-        System.out.println("["+alteredPath+"["+file.getName());
-        
         TarArchiveEntry tarEntry = new TarArchiveEntry(file, alteredPath);
-       
-
         
         tarEntry.setSize(sourceBytes.length);
        

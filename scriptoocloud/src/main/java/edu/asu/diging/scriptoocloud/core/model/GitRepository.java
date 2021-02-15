@@ -24,4 +24,8 @@ public interface GitRepository {
 
     void setFolderName(String folderName);
 
+    String getImageId();
+
+    void setImageId(String imageId);
+
 }

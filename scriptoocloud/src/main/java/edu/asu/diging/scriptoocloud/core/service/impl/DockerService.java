@@ -22,7 +22,8 @@ public class DockerService extends DockerRestConnection {
     private String defaultDockerfilePath;
     
     public String buildImage(String dockerFileLocation) throws FileNotFoundException, InterruptedException{
-        File file = new File("C:/github_com_jormsby2_CloneTest.tar");
+        //File file = new File("C:/github_com_jormsby2_CloneTest.tar");
+        File file = new File(dockerFileLocation + ".tar");
         String response = dockerClient.buildImageCmd(new FileInputStream(file)).start().awaitImageId();
         return response;
     }

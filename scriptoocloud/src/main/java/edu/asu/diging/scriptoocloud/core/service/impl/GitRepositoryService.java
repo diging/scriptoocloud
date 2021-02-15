@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
@@ -85,8 +86,17 @@ public class GitRepositoryService implements GitRepositoryManager {
         repositoryEntity.setCreationDate(creationDate);
         repositoryEntity.setFolderName(folderName);
   
+        //need to remove current image if doing an update
+  
         try {
-            jGitService.clone(path + folderName, gitUrl);
+            
+            Optional<String> imageId = jGitService.clone(path + folderName, gitUrl);
+            
+            if(imageId.isPresent())
+              repositoryEntity.setImageId(imageId.get());
+            else
+              repositoryEntity.setImageId("no id");
+
         } catch (JGitInternalException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

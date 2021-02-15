@@ -19,6 +19,16 @@ public class GitRepositoryImpl implements GitRepository {
     private ZonedDateTime creationDate;
     private String requester;
     private String folderName;
+    private String imageId;
+    
+    @Override
+    public String getImageId() {
+        return imageId;
+    }
+    @Override
+    public void setImageId(String imageId) {
+        this.imageId = imageId;
+    }
     
     @Override
     public String getFolderName() {
