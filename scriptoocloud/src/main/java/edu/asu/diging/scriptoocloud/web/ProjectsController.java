@@ -36,7 +36,7 @@ public class ProjectsController {
     @RequestMapping("/auth/projects")
     public String listProjects(Model model) {
     	model.addAttribute("projects", projectManager.findAll() );
-        return "/auth/projects";
+    	return "/auth/projects";
     }
     
 }

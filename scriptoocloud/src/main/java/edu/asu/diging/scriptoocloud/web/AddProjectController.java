@@ -1,5 +1,7 @@
 package edu.asu.diging.scriptoocloud.web;
 
+import java.security.Principal;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,9 @@ import edu.asu.diging.scriptoocloud.config.SimpleUsersConfig;
 import edu.asu.diging.scriptoocloud.core.model.Project;
 import edu.asu.diging.scriptoocloud.core.model.impl.ProjectImpl;
 import edu.asu.diging.scriptoocloud.core.service.ProjectManager;
+import edu.asu.diging.simpleusers.core.model.IUser;
+import edu.asu.diging.simpleusers.core.model.impl.SimpleUser;
+import edu.asu.diging.simpleusers.core.service.IUserManager;
 
 
 @Controller
@@ -22,6 +27,13 @@ public class AddProjectController {
     
     @Autowired
     private ProjectManager projectManager;
+    
+    private final IUserManager userManager;
+
+    @Autowired
+    public AddProjectController(IUserManager userManager) {
+        this.userManager = userManager;
+    }
 
     @RequestMapping(value = "/auth/add", method=RequestMethod.GET)
     public String get(Model model) {
@@ -30,12 +42,15 @@ public class AddProjectController {
     }
     
     @RequestMapping(value = "/auth/add", method=RequestMethod.POST)
-    public String post(@Valid @ModelAttribute("project") ProjectImpl projectImpl, BindingResult result, Model model, RedirectAttributes redirectAttrs) {
+    public String post(@Valid @ModelAttribute("project") ProjectImpl projectImpl, BindingResult result, Model model, RedirectAttributes redirectAttrs, Principal principal) {
         if (result.hasErrors()) {
             model.addAttribute("project", projectImpl);
         }
         
-        Project project = projectManager.createProject(projectImpl.getName(), projectImpl.getDescription());
-        return "redirect:/";
+        String username = principal.getName();
+        IUser user = userManager.findByUsername(username);
+        
+        Project project = projectManager.createProject(projectImpl.getName(), projectImpl.getDescription(), user);
+        return "redirect:/auth/projects";
     }
 }
