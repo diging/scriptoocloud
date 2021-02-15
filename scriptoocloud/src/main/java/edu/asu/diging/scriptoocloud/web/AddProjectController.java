@@ -51,6 +51,6 @@ public class AddProjectController {
         IUser user = userManager.findByUsername(username);
         
         Project project = projectManager.createProject(projectImpl.getName(), projectImpl.getDescription(), user);
-        return "redirect:/";
+        return "redirect:/auth/projects";
     }
 }

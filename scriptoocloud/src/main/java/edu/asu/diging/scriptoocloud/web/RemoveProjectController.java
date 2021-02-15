@@ -37,10 +37,10 @@ public class RemoveProjectController {
         
     	try {
         	projectManager.deleteProject(id); 
-        	return "redirect:/";
+        	return "redirect:/auth/projects";
         }catch (nullIDException err) {
         	model.addAttribute("deletionFailure","ID is NULL");
-        	return "redirect:/";
+        	return "redirect:/auth/projects";
         }
       
     }
