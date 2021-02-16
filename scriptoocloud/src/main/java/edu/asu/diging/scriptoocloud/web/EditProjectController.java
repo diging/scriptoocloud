@@ -1,5 +1,7 @@
 package edu.asu.diging.scriptoocloud.web;
 
+import java.security.Principal;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +31,30 @@ public class EditProjectController {
     }
     
     @RequestMapping(value = "/auth/edit/{id}", method=RequestMethod.POST)
-    public String post(@PathVariable("id") int id,Model model) {
+    public String post(@Valid @ModelAttribute("project") ProjectImpl projectImpl, BindingResult result, Model model, RedirectAttributes redirectAttrs, Principal principal,@PathVariable("id") int id) {
+        if(result.hasErrors()) {
+        	model.addAttribute("project", new ProjectImpl());
+            return "/auth/edit/{id}";
+        }
         
-    	Project project = projectManager.getProject(id);
+        /*
+    	int projectID = projectManager.getProject(id);
+    	
+    	try {
+    		projectManager.updateProject(id, projectImpl.getName(), projectImpl.getDescription());
+    		return "redirect:/auth/projects";
+    	}finally {}*/
+    	
+    	/* 
+    	 * try {
+    	 * 	projectManager.update(projectID);
+    	 * }catch(null exception err){
+    	 * }
+    	 * 
+    	 * */
     	
     	
-        return "/auth/edit";
+    	 return "/auth/edit";
     }
 }
 

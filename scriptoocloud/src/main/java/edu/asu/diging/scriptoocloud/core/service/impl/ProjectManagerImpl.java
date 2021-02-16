@@ -46,11 +46,10 @@ public class ProjectManagerImpl implements ProjectManager {
     /* (non-Javadoc)
      * 
      */
-    @Override
-    public Project getProject(long id) {
-    	Project project = projectRepo.findById(id);
-        
-        return project;
+	@Override
+    public int getProject(int id) {
+    	Optional<ProjectImpl> project = projectRepo.findById((long) id);
+        return id;
     }
     
     /* (non-Javadoc)
@@ -87,5 +86,16 @@ public class ProjectManagerImpl implements ProjectManager {
         projects.forEach(e -> results.add((Project) e));
         return results;
     }
+
+@Override
+public void updateProject(int id,String name, String description) {
+	Project project = new ProjectImpl();
+    project.setId(id);
+	project.setName(name);
+    project.setDescription(description);
+    
+    //try
+	projectRepo.save((ProjectImpl)project);
+}
     
 }

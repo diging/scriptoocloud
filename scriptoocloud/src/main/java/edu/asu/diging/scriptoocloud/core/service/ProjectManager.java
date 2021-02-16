@@ -14,4 +14,8 @@ public interface ProjectManager {
 
     List<Project> findAll();
 
+	int getProject(int id);
+	
+	void updateProject(int id,String name, String description);
+
 }
