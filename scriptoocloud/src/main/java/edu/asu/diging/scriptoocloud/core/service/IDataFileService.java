@@ -6,8 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 /**
- * The interface associated with user-uploaded DataFiles.  The interface handles storing the
- * files on the file system (using the FileSystemService) and storing DataFile data in the database.
+ * The interface associated with user-uploaded DataFiles. Instances of this class create and
+ * retrieve DataFiles.
  */
 public interface IDataFileService {
 
