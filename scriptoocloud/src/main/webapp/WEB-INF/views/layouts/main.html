@@ -107,7 +107,7 @@
     </div>
 </header>
 
-<div sec:authorize="isAuthenticated()" id="user-navigation">
+<div sec:authorize="hasRole('USER')" id="user-navigation">
     <div class="container">
         <ul class="breadcrumb">
             <li class="notactive">

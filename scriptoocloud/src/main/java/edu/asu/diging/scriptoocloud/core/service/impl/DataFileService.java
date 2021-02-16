@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
  * files on the file system (using the FileSystemService) and storing DataFile data in the database.
  */
 
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 @Service
 public class DataFileService implements IDataFileService {
 
@@ -41,16 +41,6 @@ public class DataFileService implements IDataFileService {
         this.fileSystemService = fileSystemService;
     }
 
-    /**
-     * Creates a file on the filesystem and stores the DataFile
-     * in the database. A Dataset has many DataFiles and a DataFile belongs to one Dataset.
-     *
-     * @param bytes     The byte array representation of a MultipartFile
-     * @param datasetId The primary key of the Dataset as a String.
-     * @param username  The user / owner of the Dataset
-     * @param filename  The name of the file
-     * @param type      The file type
-     */
     @Override
     public DataFile createFile(byte[] bytes, String datasetId, String username, String filename,
                                String type) throws DataFileStorageException {
@@ -81,23 +71,11 @@ public class DataFileService implements IDataFileService {
                     Dataset.class.getSimpleName().toLowerCase(Locale.ROOT), datasetId,
                     indexBasedFilename, bytes);
         } catch (FileSystemStorageException e) {
-            // Saving the DataFile in the filesystem failed.
-            // Make sure the file just saved in the database doesn't remain in the database
-            dataset.get().getFiles().remove(newFile);
-            dataFileRepository.deleteById(dataFileId);
-            datasetRepository.save(dataset.get());
             throw new DataFileStorageException("File could not be saved in the file system", e);
         }
         return newFile;
     }
 
-    /**
-     * Finds and returns a page of DataFiles
-     *
-     * @param pageable  The Pageable to display only DataFiles for requested page
-     * @param datasetId The Dataset id
-     * @return The Page of DataFiles
-     */
     @Override
     public Page<DataFile> findFiles(Pageable pageable, Long datasetId) {
         return dataFileRepository.findAllByDatasetId(datasetId, pageable);

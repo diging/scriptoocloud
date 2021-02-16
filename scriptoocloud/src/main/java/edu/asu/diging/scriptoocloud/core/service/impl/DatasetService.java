@@ -26,7 +26,7 @@ import java.util.Optional;
  * The Service class associated with user Datasets.  The class handles the association between
  * Datasets and DataFiles they contain.
  */
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 @Service
 public class DatasetService implements IDatasetService {
 
@@ -45,14 +45,6 @@ public class DatasetService implements IDatasetService {
         this.dataFileRepository = dataFileRepository;
     }
 
-    /**
-     * Creates the dataset in the filesystem, then in the database.
-     *
-     * @param name The name of the Dataset.
-     * @param user The IUser who owns the dataset
-     * @return The Dataset which was created.
-     * @throws DatasetStorageException Exception thrown if dataset cannot be created.
-     */
     @Override
     public Dataset createDataset(String name, IUser user) throws DatasetStorageException {
 
@@ -71,12 +63,6 @@ public class DatasetService implements IDatasetService {
         return savedDataset;
     }
 
-    /**
-     * Edits the dataset name in the database (Dataset path uses id).
-     *
-     * @param id      The id of the dataset to edit.
-     * @param newName The new name of the dataset being edited.
-     */
     @Override
     public void editDataset(Long id, String newName) {
 
@@ -88,13 +74,6 @@ public class DatasetService implements IDatasetService {
         }
     }
 
-    /**
-     * Deletes the dataset in the filesystem, then in the database.
-     *
-     * @param id       The id of the dataset to delete.
-     * @param username The username of the owner of the Dataset
-     * @throws DatasetStorageException Exception detailing errors with the file and file system.
-     */
     @Override
     public void deleteDataset(Long id, String username) throws DatasetStorageException {
 
@@ -115,51 +94,21 @@ public class DatasetService implements IDatasetService {
         }
     }
 
-    /**
-     * Finds a dataset in the database given a particular id.
-     *
-     * @param id The id of the dataset.
-     * @return Returns the IDataset.
-     */
     @Override
     public IDataset findById(Long id) {
         return datasetRepository.findById(id).orElse(null);
     }
 
-    /**
-     * Finds and returns a Page of Datasets for a User
-     *
-     * @param pageable The Pageable to calculate page size and current page
-     * @param user     The user associated with the Dataset
-     * @return The Page of Datasets
-     */
     @Override
     public Page<Dataset> findDatasets(Pageable pageable, IUser user) {
         return datasetRepository.findAllByUser(user, pageable);
     }
 
-    /**
-     * Finds all datasets in the database (Likely for admin use).
-     *
-     * @return Returns Page lists of all Datasets in the database.
-     */
     @Override
     public Page<Dataset> findAll(Pageable pageable) {
         return datasetRepository.findAll(pageable);
     }
 
-    /**
-     * Deletes a DataFile from a Dataset. This involves: 1. Removing the file from the appropriate
-     * location on the file system and 2. Removing the file from the database ensuring that the
-     * association with the parent Dataset is removed as well.
-     *
-     * @param datasetId The primary key of the Dataset
-     * @param fileId    The primary key of the DataFile
-     * @return boolean indicating success of deleting file
-     * @throws DatasetStorageException   Exception detailing errors with the file and file system.
-     * @throws DatasetNotFoundException  Exception if Dataset not found in the database.
-     * @throws DataFileNotFoundException Exception if DataFile not found in the database.
-     */
     @Override
     public boolean deleteFileFromDataset(Long datasetId, Long fileId) throws DatasetStorageException,
             DatasetNotFoundException, DataFileNotFoundException {

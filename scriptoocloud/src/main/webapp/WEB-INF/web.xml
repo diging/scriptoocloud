@@ -54,6 +54,8 @@
     <filter-mapping>
         <filter-name>springSecurityFilterChain</filter-name>
         <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>ERROR</dispatcher>
     </filter-mapping>
 
     <!-- Processes application requests -->
@@ -85,5 +87,9 @@
         <!-- 2 hours -->
         <session-timeout>120</session-timeout>
     </session-config>
+
+    <error-page>
+        <location>/error</location>
+    </error-page>
 
 </web-app>

@@ -42,7 +42,8 @@ a.sign-in-out:hover {
     color: #454545;
     border-radius: 15px;
     border: none;
-    line-height: 1.5;
+    line-height: 1;
+    height: 22px;
     text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
     background: rgba(168, 176, 188, 0.15);
     background: -webkit-linear-gradient(rgba(168, 176, 188, 0.4), rgba(168, 176, 188, 0.15));
@@ -161,6 +162,66 @@ div#user-navigation {
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
+}
+
+li.dropdown {
+    display: inline-block;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    min-width: 150px;
+    font-weight: normal;
+    font-size: 12px;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    z-index: 100;
+    background: #ffffff;
+    border: 2px solid #8c1d40;
+    padding: 0;
+}
+
+.dropdown-menu:after,
+.dropdown-menu:before {
+    bottom: 100%;
+    left: 30%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+}
+
+.dropdown-menu:after {
+    bottom: 100%;
+    left: 30%;
+    border: 10px solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    border-bottom-color: #FFFFFF;
+    margin-left: -10px;
+}
+
+.dropdown-menu:before {
+    border: 13px solid rgba(0, 113, 188, 0);
+    border-bottom-color: #8c1d40;
+    margin-left: -13px;
+}
+
+.dropdown-menu a {
+    padding: 0 15px;
+    display: block;
+    text-align: left;
+    font-weight: normal;
+    cursor: pointer;
+    font-size: 1.10em;
+    border-bottom: 1px solid #ddd;
+}
+
+.dropdown-item:hover {
+    background: #f5f5f5;
 }
 
 /**  Content
