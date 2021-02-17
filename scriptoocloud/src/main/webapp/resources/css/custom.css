@@ -416,6 +416,10 @@ h6 {
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#8c1d40', endColorstr='#c32a5b', GradientType=0);
 }
 
+.small-button {
+    margin: 0 0 0 10px;
+}
+
 .gray-form-button {
     color: #3b3b3b;
     margin-top: 10px;
@@ -542,7 +546,7 @@ input.fieldInput:focus {
 }
 
 .tabular-row {
-    padding: 40px 0 40px 0;
+    padding: 40px 0 0 0;
     margin-top: 10px;
     margin-bottom: 0;
     border-top: 1px solid #2E363F;
@@ -583,6 +587,32 @@ input.fieldInput:focus {
     display: inline-block;
 }
 
+.mono {
+    font-family: Menlo, Monaco, Consolas, "Courier New", monospace !important;
+}
+
+.td {
+    display: table-cell;
+}
+
+.hide-form.td {
+    display: none;
+    padding-top: 10px;
+}
+
+.table {
+    display: table;
+}
+
+.tr {
+    display: table-row;
+    background-color: #f1f2f7;
+}
+
+.td.icon {
+    width: 40px;
+}
+
 .add-file {
     margin: 20px 0 0 0;
 }
@@ -618,6 +648,10 @@ span.file-name-span {
 
 .btn-clear {
     background: transparent;
+}
+
+.btn-clear:active {
+    box-shadow: none;
 }
 
 .btn-file:hover {

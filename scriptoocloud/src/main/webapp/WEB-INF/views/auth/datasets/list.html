@@ -8,7 +8,12 @@
     <title>Datasets | ScripTooCloud</title>
     <script type="text/javascript">
         $(document).ready(function () {
-            $('.delModalBtn').on('click', function () {
+            $(".rename-dataset").on("click", function (e) {
+                e.preventDefault();
+                $(this).closest(".row").find(".hide-form").toggle();
+            });
+            $('.delModalBtn').on('click', function (e) {
+                e.preventDefault();
                 let id = $(this).data('id');
                 let append = id + "/delete";
                 $("#deleteForm").attr('action', function (i, value) {
@@ -73,35 +78,50 @@
                     <div th:unless="${#lists.isEmpty(dbDatasets)}">
                         <div class="row tabular-row" th:each="ds : ${dbDatasets}">
                             <div class="col-md-6">
-                                <form
-                                    th:action="@{/auth/datasets/{id}/edit(id=${ds.id})}"
-                                    th:object="${datasetEditForm}" method="POST">
-                                    <div class="col-md-6">
-                                        <div>
-                                            <div class="inline">
+                                <div class="col-md-6">
+                                    <div class="table">
+                                        <div class="tr">
+                                            <div class="td icon">
                                                 <span><i class="fas fa-folder fa-2x"></i></span>
                                             </div>
-                                            <div class="inline">
-                                                <label>
-                                                    <input type="text"
-                                                           class="fieldInput"
-                                                           th:name="newName"
-                                                           th:value="${ds.name}"/>
-                                                </label>
+                                            <div class="td">
+                                                <div class="mono cell"
+                                                     th:text="${ds.name}"></div>
                                             </div>
-                                            <div class="alert alert-danger"
-                                                 th:if="${#fields.hasErrors('*') and #strings.equals(ds.id, errorId)}">
-                                                <p th:each="err : ${#fields.errors('*')}"
-                                                   th:text="${err}"></p>
+                                        </div>
+                                        <div class="tr">
+                                            <div class="td"></div>
+                                            <div class="hide-form td">
+                                                <form class="table"
+                                                      th:action="@{/auth/datasets/{id}/edit(id=${ds.id})}"
+                                                      th:object="${datasetEditForm}" method="POST">
+                                                    <div class="tr">
+                                                        <label class="td">
+                                                            <input type="text"
+                                                                   class="fieldInput"
+                                                                   th:name="newName"
+                                                                   th:value="${ds.name}"/>
+                                                        </label>
+                                                        <input type="submit"
+                                                               class=" td btn red-form-button small-button"
+                                                               value="Save"/>
+                                                    </div>
+                                                    <div class="alert alert-danger"
+                                                         th:if="${#fields.hasErrors('*') and #strings.equals(ds.id, errorId)}">
+                                                        <p th:each="err : ${#fields.errors('*')}"
+                                                           th:text="${err}"></p>
+                                                    </div>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6 center">
-                                        <button type="submit" class="btn btn-clear">
-                                            <i class="fas fa-edit"></i> Rename This Dataset
-                                        </button>
-                                    </div>
-                                </form>
+                                </div>
+                                <div class="col-md-6 center">
+                                    <button type="submit" class="btn btn-clear rename-dataset">
+                                        <i class="fas fa-edit"></i> Rename This Dataset
+                                    </button>
+                                </div>
+
                             </div>
                             <div class="col-md-3 center">
                                 <button type="button"
