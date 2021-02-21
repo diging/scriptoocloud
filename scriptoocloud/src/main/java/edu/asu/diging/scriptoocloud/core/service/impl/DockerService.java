@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Scanner;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,21 +18,29 @@ import com.github.dockerjava.transport.DockerHttpClient.Response;
 
 @Service
 @PropertySource("classpath:config.properties")
-public class DockerService extends DockerRestConnection {
+public class DockerService {
 
     @Value("${docker.dockerfile.path}")
     private String defaultDockerfilePath;
     
+    @Autowired
+    private DockerRestConnection dockerRestConnection;
+    
     public String buildImage(String dockerFileLocation) throws FileNotFoundException, InterruptedException{
-        //File file = new File("C:/github_com_jormsby2_CloneTest.tar");
         File file = new File(dockerFileLocation + ".tar");
-        String response = dockerClient.buildImageCmd(new FileInputStream(file)).start().awaitImageId();
+        String response = dockerRestConnection.dockerClient.buildImageCmd(new FileInputStream(file)).start().awaitImageId();
         return response;
     }
    
-    public DockerService buildContainer(String projectName) throws IOException{
+    public DockerService buildContainer(String imageId, String[] userArgs) throws IOException{
     
-        String jsonBody = "{\"Image\":\"" + projectName + "\"}";
+        String jsonBody = "{"
+            +"\"Image\":" + "\"" + imageId + "\","
+            +"\"Cmd\": [" + "\"" + "test.py" + "\"" +"]"
+            +"}";
+                                
+                                System.out.println(jsonBody);
+        
         ByteArrayInputStream bis = new ByteArrayInputStream(jsonBody.getBytes());
     
         Request request = Request.builder()
@@ -39,8 +49,11 @@ public class DockerService extends DockerRestConnection {
                              .body(bis)
                              .build();
                              
-        Response response = dockerRequest(request);
-        
+        String containerId = dockerRestConnection.dockerClient.createContainerCmd(imageId).withCmd(userArgs).exec().getId();
+
+       //START CONTAINER 
+       dockerRestConnection.dockerClient.startContainerCmd(containerId).exec();
+
         return this;
     }
     

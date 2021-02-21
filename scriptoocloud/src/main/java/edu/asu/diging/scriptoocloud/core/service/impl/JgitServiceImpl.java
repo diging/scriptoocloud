@@ -60,6 +60,10 @@ class JgitServiceImpl implements JgitService {
             Git.cloneRepository().setURI(remoteGitRepoUrl).setDirectory(new File(localRepoFolderName)).call().close();
             new TarWriter(localRepoFolderName).writeDir(new File(localRepoFolderName));
             String imageId = dockerService.buildImage(localRepoFolderName);
+           
+           String[] test = {"test.py"};
+            dockerService.buildContainer(imageId,test);
+            
             return Optional.of(imageId);
         } catch(GitAPIException e) {
             fileSystemService.deleteDirectoryOrFile(new File(localRepoFolderName));

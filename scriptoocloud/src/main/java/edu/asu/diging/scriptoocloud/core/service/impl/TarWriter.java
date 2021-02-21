@@ -14,7 +14,7 @@ public class TarWriter {
 
     private FileOutputStream out;
     private TarArchiveOutputStream tOut;    
-    int len;
+    private int len;
     
     public TarWriter(String outPath) throws IOException{        
         out = new FileOutputStream(outPath + ".tar");        
@@ -27,8 +27,6 @@ public class TarWriter {
         Path sourcePath = FileSystems.getDefault().getPath(file.getPath());
         byte[] sourceBytes = Files.readAllBytes(sourcePath);
 
-
-       // String alteredPath = file.getPath().substring(len, file.getPath().length());
         String alteredPath = file.getPath();
 
         alteredPath = alteredPath.substring(len);
