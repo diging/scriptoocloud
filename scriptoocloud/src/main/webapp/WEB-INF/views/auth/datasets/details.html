@@ -35,16 +35,16 @@
 
                     <div class="col-md-12 file-list">
                         <ul>
-                            <li th:each="file : ${filesPage}">
+                            <li th:each="uploadedFile : ${filesPage}">
                                 <span class="file-name-span">
                                     <i class="fas fa-file"></i>
                                 </span>
-                                [[${file.name} + ' (file id: ' + ${file.id} + ')']]
+                                [[${uploadedFile.name} + ' (file id: ' + ${uploadedFile.id} + ')']]
                                 <form method="POST"
                                       class="inline"
-                                      th:action="@{/auth/datasets/{id}/files/{fileId}/delete(id=${dataset.id}, fileId=${file.id})}">
+                                      th:action="@{/auth/datasets/{id}/files/{fileId}/delete(id=${dataset.id}, fileId=${uploadedFile.id})}">
                                     <input type="hidden" name="fileId"
-                                           th:value="${file.id}"/>
+                                           th:value="${uploadedFile.id}"/>
                                     <input type="hidden" name="datasetId"
                                            th:value="${dataset.id}"/>
                                     <button type="submit"
