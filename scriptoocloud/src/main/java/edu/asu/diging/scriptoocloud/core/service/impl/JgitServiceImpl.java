@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.Optional;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
@@ -24,7 +25,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import edu.asu.diging.scriptoocloud.core.data.YamlModelRepository;
 import edu.asu.diging.scriptoocloud.core.exceptions.InvalidGitUrlException;
+import edu.asu.diging.scriptoocloud.core.model.impl.YamlModel;
 import edu.asu.diging.scriptoocloud.core.service.JgitService;
 
 
@@ -43,7 +46,12 @@ class JgitServiceImpl implements JgitService {
     @Autowired
     private DockerService dockerService;
     
-
+    @Autowired
+    YamlParserService yamlParserService;
+    
+    @Autowired
+    YamlModelRepository yamlRepositoryJpa;
+    
 
     /*
      * Creates folder in file system and clones a remote git repository to it
@@ -58,13 +66,45 @@ class JgitServiceImpl implements JgitService {
     public Optional<String> clone(String localRepoFolderName, String remoteGitRepoUrl) throws InvalidGitUrlException, JGitInternalException, IOException {
         try {
             Git.cloneRepository().setURI(remoteGitRepoUrl).setDirectory(new File(localRepoFolderName)).call().close();
+            
+            
+        /*
+          THESE METHODS ARE FOR TESTING, 
+          when file upload and project class tickets are complete move to respective classes                           
+         */
+            //parse yaml create model
+            Map<String,Object> yamlMap = yamlParserService.parseYaml(new File(localRepoFolderName));
+            System.out.println(yamlMap);
+            
+            //create new yaml model and store with associated project for future updates from user
+              
+            YamlModel yamlModel = yamlRepositoryJpa.findByName("");  
+            if(yamlModel == null) {
+                yamlModel = new YamlModel();
+                yamlModel.setName((String)yamlMap.get("name"));
+                yamlModel.setAuthor((String)yamlMap.get("author"));
+                yamlModel.setInputParams((String[])yamlMap.get("params"));
+                yamlModel.setMain((String)yamlMap.get("main"));
+                yamlModel.setOutputContext((String)yamlMap.get("output"));
+               
+            } 
+            //pack tar of repo
             new TarWriter(localRepoFolderName).writeDir(new File(localRepoFolderName));
+            
+            //make docker image
             String imageId = dockerService.buildImage(localRepoFolderName);
-           
-           String[] test = {"test.py"};
+            
+            //build container
+            String[] test = {"test.py"};
             dockerService.buildContainer(imageId,test);
             
             return Optional.of(imageId);
+         /*
+            THESE METHODS ARE FOR TESTING                           
+         */
+            
+            
+            
         } catch(GitAPIException e) {
             fileSystemService.deleteDirectoryOrFile(new File(localRepoFolderName));
             throw new InvalidGitUrlException(e);

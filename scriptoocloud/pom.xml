@@ -261,6 +261,13 @@
 			<artifactId>org.eclipse.jgit</artifactId>
 			<version>3.5.0.201409260305-r</version>
 		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.yaml/snakeyaml -->
+		<dependency>
+		    <groupId>org.yaml</groupId>
+		    <artifactId>snakeyaml</artifactId>
+		    <version>1.28</version>
+		</dependency>
 
 	</dependencies>
 
