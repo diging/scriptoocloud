@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.asu.diging.scriptoocloud.config.SimpleUsersConfig;
+import edu.asu.diging.scriptoocloud.core.exceptions.NullIDException;
 import edu.asu.diging.scriptoocloud.core.model.Project;
 import edu.asu.diging.scriptoocloud.core.model.impl.ProjectImpl;
 import edu.asu.diging.scriptoocloud.core.service.ProjectManager;
-import edu.asu.diging.scriptoocloud.core.service.impl.nullIDException;
 
 
 @Controller
@@ -27,21 +27,16 @@ public class RemoveProjectController {
     @Autowired
     private ProjectManager projectManager;
     
-    @RequestMapping(value = "/auth/projects/remove", method=RequestMethod.GET)
-    public String get(Model model) {
-        return "/auth/projects/remove";
-    }              
-    
-    @RequestMapping(value = "/auth/projects/remove/{id}", method=RequestMethod.POST)
-    public String post(@PathVariable("id") int id,Model model) {
+    @RequestMapping(value = "/auth/projects/{id}/remove", method=RequestMethod.POST)
+    public String post(@PathVariable("id") Long id,Model model) {
         
     	try {
         	projectManager.deleteProject(id); 
         	return "redirect:/auth/projects";
-        }catch (nullIDException err) {
+        }catch (NullIDException err) {
         	model.addAttribute("deletionFailure","ID is NULL");
         	return "redirect:/auth/projects";
         }
       
-    }
+	}
 }

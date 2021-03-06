@@ -21,36 +21,36 @@ import edu.asu.diging.simpleusers.core.model.IUser;
 import edu.asu.diging.simpleusers.core.model.impl.SimpleUser;
 import edu.asu.diging.simpleusers.core.service.IUserManager;
 
-
 @Controller
 public class AddProjectController {
-    
-    @Autowired
-    private ProjectManager projectManager;
-    
-    private final IUserManager userManager;
 
-    @Autowired
-    public AddProjectController(IUserManager userManager) {
-        this.userManager = userManager;
-    }
+	@Autowired
+	private ProjectManager projectManager;
 
-    @RequestMapping(value = "/auth/add", method=RequestMethod.GET)
-    public String get(Model model) {
-    	model.addAttribute("project", new ProjectImpl());
-        return "/auth/add";
-    }
-    
-    @RequestMapping(value = "/auth/add", method=RequestMethod.POST)
-    public String post(@Valid @ModelAttribute("project") ProjectImpl projectImpl, BindingResult result, Model model, RedirectAttributes redirectAttrs, Principal principal) {
-        if (result.hasErrors()) {
-            model.addAttribute("project", projectImpl);
-        }
-        
-        String username = principal.getName();
-        IUser user = userManager.findByUsername(username);
-        
-        Project project = projectManager.createProject(projectImpl.getName(), projectImpl.getDescription(), user);
-        return "redirect:/auth/projects";
-    }
+	private final IUserManager userManager;
+
+	@Autowired
+	public AddProjectController(IUserManager userManager) {
+		this.userManager = userManager;
+	}
+
+	@RequestMapping(value = "/auth/add", method = RequestMethod.GET)
+	public String get(Model model) {
+		model.addAttribute("project", new ProjectImpl());
+		return "/auth/add";
+	}
+
+	@RequestMapping(value = "/auth/add", method = RequestMethod.POST)
+	public String post(@Valid @ModelAttribute("project") ProjectImpl projectImpl, BindingResult result, Model model,
+			RedirectAttributes redirectAttrs, Principal principal) {
+		if (result.hasErrors()) {
+			model.addAttribute("project", projectImpl);
+		}
+
+		String username = principal.getName();
+		IUser user = userManager.findByUsername(username);
+
+		Project project = projectManager.createProject(projectImpl.getName(), projectImpl.getDescription(), user);
+		return "redirect:/auth/projects";
+	}
 }

@@ -12,7 +12,7 @@
 			<div class="pull-right text-right">
 			</div> 
 			
-			<form th:action="@{|/auth/projects/remove/${project.getId()}|}" method="POST">
+			<form th:action="@{|/auth/projects/${project.getId()}/remove/|}" method="POST">
 		    	<button style="padding:0px" class="btn btn-link"><i class="fas fa-trash"></i> Delete Project</button>
 		    </form> 
 		</li>
