@@ -9,10 +9,8 @@ import javax.persistence.Id;
 
 import edu.asu.diging.scriptoocloud.core.model.GitRepository;
 
-//do we need entity tag?
 @Entity
 
-//this class should directly model the yaml files we are retrieving
 public class YamlModel  {
 
     @Id
