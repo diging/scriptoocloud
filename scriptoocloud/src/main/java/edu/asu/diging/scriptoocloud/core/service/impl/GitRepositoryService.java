@@ -90,6 +90,7 @@ public class GitRepositoryService implements GitRepositoryManager {
   
         try {
             
+            //why optional??
             Optional<String> imageId = jGitService.clone(path + folderName, gitUrl);
             
             if(imageId.isPresent())
@@ -97,6 +98,8 @@ public class GitRepositoryService implements GitRepositoryManager {
             else
               repositoryEntity.setImageId("no id");
 
+        //are we making custom exceptions for docker imagebuild exceptions?
+    
         } catch (JGitInternalException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

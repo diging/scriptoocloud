@@ -34,9 +34,11 @@ public class DockerService {
    
     public DockerService buildContainer(String imageId, String[] userArgs) throws IOException{
     
+    
+        //need some json serializer instead of this hard coded string
         String jsonBody = "{"
             +"\"Image\":" + "\"" + imageId + "\","
-            +"\"Cmd\": [" + "\"" + "test.py" + "\"" +"]"
+            +"\"Cmd\": [" + "\"" + userArgs[0] + "\"" +"]"
             +"}";
                                 
                                 System.out.println(jsonBody);

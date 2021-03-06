@@ -10,6 +10,9 @@ import java.nio.file.Path;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 
+
+//change to prototype bean?? pojo ok??
+
 public class TarWriter {
 
     private FileOutputStream out;

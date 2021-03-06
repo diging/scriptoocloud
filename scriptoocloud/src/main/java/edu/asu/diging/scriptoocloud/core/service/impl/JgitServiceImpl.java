@@ -77,7 +77,6 @@ class JgitServiceImpl implements JgitService {
             System.out.println(yamlMap);
             
             //create new yaml model and store with associated project for future updates from user
-              
             YamlModel yamlModel = yamlRepositoryJpa.findByName("");  
             if(yamlModel == null) {
                 yamlModel = new YamlModel();
@@ -95,12 +94,12 @@ class JgitServiceImpl implements JgitService {
             String imageId = dockerService.buildImage(localRepoFolderName);
             
             //build container
-            String[] test = {"test.py"};
-            dockerService.buildContainer(imageId,test);
+            String[] test = {"test.py"}; //needs to be yaml main + param0,param1...paramN
+            dockerService.buildContainer(imageId,test); //need to save container reference, should be project scope
             
-            return Optional.of(imageId);
+            return Optional.of(imageId);//associate id with repo, repo scope
          /*
-            THESE METHODS ARE FOR TESTING                           
+            THESE METHODS ARE FOR TESTING      \                     
          */
             
             
