@@ -49,6 +49,7 @@ public class DockerRestConnection {
         dockerClient = DockerClientImpl.getInstance(dockerConfig, dockerHttpClient);
     }
     
+    //method for raw requests
     public Response dockerRequest(Request request){
         return dockerHttpClient.execute(request);
     }

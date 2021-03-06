@@ -63,55 +63,16 @@ class JgitServiceImpl implements JgitService {
      * @throws  JGitInternalException       JGit command execution failure at low level                                       
     */
     @Override
-    public Optional<String> clone(String localRepoFolderName, String remoteGitRepoUrl) throws InvalidGitUrlException, JGitInternalException, IOException {
+    public String clone(String localRepoFolderName, String remoteGitRepoUrl) throws InvalidGitUrlException, JGitInternalException, IOException, InterruptedException {
         try {
             Git.cloneRepository().setURI(remoteGitRepoUrl).setDirectory(new File(localRepoFolderName)).call().close();
-            
-            
-        /*
-          THESE METHODS ARE FOR TESTING, 
-          when file upload and project class tickets are complete move to respective classes                           
-         */
-            //parse yaml create model
-            Map<String,Object> yamlMap = yamlParserService.parseYaml(new File(localRepoFolderName));
-            System.out.println(yamlMap);
-            
-            //create new yaml model and store with associated project for future updates from user
-            YamlModel yamlModel = yamlRepositoryJpa.findByName("");  
-            if(yamlModel == null) {
-                yamlModel = new YamlModel();
-                yamlModel.setName((String)yamlMap.get("name"));
-                yamlModel.setAuthor((String)yamlMap.get("author"));
-                yamlModel.setInputParams((String[])yamlMap.get("params"));
-                yamlModel.setMain((String)yamlMap.get("main"));
-                yamlModel.setOutputContext((String)yamlMap.get("output"));
-               
-            } 
-            //pack tar of repo
             new TarWriter(localRepoFolderName).writeDir(new File(localRepoFolderName));
-            
-            //make docker image
             String imageId = dockerService.buildImage(localRepoFolderName);
-            
-            //build container
-            String[] test = {"test.py"}; //needs to be yaml main + param0,param1...paramN
-            dockerService.buildContainer(imageId,test); //need to save container reference, should be project scope
-            
-            return Optional.of(imageId);//associate id with repo, repo scope
-         /*
-            THESE METHODS ARE FOR TESTING      \                     
-         */
-            
-            
-            
+            return imageId;
         } catch(GitAPIException e) {
             fileSystemService.deleteDirectoryOrFile(new File(localRepoFolderName));
             throw new InvalidGitUrlException(e);
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } 
-        return null;
+        }
     }
     
 }

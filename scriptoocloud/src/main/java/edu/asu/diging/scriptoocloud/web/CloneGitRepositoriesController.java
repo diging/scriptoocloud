@@ -1,5 +1,6 @@
 package edu.asu.diging.scriptoocloud.web;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.security.Principal;
 
@@ -60,12 +61,22 @@ public class CloneGitRepositoriesController {
             model.addAttribute("formResponseFailure","Provided URL is Malformed");
             model.addAttribute("clone",cloneForm);
             return "/admin/repositories/clone";
-       } catch (JGitInternalException e) {
+        } catch (JGitInternalException e) {
             logger.error("JGit command execution failure, check system configurations ", e);
             model.addAttribute("formResponseFailure","JGit internal failure");
             model.addAttribute("clone",cloneForm);
             return "/admin/repositories/clone";        
-       }
+        } catch (IOException e) {
+            logger.error("Failed to archive directory", e);
+            model.addAttribute("formResponseFailure","Failed to archive directory");
+            model.addAttribute("clone",cloneForm);
+            return "/admin/repositories/clone";   
+        } catch (InterruptedException e) {
+            logger.error("Failed to create docker image ", e);
+            model.addAttribute("formResponseFailure","Failed to create docker image");
+            model.addAttribute("clone",cloneForm);
+            return "/admin/repositories/clone";   
+        }
        redirectAttributes.addAttribute("formResponse","Successfully cloned");
        return "redirect:/admin/repositories/clone";
     }

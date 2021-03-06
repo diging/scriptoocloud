@@ -69,7 +69,7 @@ public class GitRepositoryService implements GitRepositoryManager {
     * @param   requester    username in current session that made the request
     */
     @Override
-    public void cloneRepository(String gitUrl, String requester) throws InvalidGitUrlException, MalformedURLException {
+    public void cloneRepository(String gitUrl, String requester) throws InvalidGitUrlException, JGitInternalException, IOException, InterruptedException {
         String folderName = urlFormatter.urlToFolderName(gitUrl);
 
         ZonedDateTime creationDate = ZonedDateTime.now();       
@@ -86,30 +86,9 @@ public class GitRepositoryService implements GitRepositoryManager {
         repositoryEntity.setCreationDate(creationDate);
         repositoryEntity.setFolderName(folderName);
   
-        //need to remove current image if doing an update
-  
-        try {
-            
-            //why optional??
-            Optional<String> imageId = jGitService.clone(path + folderName, gitUrl);
-            
-            if(imageId.isPresent())
-              repositoryEntity.setImageId(imageId.get());
-            else
-              repositoryEntity.setImageId("no id");
+        String imageId = jGitService.clone(path + folderName, gitUrl);
+        repositoryEntity.setImageId(imageId);
 
-        //are we making custom exceptions for docker imagebuild exceptions?
-    
-        } catch (JGitInternalException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InvalidGitUrlException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
         gitRepositoryJpa.save(repositoryEntity);
     }
     

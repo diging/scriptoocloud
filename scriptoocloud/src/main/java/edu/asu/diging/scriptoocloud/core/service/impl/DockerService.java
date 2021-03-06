@@ -5,16 +5,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Scanner;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
-
-import com.github.dockerjava.transport.DockerHttpClient.Request;
-import com.github.dockerjava.transport.DockerHttpClient.Response;
 
 @Service
 @PropertySource("classpath:config.properties")
@@ -32,29 +27,11 @@ public class DockerService {
         return response;
     }
    
-    public DockerService buildContainer(String imageId, String[] userArgs) throws IOException{
-    
-    
-        //need some json serializer instead of this hard coded string
-        String jsonBody = "{"
-            +"\"Image\":" + "\"" + imageId + "\","
-            +"\"Cmd\": [" + "\"" + userArgs[0] + "\"" +"]"
-            +"}";
-                                
-                                System.out.println(jsonBody);
-        
-        ByteArrayInputStream bis = new ByteArrayInputStream(jsonBody.getBytes());
-    
-        Request request = Request.builder()
-        .putHeader("Content-Type", "application/json").method(Request.Method.POST)
-                             .path("/containers/create")
-                             .body(bis)
-                             .build();
+    public DockerService buildContainer(String imageId, String[] userArgs) throws IOException{   
                              
         String containerId = dockerRestConnection.dockerClient.createContainerCmd(imageId).withCmd(userArgs).exec().getId();
 
-       //START CONTAINER 
-       dockerRestConnection.dockerClient.startContainerCmd(containerId).exec();
+        dockerRestConnection.dockerClient.startContainerCmd(containerId).exec();
 
         return this;
     }
