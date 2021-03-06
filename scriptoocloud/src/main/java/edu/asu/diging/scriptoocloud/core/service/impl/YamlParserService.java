@@ -8,11 +8,6 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 import org.yaml.snakeyaml.Yaml;
 
-
-/*
-*
-*/
-
 @Service
 class YamlParserService  {
 
@@ -25,7 +20,7 @@ class YamlParserService  {
         if(file.isDirectory()){ 
             File[] fileTree = file.listFiles();
             for( File childFile : fileTree ){
-                if(childFile.getPath().contains("yaml")){
+                if(childFile.getPath().contains(".yaml")){
                     file = childFile;
                     break;
                 }
@@ -38,7 +33,7 @@ class YamlParserService  {
         if(file.isDirectory()){ 
             File[] fileTree = file.listFiles();
             for( File childFile : fileTree ){
-                if(childFile.getPath().contains("yaml")){
+                if(childFile.getPath().contains(".yaml")){
                     file = childFile;
                     break;
                 }
