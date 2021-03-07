@@ -8,8 +8,6 @@ import java.util.Optional;
 import javax.persistence.NonUniqueResultException;
 import javax.transaction.Transactional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.NestedServletException;
@@ -23,8 +21,6 @@ import edu.asu.diging.simpleusers.core.model.IUser;
 @Transactional
 @Service
 public class ProjectManagerImpl implements ProjectManager {
-	
-	private final Logger logger=LoggerFactory.getLogger(getClass());
 
     @Autowired
     private ProjectRepository projectRepo;
@@ -52,28 +48,20 @@ public class ProjectManagerImpl implements ProjectManager {
         return id;
     }
     
-    /* (non-Javadoc)
-     * @see edu.asu.diging.scriptoocloud.core.service.impl.ProjectManager#deleteProject(java.lang.String)
-     */
-    @Override
-    public void deleteProject(long id) {
-   
-        try {
-        	// long is a primitive data type, so we must convert to an object data type Long to check for null. 
-        	Long checkId = id;
-        	if(checkId == null) {
-        		throw new nullIDException("Project does not exist.");
-        	} else {
-        		projectRepo.deleteById(id);
-        	}
-        } catch (nullIDException err) {
-        	logger.error("Project does not exist.");
-        }
-    }
-    
-    private Exception deleteNullIdException() {
-		// TODO Auto-generated method stub
-		return null;
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.asu.diging.scriptoocloud.core.service.impl.ProjectManager#deleteProject(
+	 * java.lang.String)
+	 */
+	@Override
+	public void deleteProject(Long id) throws NullIDException {
+		if (id == null) {
+			throw new NullIDException("Project " + id + " does not exist.");
+		} else {
+			projectRepo.deleteById(id);
+		}
 	}
 
 /* (non-Javadoc)

@@ -20,23 +20,22 @@ import edu.asu.diging.scriptoocloud.core.service.ProjectManager;
 
 @Controller
 public class ProjectsController {
-	
+
 	@Autowired
 	private ProjectRepository projectRepo;
 
 	@Autowired
 	private RemoveProjectController removeProjectController;
-    
-    @Autowired
-    private AddProjectController addProjectController;
-    
-    @Autowired
-    private ProjectManager projectManager;
 
-    @RequestMapping("/auth/projects")
-    public String listProjects(Model model) {
-    	model.addAttribute("projects", projectManager.findAll() );
-    	return "/auth/projects";
-    }
-    
+	@Autowired
+	private AddProjectController addProjectController;
+
+	@Autowired
+	private ProjectManager projectManager;
+
+	@RequestMapping("/auth/projects")
+	public String listProjects(Model model) {
+		model.addAttribute("projects", projectManager.findAll());
+		return "/auth/projects";
+	}
 }
