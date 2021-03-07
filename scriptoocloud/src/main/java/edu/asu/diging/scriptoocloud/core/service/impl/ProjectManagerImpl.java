@@ -8,8 +8,6 @@ import java.util.Optional;
 import javax.persistence.NonUniqueResultException;
 import javax.transaction.Transactional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.NestedServletException;
@@ -24,8 +22,6 @@ import edu.asu.diging.simpleusers.core.model.IUser;
 @Transactional
 @Service
 public class ProjectManagerImpl implements ProjectManager {
-
-	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private ProjectRepository projectRepo;

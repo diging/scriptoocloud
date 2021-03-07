@@ -3,6 +3,8 @@ package edu.asu.diging.scriptoocloud.web;
 import javax.persistence.NonUniqueResultException;
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +25,8 @@ import edu.asu.diging.scriptoocloud.core.service.ProjectManager;
 
 @Controller
 public class RemoveProjectController {
+	
+	private final Logger logger = LoggerFactory.getLogger(getClass());
     
     @Autowired
     private ProjectManager projectManager;
@@ -34,7 +38,8 @@ public class RemoveProjectController {
         	projectManager.deleteProject(id); 
         	return "redirect:/auth/projects";
         }catch (NullIDException err) {
-        	model.addAttribute("deletionFailure","ID is NULL");
+        	model.addAttribute("deletionFailure","Project " + id + " does not exist.");
+        	logger.error("Project " + id + " does not exist.");
         	return "redirect:/auth/projects";
         }
       
