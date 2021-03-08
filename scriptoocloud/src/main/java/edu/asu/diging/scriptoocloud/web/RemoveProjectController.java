@@ -17,31 +17,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.asu.diging.scriptoocloud.config.SimpleUsersConfig;
-import edu.asu.diging.scriptoocloud.core.exceptions.NullIDException;
 import edu.asu.diging.scriptoocloud.core.model.Project;
 import edu.asu.diging.scriptoocloud.core.model.impl.ProjectImpl;
 import edu.asu.diging.scriptoocloud.core.service.ProjectManager;
 
-
 @Controller
 public class RemoveProjectController {
-	
-	private final Logger logger = LoggerFactory.getLogger(getClass());
-    
+
     @Autowired
     private ProjectManager projectManager;
-    
-    @RequestMapping(value = "/auth/projects/{id}/remove", method=RequestMethod.POST)
-    public String post(@PathVariable("id") Long id,Model model) {
-        
-    	try {
-        	projectManager.deleteProject(id); 
-        	return "redirect:/auth/projects";
-        }catch (NullIDException err) {
-        	model.addAttribute("deletionFailure","Project " + id + " does not exist.");
-        	logger.error("Project " + id + " does not exist.");
-        	return "redirect:/auth/projects";
-        }
-      
-	}
+
+    @RequestMapping(value = "/auth/projects/{id}/remove", method = RequestMethod.POST)
+    public String post(@PathVariable("id") Long id, Model model) {
+
+        projectManager.deleteProject(id);
+        return "redirect:/auth/projects";
+    }
 }

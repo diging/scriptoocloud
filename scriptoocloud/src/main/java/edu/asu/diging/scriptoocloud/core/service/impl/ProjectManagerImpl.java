@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.NestedServletException;
 
 import edu.asu.diging.scriptoocloud.core.data.ProjectRepository;
-import edu.asu.diging.scriptoocloud.core.exceptions.NullIDException;
 import edu.asu.diging.scriptoocloud.core.model.Project;
 import edu.asu.diging.scriptoocloud.core.model.impl.ProjectImpl;
 import edu.asu.diging.scriptoocloud.core.service.ProjectManager;
@@ -23,52 +22,52 @@ import edu.asu.diging.simpleusers.core.model.IUser;
 @Service
 public class ProjectManagerImpl implements ProjectManager {
 
-	@Autowired
-	private ProjectRepository projectRepo;
+    @Autowired
+    private ProjectRepository projectRepo;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * edu.asu.diging.scriptoocloud.core.service.impl.ProjectManager#createProject(
-	 * java.lang.String, java.lang.String)
-	 */
-	@Override
-	public Project createProject(String name, String description, IUser user) {
-		Project project = new ProjectImpl();
-		project.setName(name);
-		project.setUser(user);
-		project.setDescription(description);
-		project.setCreationDate(ZonedDateTime.now());
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.asu.diging.scriptoocloud.core.service.impl.ProjectManager#createProject(
+     * java.lang.String, java.lang.String)
+     */
+    @Override
+    public Project createProject(String name, String description, IUser user) {
+        Project project = new ProjectImpl();
+        project.setName(name);
+        project.setUser(user);
+        project.setDescription(description);
+        project.setCreationDate(ZonedDateTime.now());
 
-		return projectRepo.save((ProjectImpl) project);
-	}
+        return projectRepo.save((ProjectImpl) project);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * edu.asu.diging.scriptoocloud.core.service.impl.ProjectManager#deleteProject(
-	 * java.lang.String)
-	 */
-	@Override
-	public void deleteProject(Long id) throws NullIDException {
-		if (id == null) {
-			throw new NullIDException("Project " + id + " does not exist.");
-		} else {
-			projectRepo.deleteById(id);
-		}
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * deleteProject deletes a project based on a given project id. It is used in
+     * the RemoveProjectController, listed as a button on existing projects. Null is
+     * an illegal argument for this function.
+     * 
+     * @see
+     * edu.asu.diging.scriptoocloud.core.service.impl.ProjectManager#deleteProject(
+     * java.lang.String)
+     */
+    @Override
+    public void deleteProject(Long id) {
+        projectRepo.deleteById(id);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 */
-	@Override
-	public List<Project> findAll() {
-		Iterable<ProjectImpl> projects = projectRepo.findAll();
-		List<Project> results = new ArrayList<>();
-		projects.forEach(e -> results.add((Project) e));
-		return results;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     */
+    @Override
+    public List<Project> findAll() {
+        Iterable<ProjectImpl> projects = projectRepo.findAll();
+        List<Project> results = new ArrayList<>();
+        projects.forEach(e -> results.add((Project) e));
+        return results;
+    }
 }

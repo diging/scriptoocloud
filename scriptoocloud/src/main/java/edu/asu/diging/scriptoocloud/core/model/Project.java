@@ -22,8 +22,8 @@ public interface Project {
 
     void setCreationDate(ZonedDateTime creationDate);
 
-	void setUser(IUser user);
+    void setUser(IUser user);
 
-	String getUsername();
+    String getUsername();
 
 }
