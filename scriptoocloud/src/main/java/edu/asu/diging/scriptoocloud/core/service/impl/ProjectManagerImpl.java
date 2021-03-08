@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.NestedServletException;
 
 import edu.asu.diging.scriptoocloud.core.data.ProjectRepository;
-import edu.asu.diging.scriptoocloud.core.exceptions.NullIDException;
 import edu.asu.diging.scriptoocloud.core.model.Project;
 import edu.asu.diging.scriptoocloud.core.model.impl.ProjectImpl;
 import edu.asu.diging.scriptoocloud.core.service.ProjectManager;
@@ -83,5 +82,12 @@ public class ProjectManagerImpl implements ProjectManager {
 		// try
 		projectRepo.save((ProjectImpl) project);
 	}
+
+
+    @Override
+    public int getProject(int id) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
 }
