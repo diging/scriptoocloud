@@ -29,6 +29,10 @@ public class FileSystemService implements IFileSystemService {
     public FileSystemService() {
     }
 
+    public String getRootLocationString() {
+        return rootLocationString;
+    }
+
     @Override
     public void addDirectories(String username, String type, String id) throws FileSystemStorageException {
         // First, the correct directory must be created

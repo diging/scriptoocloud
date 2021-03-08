@@ -12,6 +12,14 @@ import java.nio.file.Path;
 public interface IFileSystemService {
 
     /**
+     * Getter for the RootLocationString or the root directory where users can add Directories and
+     * Files
+     *
+     * @return The name of the root Directory from config.properties
+     */
+    String getRootLocationString();
+
+    /**
      * Creates directories on the filesystem.
      *
      * @param username The username to be used as a directory name.

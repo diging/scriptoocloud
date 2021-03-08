@@ -1,7 +1,5 @@
 package edu.asu.diging.scriptoocloud.core.service.impl;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -9,44 +7,77 @@ import java.nio.file.Path;
 
 import edu.asu.diging.scriptoocloud.core.exceptions.FileSystemStorageException;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
-import org.mockito.InjectMocks;
-import org.mockito.MockitoAnnotations;
+import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-/*
- *
- *
+/**
  * @author Jason Ormsby
+ * @author John Coronite
  */
-
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = FileSystemService.class)
 class FileSystemServiceTest {
 
-    /*
-     * New temporary directory generated for every test
-     */
+    private final String username = "username";
+    private final String type = "type";
+    private final String id = "1";
+
+    @Mock
+    private final FileSystemService fileSystemService;
+
+    @Autowired
+    public FileSystemServiceTest(FileSystemService fileSystemService) {
+        this.fileSystemService = fileSystemService;
+    }
+
     @TempDir
     protected Path folder;
 
-    @InjectMocks
-    private FileSystemService serviceToTest;
+    @Test
+    public void test_addDirectories() throws FileSystemStorageException {
+        fileSystemService.addDirectories(username, type, id);
+        Assertions.assertTrue(Files.exists(fileSystemService.createPath(username, type, id)));
+    }
 
-    @BeforeEach
-    public void init() {
-        MockitoAnnotations.initMocks(this);
+    @Test
+    public void test_CreatePath() {
+        Path path = fileSystemService.createPath(username, type, id);
+        Assertions.assertEquals(path.toString(), fileSystemService.getRootLocationString() +
+                "/username/type/1");
+    }
+
+    @Test
+    public void test_CreatePath_nullId() {
+        String username = "username";
+        String type = "type";
+        Path path = fileSystemService.createPath(username, type, null);
+        Assertions.assertEquals(path.toString(), fileSystemService.getRootLocationString() +
+                "/username/type");
+    }
+
+    @Test
+    public void test_createFileInDirectory_and_deleteDirectories() throws FileSystemStorageException {
+        fileSystemService.addDirectories(username, type, id);
+        String filename = "newFile";
+        byte[] bytes = "abc".getBytes();
+        fileSystemService.createFileInDirectory(username, type, id, filename, bytes);
+        File file = fileSystemService.createPath(username, type, id).resolve(filename).toFile();
+        Assertions.assertTrue(file.exists());
+        fileSystemService.deleteDirectories(username, type, id);
+        Assertions.assertFalse(file.exists());
     }
 
     @Test
     public void test_deleteDirectoryOrFile_deleteFile() throws IOException, FileSystemStorageException {
         File file = new File(folder + "myfile");
-        file.createNewFile();
-
-        Assertions.assertEquals(true, file.exists());
-
-        serviceToTest.deleteDirectoryOrFile(file);
-
-        Assertions.assertEquals(false, file.exists());
+        Assertions.assertTrue(file.createNewFile());
+        fileSystemService.deleteDirectoryOrFile(file);
+        Assertions.assertFalse(file.exists());
     }
 
     @Test
@@ -54,20 +85,20 @@ class FileSystemServiceTest {
         Files.write(folder.resolve("myfile"), "abc".getBytes());
         File file = folder.resolve("myfile").toFile();
 
-        Assertions.assertEquals(true, file.exists());
-        Assertions.assertEquals(true, folder.toFile().exists());
+        Assertions.assertTrue(file.exists());
+        Assertions.assertTrue(folder.toFile().exists());
 
-        serviceToTest.deleteDirectoryOrFile(folder.toFile());
+        fileSystemService.deleteDirectoryOrFile(folder.toFile());
 
-        Assertions.assertEquals(false, file.exists());
-        Assertions.assertEquals(false, folder.toFile().exists());
+        Assertions.assertFalse(file.exists());
+        Assertions.assertFalse(folder.toFile().exists());
     }
 
     @Test
-    public void test_deleteDirectoryOrFile_noSuchFile() throws IOException {
+    public void test_deleteDirectoryOrFile_noSuchFile() {
         File file = new File("NotOnDrive");
 
-        Assertions.assertEquals(false, file.exists());
-        Assertions.assertDoesNotThrow(() -> serviceToTest.deleteDirectoryOrFile(file));
+        Assertions.assertFalse(file.exists());
+        Assertions.assertDoesNotThrow(() -> fileSystemService.deleteDirectoryOrFile(file));
     }
 }
