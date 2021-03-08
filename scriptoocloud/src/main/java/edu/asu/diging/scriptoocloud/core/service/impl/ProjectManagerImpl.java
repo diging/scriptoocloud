@@ -44,31 +44,22 @@ public class ProjectManagerImpl implements ProjectManager {
 		return projectRepo.save((ProjectImpl) project);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 */
-	@Override
-	public int getProject(int id) {
-		Optional<ProjectImpl> project = projectRepo.findById((long) id);
-		return id;
-	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * edu.asu.diging.scriptoocloud.core.service.impl.ProjectManager#deleteProject(
-	 * java.lang.String)
-	 */
-	@Override
-	public void deleteProject(Long id) throws NullIDException {
-		if (id == null) {
-			throw new NullIDException("Project " + id + " does not exist.");
-		} else {
-			projectRepo.deleteById(id);
-		}
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * deleteProject deletes a project based on a given project id. It is used in
+     * the RemoveProjectController, listed as a button on existing projects. Null is
+     * an illegal argument for this function.
+     * 
+     * @see
+     * edu.asu.diging.scriptoocloud.core.service.impl.ProjectManager#deleteProject(
+     * java.lang.String)
+     */
+    @Override
+    public void deleteProject(Long id) {
+        projectRepo.deleteById(id);
+    }
 
 	/*
 	 * (non-Javadoc)

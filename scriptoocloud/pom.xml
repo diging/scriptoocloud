@@ -19,11 +19,18 @@
 		<admin.password>$2a$04$oQo44vqcDIFRoYKiAXoNheurzkwX9dcNmowvTX/hsWuBMwijqn44i</admin.password>
 
 		<db.driver>com.mysql.jdbc.Driver</db.driver>
-		<db.database.url>db-url</db.database.url>
+		<db.database.url>jdbc-url-to-db</db.database.url>
 		<db.user>db-user</db.user>
 		<db.password>db-password</db.password>
 
+		<git.repositories.path></git.repositories.path>
+		<testPathValue></testPathValue>
+
 		<log.level>info</log.level>
+		
+		<docker.engine.host></docker.engine.host>
+		<docker.tls></docker.tls>
+		<docker.dockerfile.path></docker.dockerfile.path>
 
 		<tomcat.deploy.path></tomcat.deploy.path>
 		<tomcat.app.name>scriptoocloud</tomcat.app.name>
@@ -86,6 +93,13 @@
 		</dependency>
 
 		<!-- Spring Security -->
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-test -->
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-test</artifactId>
+		    <version>${spring-security-version}</version>
+		    <scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
@@ -228,6 +242,32 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/com.github.docker-java/docker-java -->
+		<dependency>
+			<groupId>com.github.docker-java</groupId>
+			<artifactId>docker-java</artifactId>
+			<version>3.2.5</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.github.docker-java/docker-java-transport-httpclient5 -->
+		<dependency>
+			<groupId>com.github.docker-java</groupId>
+			<artifactId>docker-java-transport-httpclient5</artifactId>
+			<version>3.2.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.jgit</groupId>
+			<artifactId>org.eclipse.jgit</artifactId>
+			<version>3.5.0.201409260305-r</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.yaml/snakeyaml -->
+		<dependency>
+		    <groupId>org.yaml</groupId>
+		    <artifactId>snakeyaml</artifactId>
+		    <version>1.28</version>
+		</dependency>
 
 	</dependencies>
 
@@ -242,8 +282,19 @@
 					<exclude>**/*.ttf</exclude>
 					<exclude>**/*.woff2</exclude>
 				</excludes>
-			</resource>
+			</resource>	
 		</resources>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<filtering>true</filtering>
+				<excludes>
+					<exclude>**/*.woff</exclude>
+					<exclude>**/*.ttf</exclude>
+					<exclude>**/*.woff2</exclude>
+				</excludes>
+			</testResource>		
+		</testResources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
