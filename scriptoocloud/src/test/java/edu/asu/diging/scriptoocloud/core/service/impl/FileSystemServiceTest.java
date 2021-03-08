@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -23,6 +24,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ContextConfiguration(classes = FileSystemService.class)
 class FileSystemServiceTest {
 
+    private final String username = "username";
+    private final String type = "type";
+    private final String id = "1";
+
     @Mock
     private final FileSystemService fileSystemService;
 
@@ -33,6 +38,14 @@ class FileSystemServiceTest {
 
     @TempDir
     protected Path folder;
+
+    @Test
+    public void test_addDirectories() {
+        folder = folder.resolve(username + "/" + type + "/" + id);
+        FileSystemService spyFileSystemService = Mockito.spy(fileSystemService);
+        Mockito.when(spyFileSystemService.createPath(username, type, id)).thenReturn(folder);
+        Assertions.assertDoesNotThrow(() -> spyFileSystemService.addDirectories(username, type, id));
+    }
 
     @Test
     public void test_CreatePath() {
@@ -51,6 +64,22 @@ class FileSystemServiceTest {
         Path path = fileSystemService.createPath(username, type, null);
         Assertions.assertEquals(path.toString(), fileSystemService.getRootLocationString() +
                 "/username/type");
+    }
+
+    @Test
+    public void test_deleteDirectories() throws FileSystemStorageException, IOException {
+        File file = new File(folder + File.separator + id);
+        String pathString = file.getPath();
+        // ReflectionUtils doesn't seem to allow for creating more than one directory or file
+        // relative to the temporary directory - infer a username and type from existing path
+        String[] segments = pathString.split(File.separator);
+        String segmentUserName = segments[segments.length - 3];
+        String segmentType = segments[segments.length - 2];
+        Assertions.assertTrue(file.createNewFile());
+        FileSystemService spyFileSystemService = Mockito.spy(fileSystemService);
+        Mockito.when(spyFileSystemService.createPath(segmentUserName, segmentType, id)).thenReturn(file.toPath());
+        spyFileSystemService.deleteDirectories(segmentUserName, segmentType, id);
+        Assertions.assertFalse(file.exists());
     }
 
     @Test
