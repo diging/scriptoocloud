@@ -23,10 +23,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ContextConfiguration(classes = FileSystemService.class)
 class FileSystemServiceTest {
 
-    private final String username = "username";
-    private final String type = "type";
-    private final String id = "1";
-
     @Mock
     private final FileSystemService fileSystemService;
 
@@ -39,13 +35,10 @@ class FileSystemServiceTest {
     protected Path folder;
 
     @Test
-    public void test_addDirectories() throws FileSystemStorageException {
-        fileSystemService.addDirectories(username, type, id);
-        Assertions.assertTrue(Files.exists(fileSystemService.createPath(username, type, id)));
-    }
-
-    @Test
     public void test_CreatePath() {
+        String username = "username";
+        String type = "type";
+        String id = "1";
         Path path = fileSystemService.createPath(username, type, id);
         Assertions.assertEquals(path.toString(), fileSystemService.getRootLocationString() +
                 "/username/type/1");
@@ -58,18 +51,6 @@ class FileSystemServiceTest {
         Path path = fileSystemService.createPath(username, type, null);
         Assertions.assertEquals(path.toString(), fileSystemService.getRootLocationString() +
                 "/username/type");
-    }
-
-    @Test
-    public void test_createFileInDirectory_and_deleteDirectories() throws FileSystemStorageException {
-        fileSystemService.addDirectories(username, type, id);
-        String filename = "newFile";
-        byte[] bytes = "abc".getBytes();
-        fileSystemService.createFileInDirectory(username, type, id, filename, bytes);
-        File file = fileSystemService.createPath(username, type, id).resolve(filename).toFile();
-        Assertions.assertTrue(file.exists());
-        fileSystemService.deleteDirectories(username, type, id);
-        Assertions.assertFalse(file.exists());
     }
 
     @Test
