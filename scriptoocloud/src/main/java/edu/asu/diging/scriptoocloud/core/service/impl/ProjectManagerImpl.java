@@ -39,6 +39,7 @@ public class ProjectManagerImpl implements ProjectManager {
 		project.setUser(user);
 		project.setDescription(description);
 		project.setCreationDate(ZonedDateTime.now());
+		project.setLastModifiedDate(ZonedDateTime.now());
 
 		return projectRepo.save((ProjectImpl) project);
 	}
@@ -74,20 +75,22 @@ public class ProjectManagerImpl implements ProjectManager {
 
 	@Override
 	public void updateProject(int id, String name, String description) {
-		Project project = new ProjectImpl();
-		project.setId(id);
-		project.setName(name);
-		project.setDescription(description);
+		//project.setId(id);
+	    Optional<ProjectImpl> project = getProject(id);
+	    Project project1 = project.get();
+		project1.setName(name);
+		project1.setDescription(description);
+		project1.setLastModifiedDate(ZonedDateTime.now());
 
-		// try
-		projectRepo.save((ProjectImpl) project);
+		projectRepo.save((ProjectImpl) project1);
 	}
 
 
     @Override
-    public int getProject(int id) {
-        // TODO Auto-generated method stub
-        return 0;
+    public Optional<ProjectImpl> getProject(int id) {
+        Optional<ProjectImpl> project = Optional.ofNullable(new ProjectImpl());
+        project = projectRepo.findById((long) id);
+        return project;
     }
 
 }

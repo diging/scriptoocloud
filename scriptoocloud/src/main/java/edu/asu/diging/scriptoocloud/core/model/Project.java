@@ -21,6 +21,10 @@ public interface Project {
     ZonedDateTime getCreationDate();
 
     void setCreationDate(ZonedDateTime creationDate);
+    
+    ZonedDateTime getLastModifiedDate();
+
+    void setLastModifiedDate(ZonedDateTime lastModifiedDate);
 
     void setUser(IUser user);
 

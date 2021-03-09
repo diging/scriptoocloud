@@ -21,6 +21,7 @@ public class ProjectImpl implements Project {
     private String name;
     private String description;
     private ZonedDateTime creationDate;
+    private ZonedDateTime lastModifiedDate;
 
     private SimpleUser user;
 
@@ -117,6 +118,14 @@ public class ProjectImpl implements Project {
     @Override
     public String getUsername() {
         return user.getUsername();
+    }
+
+    public ZonedDateTime getLastModifiedDate() {
+        return lastModifiedDate;
+    }
+
+    public void setLastModifiedDate(ZonedDateTime lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
     }
 
 }

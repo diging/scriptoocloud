@@ -1,8 +1,10 @@
 package edu.asu.diging.scriptoocloud.core.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import edu.asu.diging.scriptoocloud.core.model.Project;
+import edu.asu.diging.scriptoocloud.core.model.impl.ProjectImpl;
 import edu.asu.diging.simpleusers.core.model.IUser;
 
 public interface ProjectManager {
@@ -13,8 +15,8 @@ public interface ProjectManager {
 
     List<Project> findAll();
 
-	int getProject(int id);
-	
-	void updateProject(int id,String name, String description);
+	Optional<ProjectImpl> getProject(int id);
+
+    void updateProject(int id, String name, String description);
 
 }
