@@ -1,0 +1,26 @@
+<html layout:decorate="~{layouts/main}">
+  <head>
+    <title>Authority Matcher</title>
+  </head>
+  <body>
+	<div layout:fragment="content">
+	<h2>Project List:</h2> 
+	  <ul class="list-group">
+		<li th:each="project : ${projects}" class="list-group-item clearfix">
+			<p>Name: <span th:text="${project.getName()}" th:remove="tag"></span> ID: <span th:text="${project.getId()}" th:remove="tag"></span>Description: <span th:text="${project.getDescription()}" th:remove="tag"></span> Date Created: <span th:text="${project.getCreationDate()}" th:remove="tag"></span></p>
+			<div class="pull-right text-right">
+			</div> 
+			
+			<form th:action="@{|/auth/projects/remove/${project.getId()}|}" method="POST">
+		    	<button style="padding:0px" class="btn btn-link"><i class="fas fa-trash"></i> Delete Project</button>
+		    </form> 
+		    
+		    <form th:action="@{|/auth/edit/${project.getId()}|}" method="POST">
+		    	<button style="padding:0px" class="btn btn-link"><i class="fas fa-edit"></i> Edit Project</button>
+		    </form> 
+		</li>
+	  </ul>
+	  <h2><a th:href="@{/auth/add}">Add a project</a></h1>
+	</div>
+</body>
+</html>

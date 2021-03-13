@@ -10,6 +10,11 @@
 		You did it. This basic webapp is all set up now. Try to login as "admin" with password "admin".
 		</p>
       </div>
+      
+      <p sec:authorize="isAuthenticated()" role="presentation">
+	    <a th:href="@{/auth/projects}">Project Manager</a>
+	  </p>
+      
    </div>
   </body>
 </html>
