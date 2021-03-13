@@ -42,16 +42,6 @@ class JgitServiceImpl implements JgitService {
 
     @Autowired
     private FileSystemService fileSystemService;
-    
-    @Autowired
-    private DockerService dockerService;
-    
-    @Autowired
-    YamlParserService yamlParserService;
-    
-    @Autowired
-    YamlModelRepository yamlRepositoryJpa;
-    
 
     /*
      * Creates folder in file system and clones a remote git repository to it
@@ -63,12 +53,10 @@ class JgitServiceImpl implements JgitService {
      * @throws  JGitInternalException       JGit command execution failure at low level                                       
     */
     @Override
-    public String clone(String localRepoFolderName, String remoteGitRepoUrl) throws InvalidGitUrlException, JGitInternalException, IOException, InterruptedException {
+    public void clone(String localRepoFolderName, String remoteGitRepoUrl) throws InvalidGitUrlException, JGitInternalException, IOException, InterruptedException {
         try {
             Git.cloneRepository().setURI(remoteGitRepoUrl).setDirectory(new File(localRepoFolderName)).call().close();
             new TarWriter(localRepoFolderName).writeDir(new File(localRepoFolderName));
-            String imageId = dockerService.buildImage(localRepoFolderName);
-            return imageId;
         } catch(GitAPIException e) {
             fileSystemService.deleteDirectoryOrFile(new File(localRepoFolderName));
             throw new InvalidGitUrlException(e);

@@ -10,26 +10,27 @@ import java.nio.file.Path;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 
-public class TarWriter {
+import edu.asu.diging.scriptoocloud.core.service.TarWriterInterface;
+
+public class TarWriter implements TarWriterInterface {
 
     private FileOutputStream out;
     private TarArchiveOutputStream tOut;    
-    private int len;
+    private int lenOfParentPath;
     
     public TarWriter(String outPath) throws IOException{        
         out = new FileOutputStream(outPath + ".tar");        
         tOut = new TarArchiveOutputStream(out);
         tOut.setLongFileMode(TarArchiveOutputStream.LONGFILE_POSIX);
-        len = outPath.length();
+        lenOfParentPath = outPath.length();
     }
 
     private void writeEntry(File file) throws IOException{
         Path sourcePath = FileSystems.getDefault().getPath(file.getPath());
         byte[] sourceBytes = Files.readAllBytes(sourcePath);
 
-        String alteredPath = file.getPath();
+        String alteredPath = file.getPath().substring(lenOfParentPath);
 
-        alteredPath = alteredPath.substring(len);
         TarArchiveEntry tarEntry = new TarArchiveEntry(file, alteredPath);
         
         tarEntry.setSize(sourceBytes.length);
@@ -39,6 +40,7 @@ public class TarWriter {
         tOut.closeArchiveEntry();
     }
     
+    @Override
     public void writeDir(File rootFile) throws IOException{    
         File[] fileTree = rootFile.listFiles();
         if(rootFile.getName().equals(".git")){return;}

@@ -11,29 +11,22 @@ import org.yaml.snakeyaml.Yaml;
 @Service
 class YamlParserService  {
 
-    public Map<String,Object> parseYaml(String filePathString) throws FileNotFoundException{  
-        File file = new File(filePathString);
-        return parseYaml(file);
-    }
-
-    public Map<String,Object> parseYaml(File file) throws FileNotFoundException{  
-        if(file.isDirectory()){ 
-            File[] fileTree = file.listFiles();
+    public Map<String,Object> parseYaml(File dir) throws FileNotFoundException{  
+            File[] fileTree = dir.listFiles();
             for( File childFile : fileTree ){
-                if(childFile.getPath().contains(".yaml")){
-                    file = childFile;
+                if(childFile.getPath().contains("STC.yaml")){
+                    dir = childFile;
                     break;
                 }
             }  
-        }
-        return parseYamlFile(file);
+        return parseYamlFile(dir);
     }
 
     private Map<String,Object> parseYamlFile(File file) throws FileNotFoundException{
         if(file.isDirectory()){ 
             File[] fileTree = file.listFiles();
             for( File childFile : fileTree ){
-                if(childFile.getPath().contains(".yaml")){
+                if(childFile.getPath().endsWith(".yaml")){
                     file = childFile;
                     break;
                 }

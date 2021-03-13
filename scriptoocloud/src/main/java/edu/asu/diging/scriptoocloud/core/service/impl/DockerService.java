@@ -22,22 +22,20 @@ public class DockerService {
     private DockerRestConnection dockerRestConnection;
     
     public String buildImage(String dockerFileLocation) throws FileNotFoundException, InterruptedException{
-        File file = new File(dockerFileLocation + ".tar");
+        File file = new File(dockerFileLocation);
         String response = dockerRestConnection.dockerClient.buildImageCmd(new FileInputStream(file)).start().awaitImageId();
         return response;
     }
    
-    public DockerService buildContainer(String imageId, String[] userArgs) throws IOException{   
+    public void buildContainer(String imageId, String[] userArgs) throws IOException{   
                              
         String containerId = dockerRestConnection.dockerClient.createContainerCmd(imageId).withCmd(userArgs).exec().getId();
 
         dockerRestConnection.dockerClient.startContainerCmd(containerId).exec();
-
-        return this;
     }
     
-    public DockerService runContainer(String projectName) throws IOException{
-        return this;
+    public String runContainer(String projectName) throws IOException{
+        return "";
     }
     
 }

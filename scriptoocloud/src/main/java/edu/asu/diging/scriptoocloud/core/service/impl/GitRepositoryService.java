@@ -45,6 +45,9 @@ public class GitRepositoryService implements GitRepositoryManager {
     private GitRepositoryRepository gitRepositoryJpa;
     
     @Autowired
+    private DockerService dockerService;
+    
+    @Autowired
     private JgitService jGitService;
    
     @Value("${git.repositories.path}")
@@ -86,7 +89,10 @@ public class GitRepositoryService implements GitRepositoryManager {
         repositoryEntity.setCreationDate(creationDate);
         repositoryEntity.setFolderName(folderName);
   
-        String imageId = jGitService.clone(path + folderName, gitUrl);
+        jGitService.clone(path + folderName, gitUrl);
+        
+        String imageId = dockerService.buildImage(path + folderName + ".tar");
+        
         repositoryEntity.setImageId(imageId);
 
         gitRepositoryJpa.save(repositoryEntity);
