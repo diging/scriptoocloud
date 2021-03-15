@@ -47,7 +47,7 @@ public class DataFileService implements IDataFileService {
 
         DataFile newFile = new DataFile();
         newFile.setName(filename);
-        newFile.setType(type);
+        newFile.setExtension(type);
         newFile.setCreatedAt(OffsetDateTime.now());
         Optional<Dataset> dataset;
         Long dataFileId;

@@ -17,7 +17,7 @@ public class DataFile implements IDataFile {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     private String name;
-    private String type;
+    private String extension;
     @ManyToOne
     @JoinColumn(name = "dataset_id", nullable = false)
     private Dataset dataset;
@@ -64,23 +64,21 @@ public class DataFile implements IDataFile {
     }
 
     /**
-     * Set the {@code DataFile} type (file extension).
+     * Set the {@code DataFile} file extension.
      *
      * @param type The {@code DataFile} type.
      */
-    @Override
-    public void setType(String type) {
-        this.type = type;
+    public void setExtension(String type) {
+        this.extension = type;
     }
 
     /**
-     * Get the {@code DataFile} type (file extension).
+     * Get the {@code DataFile} file extension.
      *
      * @return The {@code DataFile} type.
      */
-    @Override
-    public String getType() {
-        return type;
+    public String getExtension() {
+        return extension;
     }
 
     /**

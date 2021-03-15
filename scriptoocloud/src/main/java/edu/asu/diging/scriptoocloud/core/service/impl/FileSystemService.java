@@ -30,7 +30,11 @@ public class FileSystemService implements IFileSystemService {
     }
 
     public String getRootLocationString() {
-        return rootLocationString;
+        if (rootLocationString != null) {
+            return rootLocationString;
+        } else {
+            return "";
+        }
     }
 
     @Override
@@ -53,14 +57,18 @@ public class FileSystemService implements IFileSystemService {
     }
 
     @Override
-    public Path createPath(String username, String type, String id) throws InvalidPathException {
+    public Path createPath(String username, String type, String id) throws FileSystemStorageException {
         Path path;
-        if (id != null) {
-            path = Paths.get(this.rootLocationString, username, type, id);
-        } else {
-            path = Paths.get(this.rootLocationString, username, type);
+        try {
+            if (id != null) {
+                path = Paths.get(getRootLocationString(), username, type, id);
+            } else {
+                path = Paths.get(getRootLocationString(), username, type);
+            }
+            return Paths.get(StringUtils.cleanPath(Objects.requireNonNull(path).toString()));
+        } catch (InvalidPathException e) {
+            throw new FileSystemStorageException("Path could not be created");
         }
-        return Paths.get(StringUtils.cleanPath(Objects.requireNonNull(path).toString()));
     }
 
     @Override
@@ -107,7 +115,7 @@ public class FileSystemService implements IFileSystemService {
     public void createFileInDirectory(String username, String type, String id, String filename,
                                       byte[] bytes) throws FileSystemStorageException {
 
-        Path destinationFile = Paths.get(rootLocationString).resolve(
+        Path destinationFile = Paths.get(getRootLocationString()).resolve(
                 Paths.get(username, type, id, filename))
                 .normalize().toAbsolutePath();
         try (InputStream inputStream = new ByteArrayInputStream(bytes)) {

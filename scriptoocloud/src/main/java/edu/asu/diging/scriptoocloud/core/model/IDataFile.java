@@ -14,9 +14,9 @@ public interface IDataFile {
 
     String getName();
 
-    void setType(String type);
+    void setExtension(String type);
 
-    String getType();
+    String getExtension();
 
     void setDataset(Dataset dataset);
 

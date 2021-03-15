@@ -5,6 +5,7 @@ import edu.asu.diging.simpleusers.core.model.IUser;
 import edu.asu.diging.simpleusers.core.model.impl.SimpleUser;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -103,6 +104,12 @@ public class Dataset implements IDataset {
      */
     @Override
     public Long addFile(DataFile dataFile) {
+        if (files == null){
+            files = new HashSet<>();
+        }
+        if (dataFile == null){
+            dataFile = new DataFile();
+        }
         files.add(dataFile);
         return dataFile.getId();
     }
