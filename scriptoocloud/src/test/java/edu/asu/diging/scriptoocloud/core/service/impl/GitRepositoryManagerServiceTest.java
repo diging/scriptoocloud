@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import edu.asu.diging.scriptoocloud.core.exceptions.FileSystemStorageException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -70,7 +71,7 @@ class GitRepositoryManagerServiceTest {
     }
    
     @Test
-    public void test_cloneRepository_clone() throws MalformedURLException, InvalidGitUrlException {
+    public void test_cloneRepository_clone() throws MalformedURLException, InvalidGitUrlException, FileSystemStorageException {
         Mockito.when(urlFormatter.urlToFolderName("https://github.com/diging/scriptoocloud"))
             .thenReturn("github.com_diging_scriptoocloud");
         Mockito.when(gitRepositoryJpa.findByUrl("github.com_diging_scriptoocloud")).thenReturn(null);
@@ -97,7 +98,7 @@ class GitRepositoryManagerServiceTest {
     }   
         
     @Test
-    public void test_deleteRepository_delete() {
+    public void test_deleteRepository_delete() throws FileSystemStorageException {
         GitRepositoryImpl gitRepositoryImpl =  new GitRepositoryImpl();
         gitRepositoryImpl.setFolderName("test");
         

@@ -61,25 +61,30 @@
                  role="presentation">
                 <a class="account-button sign-in-out" th:href="@{/admin/user/list}">Users</a>
             </div>
-            
+
             <!-- If Admin, show Repository links -->
-            <div class="pull-right nav header-nav" sec:authorize="hasRole('ADMIN')" role="presentation">
-              <button type="button" class="account-button sign-in-out dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Repositories
-              </button>
-              <div class="dropdown-menu">
-                <a class="dropdown-item" th:href="@{/admin/repositories/clone}">Clone</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" th:href="@{/admin/repositories/list}">Mange Repositories</a>
-              </div>
+            <div class="pull-right nav header-nav" sec:authorize="hasRole('ADMIN')"
+                 role="presentation">
+                <button type="button" class="account-button sign-in-out dropdown-toggle"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Repositories
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" th:href="@{/admin/repositories/clone}">Clone</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" th:href="@{/admin/repositories/list}">Mange
+                        Repositories</a>
+                </div>
             </div>
-            
+
             <!-- If logged in, show logout -->
             <div class="pull-right nav header-nav" sec:authorize="isAuthenticated()"
                  role="presentation">
                 <form th:action="@{/logout}" method="POST">
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                    <button class="account-button sign-in-out" type="submit" title="Logout">Sign Out</button>
+                    <button class="account-button sign-in-out" type="submit" title="Logout">Sign
+                        Out
+                    </button>
                 </form>
             </div>
 
@@ -101,6 +106,19 @@
         </nav>
     </div>
 </header>
+
+<div sec:authorize="isAuthenticated()" id="user-navigation">
+    <div class="container">
+        <ul class="breadcrumb">
+            <li class="notactive">
+                <a th:href="@{'/auth/datasets/list'}">My Datasets</a>
+            </li>
+            <li class="active">
+                My Projects
+            </li>
+        </ul>
+    </div>
+</div>
 
 <div th:if="${show_alert}" class="alert alert-${alert_type}" role="alert">${alert_msg}</div>
 
