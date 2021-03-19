@@ -22,15 +22,6 @@ import edu.asu.diging.scriptoocloud.core.service.ProjectManager;
 public class ProjectsController {
 
     @Autowired
-    private ProjectRepository projectRepo;
-
-    @Autowired
-    private RemoveProjectController removeProjectController;
-
-    @Autowired
-    private AddProjectController addProjectController;
-
-    @Autowired
     private ProjectManager projectManager;
 
     @RequestMapping("/auth/projects")
