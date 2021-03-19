@@ -22,28 +22,27 @@ import edu.asu.diging.simpleusers.core.model.IUser;
 @Service
 public class ProjectManagerImpl implements ProjectManager {
 
-	@Autowired
-	private ProjectRepository projectRepo;
+    @Autowired
+    private ProjectRepository projectRepo;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * edu.asu.diging.scriptoocloud.core.service.impl.ProjectManager#createProject(
-	 * java.lang.String, java.lang.String)
-	 */
-	@Override
-	public Project createProject(String name, String description, IUser user) {
-		Project project = new ProjectImpl();
-		project.setName(name);
-		project.setUser(user);
-		project.setDescription(description);
-		project.setCreationDate(ZonedDateTime.now());
-		project.setLastModifiedDate(ZonedDateTime.now());
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * edu.asu.diging.scriptoocloud.core.service.impl.ProjectManager#createProject(
+     * java.lang.String, java.lang.String)
+     */
+    @Override
+    public Project createProject(String name, String description, IUser user) {
+        Project project = new ProjectImpl();
+        project.setName(name);
+        project.setUser(user);
+        project.setDescription(description);
+        project.setCreationDate(ZonedDateTime.now());
+        project.setLastModifiedDate(ZonedDateTime.now());
 
-		return projectRepo.save((ProjectImpl) project);
-	}
-
+        return projectRepo.save((ProjectImpl) project);
+    }
 
     /*
      * (non-Javadoc)
@@ -52,7 +51,7 @@ public class ProjectManagerImpl implements ProjectManager {
      * the RemoveProjectController, listed as a button on existing projects. Null is
      * an illegal argument for this function.
      * 
-     * @see
+     * @seevc
      * edu.asu.diging.scriptoocloud.core.service.impl.ProjectManager#deleteProject(
      * java.lang.String)
      */
@@ -61,30 +60,28 @@ public class ProjectManagerImpl implements ProjectManager {
         projectRepo.deleteById(id);
     }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 */
-	@Override
-	public List<Project> findAll() {
-		Iterable<ProjectImpl> projects = projectRepo.findAll();
-		List<Project> results = new ArrayList<>();
-		projects.forEach(e -> results.add((Project) e));
-		return results;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     */
+    @Override
+    public List<Project> findAll() {
+        Iterable<ProjectImpl> projects = projectRepo.findAll();
+        List<Project> results = new ArrayList<>();
+        projects.forEach(e -> results.add((Project) e));
+        return results;
+    }
 
-	@Override
-	public void updateProject(int id, String name, String description) {
-		//project.setId(id);
-	    Optional<ProjectImpl> project = getProject(id);
-	    Project project1 = project.get();
-		project1.setName(name);
-		project1.setDescription(description);
-		project1.setLastModifiedDate(ZonedDateTime.now());
+    @Override
+    public void updateProject(int id, String name, String description) {
+        Optional<ProjectImpl> project = getProject(id);
+        Project project1 = project.get();
+        project1.setName(name);
+        project1.setDescription(description);
+        project1.setLastModifiedDate(ZonedDateTime.now());
 
-		projectRepo.save((ProjectImpl) project1);
-	}
-
+        projectRepo.save((ProjectImpl) project1);
+    }
 
     @Override
     public Optional<ProjectImpl> getProject(int id) {
