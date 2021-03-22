@@ -18,12 +18,15 @@ public interface IDatasetService {
     /**
      * Creates the dataset in the filesystem, then in the database.
      *
-     * @param name The name of the Dataset.
-     * @param user The IUser who owns the dataset
+     * @param name        The name of the Dataset.
+     * @param user        The IUser who owns the dataset
+     * @param version     The version of the dataset
+     * @param description The user-generated description of the Dataset.
      * @return The Dataset which was created.
      * @throws DatasetStorageException Exception thrown if dataset cannot be created.
      */
-    Dataset createDataset(String name, IUser user) throws DatasetStorageException;
+    Dataset createDataset(String name, IUser user, String version, String description)
+            throws DatasetStorageException;
 
     /**
      * Edits the dataset name in the database (Dataset path uses id).

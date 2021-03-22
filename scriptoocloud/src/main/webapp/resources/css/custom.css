@@ -591,6 +591,19 @@ input.fieldInput:focus {
     font-family: Menlo, Monaco, Consolas, "Courier New", monospace !important;
 }
 
+.filename {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.metadata {
+    font-size: 12px;
+}
+
+.metadataLabel {
+    font-weight: bold;
+}
+
 .td {
     display: table-cell;
 }
@@ -648,6 +661,10 @@ span.file-name-span {
 
 .btn-clear {
     background: transparent;
+}
+
+.btn-clear:hover {
+    color:#8c1d40;
 }
 
 .btn-clear:active {

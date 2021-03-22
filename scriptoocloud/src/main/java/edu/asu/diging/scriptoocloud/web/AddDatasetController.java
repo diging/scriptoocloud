@@ -57,17 +57,23 @@ public class AddDatasetController {
         IUser user = userManager.findByUsername(username);
         datasetForm.setUsername(username);
         if (result.hasErrors()) {
-            Page<Dataset> dbDatasets = iDatasetService.findDatasets(PageRequest.of(currentPage - 1, pageSize), user);
+            Page<Dataset> dbDatasets = iDatasetService
+                    .findDatasets(PageRequest.of(currentPage - 1, pageSize), user);
             model.addAttribute("dbDatasets", dbDatasets);
             model.addAttribute("dataset", datasetForm);
             model.addAttribute("datasetEditForm", new DatasetEditForm());
             return "auth/datasets/list";
         }
         try {
-            Dataset savedDataset = iDatasetService.createDataset(datasetForm.getName(), user);
-            redirectAttributes.addFlashAttribute("successMessage", "Dataset: " + savedDataset.getName() + " successfully created");
+            Dataset savedDataset = iDatasetService
+                    .createDataset(datasetForm.getName(), user, "1",
+                            datasetForm.getDescription());
+            redirectAttributes
+                    .addFlashAttribute("successMessage", "Dataset: " + savedDataset.getName()
+                            + " successfully created");
         } catch (DatasetStorageException e) {
-            Page<Dataset> dbDatasets = iDatasetService.findDatasets(PageRequest.of(currentPage - 1, pageSize), user);
+            Page<Dataset> dbDatasets = iDatasetService
+                    .findDatasets(PageRequest.of(currentPage - 1, pageSize), user);
             model.addAttribute("dbDatasets", dbDatasets);
             model.addAttribute("dataset", datasetForm);
             model.addAttribute("datasetEditForm", new DatasetEditForm());

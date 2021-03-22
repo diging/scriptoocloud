@@ -20,32 +20,50 @@ public interface IFileSystemService {
     String getRootLocationString();
 
     /**
-     * Creates directories on the filesystem.
+     * Directories created on the system can be of the form: [root]/[username] or
+     * [root]/[username]/[type]/[id]/[version].
      *
      * @param username The username to be used as a directory name.
-     * @param type     The directory type (e.g., Dataset, etc.)
+     * @param type     The directory type (e.g., dataset, etc.)
      * @param id       The id to be used as a directory name.
-     * @throws FileSystemStorageException The exception thrown if the directory could not be created.
+     * @param version  The version (e.g., Dataset version)
+     * @return true if the directory was successfully created, false otherwise.
+     * @throws FileSystemStorageException The exception thrown if the directory could not be created
+     *                                    due to an IOException, UnsupportedOperationException,
+     *                                    or SecurityException.
      */
-    void addDirectories(String username, String type, String id) throws FileSystemStorageException;
+    boolean addDirectories(String username, String type, String id, String version)
+            throws FileSystemStorageException;
 
     /**
      * A helper method to create a Path given a username and unique id.
      *
-     * @param username The username of the owner of the dataset.
-     * @param type     The directory type (e.g., Dataset, etc.)
-     * @param id       The id (can be null), if null the path created is of the form:
-     *                 [root]/[username]/[type] as opposed to [root]/[username]/[type]/[id]
+     * @param username The username of the owner of the files or directory (e.g. Dataset)
+     *                 (username cannot be null).
+     * @param type     The directory type (e.g., dataset, etc.) The type parameter can be null only
+     *                 if the username is the only non-null parameter, resulting in a path of the form:
+     *                 [root]/[username].
+     * @param id       The id of the entity (e.g., Dataset) being stored.  The id parameter can be
+     *                 null only if the username is the only non-null parameter, resulting in a path
+     *                 of the form: [root]/[username].
+     * @param version  The version of the entity (e.g., Dataset) being stored.  The version parameter
+     *                 can be null if the username is the only non-null parameter, resulting in
+     *                 a path of the form: [root]/[username] or, the version parameter can also be
+     *                 null when e.g., deleting a Dataset. The resulting path:
+     *                 [root]/[username]/[type]/[id] is used to delete the [id] directory, which includes
+     *                 deleting the [version] directory therein, as well as any files the [version]
+     *                 directory contains.
      * @return Returns a Path.
      * @throws InvalidPathException Exception if the path cannot be created.
      */
-    Path createPath(String username, String type, String id) throws FileSystemStorageException;
+    Path createPath(String username, String type, String id, String version) throws
+            FileSystemStorageException;
 
     /**
      * Deletes a directory on the filesystem.
      *
      * @param username The name (primary key) of the user / owner of the Dataset
-     * @param type     The directory type (e.g., Dataset, etc.)
+     * @param type     The directory type (e.g., dataset, etc.)
      * @param id       The id of the type to which the file belongs.
      * @throws FileSystemStorageException throws an exception if the directory could not be deleted.
      */
@@ -62,16 +80,17 @@ public interface IFileSystemService {
 
     /**
      * Stores the user-uploaded file on the file system in the form:
-     * [username]/[directory_type]/[directory_type_id]/[filename]
+     * [root]/[username]/[directory_type]/[directory_id]/[version]/[filename]
      *
      * @param username The name (primary key) of the user / owner of the Dataset to which
      *                 the file belongs.
-     * @param type     The directory type (e.g., Dataset, etc.)
+     * @param type     The directory type (e.g., dataset, etc.)
      * @param id       The id of the type to which the file belongs.
+     * @param version  The version of the type to which the file belongs.
      * @param filename The name of the file to be stored.
      * @param bytes    The array of bytes making up the file.
      * @throws FileSystemStorageException If the file could not be stored on the file system.
      */
-    void createFileInDirectory(String username, String type, String id, String filename,
-                               byte[] bytes) throws FileSystemStorageException;
+    void createFileInDirectory(String username, String type, String id, String version,
+                               String filename, byte[] bytes) throws FileSystemStorageException;
 }

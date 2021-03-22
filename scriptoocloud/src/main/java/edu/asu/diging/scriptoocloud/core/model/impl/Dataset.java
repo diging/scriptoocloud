@@ -5,6 +5,7 @@ import edu.asu.diging.simpleusers.core.model.IUser;
 import edu.asu.diging.simpleusers.core.model.impl.SimpleUser;
 
 import javax.persistence.*;
+import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,12 +21,16 @@ public class Dataset implements IDataset {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
+    private ZonedDateTime creationDate;
     private String name;
+    private Long version;
     @ManyToOne
     @JoinColumn(name = "username", nullable = false)
     private SimpleUser user;
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "dataset", orphanRemoval = true)
     private Set<DataFile> files;
+    @Lob
+    private String description;
 
     /**
      * Set the {@code Dataset} id.
@@ -48,6 +53,26 @@ public class Dataset implements IDataset {
     }
 
     /**
+     * Set the {@code Dataset} creationDate.
+     *
+     * @param creationDate The {@code ZonedDateTime} at which the {@code Dataset} was created.
+     */
+    @Override
+    public void setCreationDate(ZonedDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    /**
+     * Get the {@code Dataset} creationDate.
+     *
+     * @return the {@code Dataset} creationDate.
+     */
+    @Override
+    public ZonedDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    /**
      * Set the {@code Dataset} name.
      *
      * @param name The {@code Dataset} name.
@@ -65,6 +90,26 @@ public class Dataset implements IDataset {
     @Override
     public String getName() {
         return name;
+    }
+
+    /**
+     * Set the {@code Dataset} version number.
+     *
+     * @param version The {@code Dataset} version number.
+     */
+    @Override
+    public void setVersion(Long version) {
+        this.version = version;
+    }
+
+    /**
+     * Get the {@code Dataset} version number.
+     *
+     * @return The {@code Dataset} version number.
+     */
+    @Override
+    public Long getVersion() {
+        return version;
     }
 
     /**
@@ -104,13 +149,35 @@ public class Dataset implements IDataset {
      */
     @Override
     public Long addFile(DataFile dataFile) {
-        if (files == null){
+        if (files == null) {
             files = new HashSet<>();
         }
-        if (dataFile == null){
-            dataFile = new DataFile();
+        if (dataFile == null) {
+            return null;
         }
         files.add(dataFile);
         return dataFile.getId();
     }
+
+    /**
+     * Set the user-provided description of the {@code Dataset}.
+     *
+     * @param description the user-provided description of the {@code Dataset}.
+     */
+    @Override
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * Get the user-provided description of the {@code Dataset}.
+     *
+     * @return The user-provided description of the {@code Dataset}.
+     */
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+
 }

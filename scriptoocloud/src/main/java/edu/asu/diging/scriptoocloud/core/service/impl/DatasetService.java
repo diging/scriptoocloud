@@ -9,6 +9,7 @@ import edu.asu.diging.scriptoocloud.core.exceptions.FileSystemStorageException;
 import edu.asu.diging.scriptoocloud.core.model.IDataset;
 import edu.asu.diging.scriptoocloud.core.model.impl.DataFile;
 import edu.asu.diging.scriptoocloud.core.model.impl.Dataset;
+import edu.asu.diging.scriptoocloud.core.service.IDataFileService;
 import edu.asu.diging.scriptoocloud.core.service.IDatasetService;
 import edu.asu.diging.simpleusers.core.model.IUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.nio.file.Paths;
+import java.time.ZonedDateTime;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -33,30 +35,36 @@ public class DatasetService implements IDatasetService {
     private final String DIR_NAME = Dataset.class.getSimpleName().toLowerCase(Locale.ROOT);
 
     private final FileSystemService fileSystemService;
+    private final IDataFileService dataFileService;
     private final DatasetRepository datasetRepository;
     private final DataFileRepository dataFileRepository;
 
     @Autowired
     public DatasetService(FileSystemService fileSystemService,
+                          IDataFileService dataFileService,
                           DatasetRepository datasetRepository,
                           DataFileRepository dataFileRepository) {
         this.fileSystemService = fileSystemService;
+        this.dataFileService = dataFileService;
         this.datasetRepository = datasetRepository;
         this.dataFileRepository = dataFileRepository;
     }
 
     @Override
-    public Dataset createDataset(String name, IUser user) throws DatasetStorageException {
+    public Dataset createDataset(String name, IUser user, String version, String description) throws DatasetStorageException {
 
         Dataset dataset = new Dataset();
         dataset.setName(name);
         dataset.setUser(user);
+        dataset.setDescription(description);
+        dataset.setCreationDate(ZonedDateTime.now());
+        dataset.setVersion(Long.parseLong(version));
         Dataset savedDataset = datasetRepository.save(dataset);
 
         // create directories on the file system (using Dataset id)
         try {
             fileSystemService.addDirectories(user.getUsername(), DIR_NAME,
-                    String.valueOf(savedDataset.getId()));
+                    String.valueOf(savedDataset.getId()), version);
         } catch (FileSystemStorageException e) {
             throw new DatasetStorageException("An IOException prevented the Dataset from being created", e);
         }
@@ -66,7 +74,6 @@ public class DatasetService implements IDatasetService {
     @Override
     public void editDataset(Long id, String newName) {
 
-        // filesystem path is: username/datasetId so no change is needed to the filesystem
         Optional<Dataset> dataset = datasetRepository.findById(id);
         if (dataset.isPresent()) {
             dataset.get().setName(newName);
@@ -122,7 +129,7 @@ public class DatasetService implements IDatasetService {
             throw new DataFileNotFoundException("DataFile not found in the database");
         }
         String username = dataset.get().getUsername();
-        String fileName = dataFile.get().getName();
+        String version = dataset.get().getVersion().toString();
 
         // Remove join from dataset
         dataset.get().getFiles().remove(dataFile.get());
@@ -133,9 +140,10 @@ public class DatasetService implements IDatasetService {
 
         try {
             // Removes file from file system
+            String indexBasedFilename = dataFileService.getIndexBasedFileName(dataFile.get());
             String pathString = fileSystemService.createPath(username, DIR_NAME,
-                    String.valueOf(datasetId)).toString();
-            File fileToBeDeleted = Paths.get(pathString, fileName).toFile();
+                    String.valueOf(datasetId), version).toString();
+            File fileToBeDeleted = Paths.get(pathString, indexBasedFilename).toFile();
             return fileSystemService.deleteDirectoryOrFile(fileToBeDeleted);
         } catch (FileSystemStorageException e) {
             throw new DatasetStorageException("Path to file could not be found", e);

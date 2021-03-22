@@ -26,7 +26,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 @ContextConfiguration(classes = AnnotationConfigContextLoader.class)
 class FileSystemServiceTest {
 
-    private static final String ID = "1";
+    private final String VERSION = "1";
 
     @InjectMocks
     private FileSystemService fileSystemService;
@@ -38,6 +38,8 @@ class FileSystemServiceTest {
 
     private String type;
 
+    private String id;
+
     @BeforeEach
     public void init() {
         MockitoAnnotations.initMocks(this);
@@ -48,52 +50,83 @@ class FileSystemServiceTest {
         String pathString = path.toString();
         String[] segments = pathString.split(File.separator);
         StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < segments.length - 1; i++) {
+        for (int i = 0; i < segments.length - 2; i++) {
             stringBuilder.append(segments[i]);
             if (i != segments.length - 2)
                 stringBuilder.append(File.separator);
         }
         username = stringBuilder.toString();
-        type = segments[segments.length - 1];
+        type = segments[segments.length - 2];
+        id = segments[segments.length - 1];
     }
 
     @Test
-    public void test_addDirectories() throws FileSystemStorageException, IOException {
-        fileSystemService.addDirectories(username, type, ID);
-        File file = Paths.get(path + ID).toFile();
+    public void test_addDirectories_success() throws FileSystemStorageException, IOException {
+        fileSystemService.addDirectories(username, type, id, VERSION);
+        File file = Paths.get(path + VERSION).toFile();
         Assertions.assertTrue(file.createNewFile());
         fileSystemService.deleteDirectoryOrFile(file);
         Assertions.assertFalse(file.exists());
     }
 
     @Test
-    public void test_addDirectories_failed() {
-        Assertions.assertThrows(NullPointerException.class,
-                () -> fileSystemService.addDirectories(null, null, null));
+    public void test_addDirectories_failed() throws FileSystemStorageException {
+        Assertions.assertFalse(fileSystemService
+                .addDirectories(null, null, null, null));
+        Assertions.assertFalse(fileSystemService
+                .addDirectories(null, "foo", "bar", "baz"));
+        Assertions.assertFalse(fileSystemService
+                .addDirectories(null, null, "bar", "baz"));
+        Assertions.assertFalse(fileSystemService
+                .addDirectories(null, "foo", null, "baz"));
+        Assertions.assertFalse(fileSystemService
+                .addDirectories(null, "foo", "bar", null));
+
+        Assertions.assertFalse(fileSystemService
+                .addDirectories("username", "foo", null, null));
+        Assertions.assertFalse(fileSystemService
+                .addDirectories("username", null, "bar", null));
+        Assertions.assertFalse(fileSystemService
+                .addDirectories("username", null, null, "baz"));
     }
 
     @Test
-    public void test_createPath() throws FileSystemStorageException {
-        Path createdPath = path.resolve(ID);
-        Assertions.assertTrue(createdPath.endsWith(fileSystemService.createPath(username, type, ID)));
+    public void test_createPath_usernameTypeIdVersionSuccess() throws FileSystemStorageException {
+        Path createdPath = path.resolve(VERSION);
+        Assertions.assertTrue(createdPath
+                .endsWith(fileSystemService.createPath(username, type, id, VERSION)));
+    }
+
+
+    @Test
+    public void test_createPath_usernameSuccess() throws FileSystemStorageException {
+        Path createdPath = Paths.get(username);
+        Assertions.assertTrue(createdPath.endsWith(fileSystemService.createPath(username, null,
+                null, null)));
     }
 
     @Test
-    public void test_createPath_nullId() throws FileSystemStorageException {
-        Assertions.assertTrue(path.endsWith(fileSystemService.createPath(username, type, null)));
+    public void test_createPath_usernameTypeIdSuccess() throws FileSystemStorageException {
+        Path createdPath = Paths.get(username, type, id);
+        Assertions.assertTrue(createdPath.endsWith(fileSystemService.createPath(username, type,
+                id, null)));
     }
 
     @Test
-    public void test_createPath_failed() {
-        Assertions.assertThrows(NullPointerException.class,
-                () -> fileSystemService.createPath(null, null, null));
+    public void test_createPath_nullType() throws FileSystemStorageException {
+        Assertions.assertNull(fileSystemService.createPath(username, null, id, VERSION));
     }
 
     @Test
-    public void test_deleteDirectories() throws FileSystemStorageException, IOException {
-        File file = new File(path + File.separator + ID);
+    public void test_createPath_nullUsername() throws FileSystemStorageException {
+        Assertions.assertNull(fileSystemService.createPath(null, "dataset", id, VERSION));
+    }
+
+    @Test
+    public void test_deleteDirectories_success() throws FileSystemStorageException, IOException {
+        File file = new File(path + File.separator + VERSION);
         Assertions.assertTrue(file.createNewFile());
-        fileSystemService.deleteDirectories(username, type, ID);
+        fileSystemService.deleteDirectories(username, type, id);
         Assertions.assertFalse(file.exists());
     }
 

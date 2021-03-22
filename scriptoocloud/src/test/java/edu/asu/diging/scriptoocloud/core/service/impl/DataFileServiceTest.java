@@ -23,6 +23,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import java.time.OffsetDateTime;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 /**
@@ -47,33 +48,31 @@ class DataFileServiceTest {
     @Mock
     private FileSystemService fileSystemService;
 
-    private static final Long DATASET_ID = 1L;
+    private final Long DATASET_ID = 100L;
 
-    private static final String DATASET_ID_STRING = "1";
+    private final String DATASET_ID_STRING = "100";
 
-    private static final Long DATAFILE_ID = 2L;
+    private final String DATASET_VERSION_STRING = "1";
 
-    private static final int PAGE_SIZE = 25;
+    private final int PAGE_SIZE = 25;
 
-    private static final int SECOND_PAGE_SIZE = 10;
+    private final int SECOND_PAGE_SIZE = 10;
 
-    private static final int PAGE_NUMBER = 1;
+    private final int PAGE_NUMBER = 1;
 
-    private static final String USERNAME = "username";
+    private final String USERNAME = "username";
 
-    private static final String DATASET_NAME = "datasetName";
+    private final String FILE_NAME = "fileName.txt";
 
-    private static final String FILE_NAME = "fileName.txt";
+    private final String FILE_EXTENSION = "txt";
 
-    private static final String FILE_EXTENSION = "txt";
+    private final String FILE_TYPE = Dataset.class.getSimpleName().toLowerCase(Locale.ROOT);
 
-    private static final String FILE_TYPE = Dataset.class.getSimpleName().toLowerCase(Locale.ROOT);
+    private final String INDEX_BASED_FILENAME = "2.txt";
 
-    private static final String INDEX_BASED_FILENAME = "2.txt";
+    private final byte[] BYTES = "abc".getBytes();
 
-    private static final byte[] BYTES = "abc".getBytes();
-
-    private static final OffsetDateTime CREATED_AT = OffsetDateTime.now();
+    private final OffsetDateTime CREATED_AT = OffsetDateTime.now();
 
     private IDataset dataset;
 
@@ -102,14 +101,19 @@ class DataFileServiceTest {
         dataFile.setCreatedAt(CREATED_AT);
         dataFile.setName(FILE_NAME);
         dataFile.setExtension(FILE_EXTENSION);
+        Long DATAFILE_ID = 2L;
         dataFile.setId(DATAFILE_ID);
     }
 
     private void initDataset() {
         dataset = new Dataset();
         dataset.setUser(user);
+        String DATASET_NAME = "datasetName";
         dataset.setName(DATASET_NAME);
         dataset.setId(DATASET_ID);
+        Long DATASET_VERSION = 1L;
+        dataset.setVersion(DATASET_VERSION);
+        dataset.setCreationDate(ZonedDateTime.now());
     }
 
     private void initFilePage() {
@@ -121,7 +125,7 @@ class DataFileServiceTest {
     }
 
     @Test
-    public void test_createFile() throws FileSystemStorageException {
+    public void test_createFile_success() throws FileSystemStorageException {
         dataFile.setDataset((Dataset) dataset);
         Mockito.when(datasetRepository.findById(DATASET_ID))
                 .thenReturn(Optional.of((Dataset) dataset));
@@ -130,18 +134,18 @@ class DataFileServiceTest {
         Assertions.assertDoesNotThrow(() -> dataFileService.createFile(BYTES, DATASET_ID_STRING,
                 USERNAME, FILE_NAME, FILE_EXTENSION));
         Mockito.verify(fileSystemService).createFileInDirectory(USERNAME, FILE_TYPE, DATASET_ID_STRING,
-                INDEX_BASED_FILENAME, BYTES);
+                DATASET_VERSION_STRING, INDEX_BASED_FILENAME, BYTES);
     }
 
     @Test
-    public void test_createFile_failed_data_file_exception() {
+    public void test_createFile_failedDataFileException() {
         Mockito.when(datasetRepository.findById(DATASET_ID)).thenReturn(Optional.empty());
         Assertions.assertThrows(DataFileStorageException.class, () -> dataFileService.createFile(
                 BYTES, DATASET_ID_STRING, USERNAME, FILE_NAME, FILE_EXTENSION));
     }
 
     @Test
-    public void test_createFile_failed_file_system_exception() throws FileSystemStorageException {
+    public void test_createFile_failedFileSystemException() throws FileSystemStorageException {
         Mockito.when(datasetRepository.findById(DATASET_ID))
                 .thenReturn(Optional.of((Dataset) dataset));
         Mockito.when(dataFileRepository.save((DataFile) Mockito.argThat(
@@ -149,19 +153,20 @@ class DataFileServiceTest {
         dataFile.setDataset((Dataset) dataset);
         Mockito.doThrow(new FileSystemStorageException("Error")).when(fileSystemService)
                 .createFileInDirectory(USERNAME, FILE_TYPE, DATASET_ID_STRING,
-                        INDEX_BASED_FILENAME, BYTES);
+                        DATASET_VERSION_STRING, INDEX_BASED_FILENAME, BYTES);
         Assertions.assertThrows(DataFileStorageException.class, () -> dataFileService.createFile(
                 BYTES, DATASET_ID_STRING, USERNAME, FILE_NAME, FILE_EXTENSION));
     }
 
     @Test
-    public void test_findFiles() {
+    public void test_findFiles_success() {
         List<DataFile> files = new ArrayList<>();
         files.add((DataFile) dataFile);
         Page<DataFile> fileList = new PageImpl<>(files);
         PageRequest pageRequest = PageRequest.of(PAGE_NUMBER, PAGE_SIZE);
         Mockito.when(dataFileRepository.findAllByDatasetId(DATASET_ID,
                 pageRequest)).thenReturn(fileList);
+        Assertions.assertEquals(fileList.getTotalElements(), 1);
         Assertions.assertEquals(fileList, dataFileService.findFiles(pageRequest, DATASET_ID));
     }
 
@@ -172,6 +177,7 @@ class DataFileServiceTest {
         PageRequest pageRequest = PageRequest.of(PAGE_NUMBER, PAGE_SIZE);
         Mockito.when(dataFileRepository.findAllByDatasetId(DATASET_ID,
                 pageRequest)).thenReturn(fileList);
+        Assertions.assertTrue(fileList.isEmpty());
         Assertions.assertEquals(fileList, dataFileService.findFiles(pageRequest, DATASET_ID));
     }
 
@@ -187,7 +193,21 @@ class DataFileServiceTest {
         Assertions.assertEquals(SECOND_PAGE_SIZE, dataFileListSecondPage.getTotalElements());
     }
 
-    static class DataFileArgMatcher extends ArgumentMatcher<IDataFile> {
+    @Test
+    public void test_getIndexBasedFileName_success(){
+        Assertions.assertEquals(INDEX_BASED_FILENAME, dataFileService
+                .getIndexBasedFileName((DataFile)dataFile));
+    }
+
+    @Test
+    public void test_getIndexBasedFileName_failure(){
+        dataFile.setName("foobar.txt");
+        dataFile.setId(3L);
+        Assertions.assertNotEquals(INDEX_BASED_FILENAME, dataFileService
+                .getIndexBasedFileName((DataFile)dataFile));
+    }
+
+    class DataFileArgMatcher extends ArgumentMatcher<IDataFile> {
 
         private final IDataFile dataFileToBeTested;
 

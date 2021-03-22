@@ -28,7 +28,24 @@
                                 <span><i class="fas fa-folder fa-2x"></i></span>
                             </div>
                             <div class="inline">
-                                <h3 th:text="${dataset.name}"></h3>
+                                <h3 class="mono" th:text="${dataset.name}"></h3>
+                            </div>
+                            <div>
+                                <span class="metadata mono metadataLabel">Version: </span>
+                                <span class="metadata mono"
+                                      th:text="${dataset.version}"></span>
+                            </div>
+                            <div>
+                                <span class="metadata mono metadataLabel">Description: </span>
+                                <span class="metadata mono"
+                                      th:text="${dataset.description}"></span>
+                            </div>
+                            <div>
+                                <span class="metadata mono metadataLabel">Created: </span>
+                                <span class="metadata mono"
+                                      th:text="${#calendars.format(dataset.creationDate,
+                                      'MMMMM dd, yyyy K:mm a')}">
+                                </span>
                             </div>
                         </div>
                     </div>

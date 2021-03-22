@@ -7,6 +7,8 @@ public class DatasetForm {
     @NotEmpty(message="Please enter a name for this Dataset.")
     private String name;
     private String username;
+    private Long version;
+    private String description;
 
     public String getName() {
         return name;
@@ -30,5 +32,21 @@ public class DatasetForm {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getVersion(){
+        return version;
+    }
+
+    public void setVersion(Long version){
+        this.version = version;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

@@ -32,4 +32,12 @@ public interface IDataFileService {
      * @return The Page of DataFiles
      */
     Page<DataFile> findFiles(Pageable pageable, Long datasetId);
+
+    /**
+     * Returns a filename string based on a DataFile's unique id and the type of the DataFile.
+     *
+     * @param datafile The DataFile
+     * @return The index-based filename.
+     */
+    String getIndexBasedFileName(DataFile datafile);
 }

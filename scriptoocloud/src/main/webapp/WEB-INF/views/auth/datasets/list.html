@@ -49,7 +49,7 @@
                             </div>
                             <div class="row">
                                 <div class="form-group">
-                                    <div class="col-md-12">
+                                    <div class="col-md-8">
                                         <label
                                             for="name">Add a Dataset
                                         </label>
@@ -61,6 +61,26 @@
                                             autofocus="autofocus"
                                             type="text"
                                             placeholder="Dataset Name"/>
+                                    </div>
+                                    <div class="col-md-4 mono">
+                                        Note:<br/>
+                                        Version number for new Datasets is: 1 <br/>
+                                        You can edit an existing Dataset
+                                        to create additional versions of it.
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <label
+                                            for="description">Description
+                                        </label>
+                                        <input
+                                            th:field="*{description}"
+                                            class="form-control"
+                                            id="description"
+                                            name="description"
+                                            type="text"
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -77,16 +97,28 @@
                     </div>
                     <div th:unless="${#lists.isEmpty(dbDatasets)}">
                         <div class="row tabular-row" th:each="ds : ${dbDatasets}">
-                            <div class="col-md-6">
-                                <div class="col-md-6">
+                            <div class="col-md-8">
+                                <div class="col-md-8">
                                     <div class="table">
                                         <div class="tr">
                                             <div class="td icon">
                                                 <span><i class="fas fa-folder fa-2x"></i></span>
                                             </div>
                                             <div class="td">
-                                                <div class="mono cell"
-                                                     th:text="${ds.name}"></div>
+                                                <a class="mono filename"
+                                                   th:href="@{/auth/datasets/{id}(id=${ds.id})}"
+                                                   th:text="${ds.name}"></a>
+                                                <div>
+                                                    <span
+                                                        class="metadata mono metadataLabel">Version: </span>
+                                                    <span class="metadata mono"
+                                                          th:text="${ds.version}"></span>
+                                                </div>
+                                                <div>
+                                                    <span class="metadata mono metadataLabel">Description: </span>
+                                                    <span class="metadata mono"
+                                                          th:text="${ds.description}"></span>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="tr">
@@ -116,25 +148,25 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6 center">
+                                <div class="col-md-4 center">
                                     <button type="submit" class="btn btn-clear rename-dataset">
-                                        <i class="fas fa-edit"></i> Rename This Dataset
+                                        <i class="fas fa-edit"></i> Rename/Edit Dataset
                                     </button>
                                 </div>
 
                             </div>
-                            <div class="col-md-3 center">
+                            <div class="col-md-2 center">
                                 <button type="button"
                                         class="btn btn-clear delModalBtn"
                                         data-toggle="modal"
                                         data-target="#deleteDatasetModal"
                                         th:attr="data-id=${ds.id}">
-                                    <i class="fas fa-trash-alt"></i> Delete This Dataset
+                                    <i class="fas fa-trash-alt"></i> Delete Dataset
                                 </button>
                             </div>
-                            <div class="col-md-3 center">
+                            <div class="col-md-2 center">
                                 <a class="link-btn" th:href="@{/auth/datasets/{id}(id=${ds.id})}">
-                                    <i class="fas fa-file"></i> View/Add Files To This Dataset
+                                    <i class="fas fa-file"></i> View/Add Files To Dataset
                                 </a>
                             </div>
                         </div>

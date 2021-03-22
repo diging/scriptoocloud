@@ -28,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class DataFileService implements IDataFileService {
 
     private final DataFileRepository dataFileRepository;
-
     private final DatasetRepository datasetRepository;
     private final IFileSystemService fileSystemService;
 
@@ -50,25 +49,28 @@ public class DataFileService implements IDataFileService {
         newFile.setExtension(type);
         newFile.setCreatedAt(OffsetDateTime.now());
         Optional<Dataset> dataset;
-        Long dataFileId;
+        String version;
         try {
             dataset = datasetRepository.findById(Long.parseLong(datasetId));
         } catch (NumberFormatException e) {
             throw new DataFileStorageException("Dataset Id could not be parsed to a long", e);
         }
         if (dataset.isPresent()) {
+            version = dataset.get().getVersion().toString();
             newFile.setDataset(dataset.get());
-            dataFileId = dataset.get().addFile(dataFileRepository.save(newFile));
+            newFile = dataFileRepository.save(newFile);
+            dataset.get().addFile(newFile);
             datasetRepository.save(dataset.get());
         } else {
             throw new DataFileStorageException("Dataset not found");
         }
 
         // Save file with unique name (its id) and maintain the file type extension
-        String indexBasedFilename = dataFileId + filename.substring(filename.lastIndexOf("."));
+        String indexBasedFilename = getIndexBasedFileName(newFile);
+
         try {
             fileSystemService.createFileInDirectory(username,
-                    Dataset.class.getSimpleName().toLowerCase(Locale.ROOT), datasetId,
+                    Dataset.class.getSimpleName().toLowerCase(Locale.ROOT), datasetId, version,
                     indexBasedFilename, bytes);
         } catch (FileSystemStorageException e) {
             throw new DataFileStorageException("File could not be saved in the file system", e);
@@ -79,5 +81,11 @@ public class DataFileService implements IDataFileService {
     @Override
     public Page<DataFile> findFiles(Pageable pageable, Long datasetId) {
         return dataFileRepository.findAllByDatasetId(datasetId, pageable);
+    }
+
+    @Override
+    public String getIndexBasedFileName(DataFile datafile) {
+        String filename = datafile.getName();
+        return datafile.getId() + filename.substring(filename.lastIndexOf("."));
     }
 }

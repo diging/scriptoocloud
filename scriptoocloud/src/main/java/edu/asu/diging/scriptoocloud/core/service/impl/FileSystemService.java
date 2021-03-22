@@ -38,9 +38,16 @@ public class FileSystemService implements IFileSystemService {
     }
 
     @Override
-    public void addDirectories(String username, String type, String id) throws FileSystemStorageException {
-        // First, the correct directory must be created
-        Path path = createPath(username, type, id);
+    public boolean addDirectories(String username, String type, String id, String version) throws
+            FileSystemStorageException {
+        if (username == null) {
+            return false;
+        }
+        if ((type == null || id == null || version == null) &&
+                (type != null || id != null || version != null)) {
+            return false;
+        }
+        Path path = createPath(username, type, id, version);
         File directory = path.toFile();
         // if the Path was created successfully, create the directory
         try {
@@ -54,16 +61,22 @@ public class FileSystemService implements IFileSystemService {
         } catch (SecurityException e) {
             throw new FileSystemStorageException("SecurityException occurred when attempting to add the Dataset", e);
         }
+        return true;
     }
 
     @Override
-    public Path createPath(String username, String type, String id) throws FileSystemStorageException {
+    public Path createPath(String username, String type, String id, String version) throws
+            FileSystemStorageException {
         Path path;
         try {
-            if (id != null) {
+            if (username != null && (type == null && id == null && version == null)) {
+                path = Paths.get(getRootLocationString(), username);
+            } else if (username != null && (type != null && id != null && version != null)) {
+                path = Paths.get(getRootLocationString(), username, type, id, version);
+            } else if (username != null && (type != null && id != null)) {
                 path = Paths.get(getRootLocationString(), username, type, id);
             } else {
-                path = Paths.get(getRootLocationString(), username, type);
+                return null;
             }
             return Paths.get(StringUtils.cleanPath(Objects.requireNonNull(path).toString()));
         } catch (InvalidPathException e) {
@@ -72,10 +85,11 @@ public class FileSystemService implements IFileSystemService {
     }
 
     @Override
-    public void deleteDirectories(String username, String type, String id) throws FileSystemStorageException {
+    public void deleteDirectories(String username, String type, String id)
+            throws FileSystemStorageException {
 
         try {
-            Path path = createPath(username, type, id);
+            Path path = createPath(username, type, id, null);
             File directory = path.toFile();
             deleteDirectoryOrFile(directory);
         } catch (InvalidPathException e) {
@@ -96,7 +110,7 @@ public class FileSystemService implements IFileSystemService {
             allContents = directoryToBeDeleted.listFiles();
         } catch (SecurityException e) {
             throw new FileSystemStorageException(
-                    "A SecurityException occurred in when generating list of files to be deleted", e);
+                    "A SecurityException occurred when generating list of files to be deleted", e);
         }
         if (allContents != null) {
             for (File file : allContents) {
@@ -112,11 +126,11 @@ public class FileSystemService implements IFileSystemService {
     }
 
     @Override
-    public void createFileInDirectory(String username, String type, String id, String filename,
-                                      byte[] bytes) throws FileSystemStorageException {
+    public void createFileInDirectory(String username, String type, String id, String version,
+                                      String filename, byte[] bytes) throws FileSystemStorageException {
 
         Path destinationFile = Paths.get(getRootLocationString()).resolve(
-                Paths.get(username, type, id, filename))
+                Paths.get(username, type, id, version, filename))
                 .normalize().toAbsolutePath();
         try (InputStream inputStream = new ByteArrayInputStream(bytes)) {
             Files.copy(inputStream, destinationFile, StandardCopyOption.REPLACE_EXISTING);
