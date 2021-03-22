@@ -16,7 +16,7 @@
 		    	<button style="padding:0px" class="btn btn-link"><i class="fas fa-trash"></i> Delete Project</button>
 		    </form> 
 		    
-		    <form th:action="@{|/auth/edit/${project.getId()}|}" method="POST">
+		    <form th:action="@{|/auth/edit/${project.getId()}|}" method="GET">
 		    	<button style="padding:0px" class="btn btn-link"><i class="fas fa-edit"></i> Edit Project</button>
 		    </form> 
 		</li>

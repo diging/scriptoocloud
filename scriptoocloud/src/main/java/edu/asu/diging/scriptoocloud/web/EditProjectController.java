@@ -29,26 +29,23 @@ public class EditProjectController {
     @Autowired
     private ProjectManager projectManager;
     
-    private int projectID;
-
-    @RequestMapping(value = "/auth/edit/{id}", method = RequestMethod.POST)
-    public String post(@Valid @ModelAttribute("project") Optional<ProjectImpl> projectImpl, BindingResult result,
+    @RequestMapping(value = "/auth/edit/{id}", method = RequestMethod.GET)
+    public String get(@Valid @ModelAttribute("project") Optional<ProjectImpl> projectImpl, BindingResult result,
             Model model, RedirectAttributes redirectAttrs, Principal principal, @PathVariable("id") int id) {
         if (result.hasErrors()) {
             model.addAttribute("project", new ProjectImpl());
             return "/auth/edit/{id}";
         }
         projectImpl = projectManager.getProject(id);
-        projectID = id;
         model.addAttribute("project", projectImpl);
         return "/auth/edit";
     }
 
-    @RequestMapping(value = "/auth/edit", method = RequestMethod.POST)
-    public String post2(@Valid @ModelAttribute("project") ProjectImpl projectImpl, BindingResult result,
-            Model model, RedirectAttributes redirectAttrs, Principal principal) {
+    @RequestMapping(value = "/auth/edit/{id}", method = RequestMethod.POST)
+    public String post(@Valid @ModelAttribute("project") ProjectImpl projectImpl, BindingResult result,
+            Model model, RedirectAttributes redirectAttrs, Principal principal,@PathVariable("id") int id) {
         ProjectImpl project = projectImpl;
-        projectManager.updateProject((int) projectID, project.getName(), project.getDescription());
+        projectManager.updateProject((int) id, project.getName(), project.getDescription());
         return "redirect:/auth/projects";
     }
 }
