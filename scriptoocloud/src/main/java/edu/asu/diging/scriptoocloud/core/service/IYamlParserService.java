@@ -8,7 +8,7 @@ import edu.asu.diging.scriptoocloud.core.model.impl.YamlModel;
 
 public interface IYamlParserService {
 
-    public YamlModel parseYaml(File dir) throws FileNotFoundException;
+    public YamlModel parseYamlInDirectory(String dir) throws FileNotFoundException;
 
     public Map<String, Object> parseYamlFile(File file) throws FileNotFoundException;
 

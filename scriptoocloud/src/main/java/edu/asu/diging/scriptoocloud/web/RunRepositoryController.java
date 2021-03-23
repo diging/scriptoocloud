@@ -33,23 +33,19 @@ public class RunRepositoryController {
 
   @RequestMapping(value = "/auth/run/{repoId}/{projectID}", method = RequestMethod.GET)
    // public String runRepo(@ModelAttribute("projectId") int projectId, @PathVariable("repoId") int repoId,  Model model) throws FileNotFoundException {
-    public String runRepo(Model model, @ModelAttribute("repoId") String reportId, @ModelAttribute("projectID") String projectID, RedirectAttributes attribute, @PathVariable("repoId") int repoId ) throws FileNotFoundException {
+    public String runRepo(Model model,@PathVariable("repoId") Long repoId, @PathVariable("repoId") Long projectID ) throws FileNotFoundException {
     
-    
-        System.out.println(projectID + "!");
-        System.out.println(reportId + "!");
+   
       //System.out.println(attribute.getFlashAttributes().get("projectId"));
      
 
      
-        YamlModel yamlModel = new YamlModel();
-        yamlModel.setAuthor("");
-        yamlModel.setDescription("This program adds two numbers, there are two required fields Loperand and Roperand");
-        yamlModel.setName("Addition Software");
-        yamlModel.setOutputContext("output");
-        String[] a = {"Left operand","Right operand"};
-        yamlModel.setInputParams(a);
-   
+        //parse yaml and generate model
+
+       
+        String repoPath = gitRepositoryManager.getRepositoryPath(repoId);
+        
+        YamlModel yamlModel = yamlParserService.parseYamlInDirectory(repoPath);
         
         model.addAttribute("yamlModel", yamlModel);
 
@@ -68,16 +64,9 @@ public class RunRepositoryController {
       */
       
        // Map<String, Object> stcYamlKeyPair = yamlParserService.parseYamlFile(new File("C:/github_com_jormsby2_CloneTest/test.yml"));
-        YamlModel yamlModel = new YamlModel();
-        yamlModel.setAuthor("");
-        yamlModel.setDescription("This program adds two numbers, there are two required fields Loperand and Roperand");
-        yamlModel.setName("Addition Software");
-        yamlModel.setOutputContext("output");
-        String[] a = {"Left operand","Right operand"};
-        yamlModel.setInputParams(a);
-   
+
         
-        model.addAttribute("yamlModel", yamlModel);
+      
 
         return "/auth/run";
     }  

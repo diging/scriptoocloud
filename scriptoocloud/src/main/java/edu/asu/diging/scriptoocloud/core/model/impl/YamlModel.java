@@ -1,6 +1,8 @@
 package edu.asu.diging.scriptoocloud.core.model.impl;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,7 +22,7 @@ public class YamlModel  {
     private String description;
     private String author;
     private String main;
-    private String[] inputParams;
+    private ArrayList<String> inputParams;
     private String outputContext;
     
     public long getId() {
@@ -53,10 +55,10 @@ public class YamlModel  {
     public void setMain(String main) {
         this.main = main;
     }
-    public String[] getInputParams() {
+    public List getInputParams() {
         return inputParams;
     }
-    public void setInputParams(String[] inputParams) {
+    public void setInputParams(ArrayList<String> inputParams) {
         this.inputParams = inputParams;
     }
     public String getOutputContext() {

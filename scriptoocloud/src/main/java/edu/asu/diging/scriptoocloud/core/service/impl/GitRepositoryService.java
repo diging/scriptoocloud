@@ -133,7 +133,7 @@ public class GitRepositoryService implements GitRepositoryManager {
     @Override
     public String getRepositoryPath(Long id) {
         Optional<GitRepositoryImpl> repoModel = gitRepositoryJpa.findById(id);
-        return "";
+        return path + repoModel.get().getFolderName();
     }
  
     
