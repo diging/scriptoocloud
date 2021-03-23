@@ -18,4 +18,6 @@ public interface GitRepositoryManager {
 
     ArrayList<GitRepository> listRepositories();
 
+    String getRepositoryPath(Long id);
+
 }

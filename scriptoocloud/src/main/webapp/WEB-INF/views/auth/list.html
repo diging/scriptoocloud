@@ -5,7 +5,10 @@
   <body>
    <div layout:fragment="content">
 
-<h2>Repositories</h2>
+<h2>Choose software</h2>
+
+<span th:text="${projectID}" ></span>
+
 <div class="text-danger" th:text = "${param.formResponse}"></div> 
 <ul class="list-group">
  <li th:each="repo : ${repos}"  class="list-group-item clearfix">
@@ -26,8 +29,8 @@
     <span th:text="${repo.requester}" ></span> 
     </li>
 
-    <form th:action="@{|/user/repositories/run/${repo.id}|}" method="POST">
-    <button style="padding:0px" class="btn btn-link"><i class="fas fa-trash"></i> Delete Repository </button>
+    <form th:action="@{|/auth/run/${repo.id}/${projectID}|}" method="GET">
+    <button style="padding:0px" class="btn btn-link"><i class="fas fa-play"></i> Run </button>
     </form> 
    </ul>
     </li>

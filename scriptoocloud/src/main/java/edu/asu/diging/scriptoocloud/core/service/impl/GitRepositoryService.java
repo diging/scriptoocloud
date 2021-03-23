@@ -130,4 +130,13 @@ public class GitRepositoryService implements GitRepositoryManager {
         fileSystemService.deleteDirectoryOrFile(file);
     } 
     
+    @Override
+    public String getRepositoryPath(Long id) {
+        Optional<GitRepositoryImpl> repoModel = gitRepositoryJpa.findById(id);
+        return "";
+    }
+ 
+    
+    
+    
 }
