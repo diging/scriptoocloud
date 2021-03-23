@@ -51,20 +51,21 @@ public class DatasetService implements IDatasetService {
     }
 
     @Override
-    public Dataset createDataset(String name, IUser user, String version, String description) throws DatasetStorageException {
+    public Dataset createDataset(String name, IUser user, Long version, String description)
+            throws DatasetStorageException {
 
         Dataset dataset = new Dataset();
         dataset.setName(name);
         dataset.setUser(user);
         dataset.setDescription(description);
         dataset.setCreationDate(ZonedDateTime.now());
-        dataset.setVersion(Long.parseLong(version));
+        dataset.setVersion(version);
         Dataset savedDataset = datasetRepository.save(dataset);
 
         // create directories on the file system (using Dataset id)
         try {
             fileSystemService.addDirectories(user.getUsername(), DIR_NAME,
-                    String.valueOf(savedDataset.getId()), version);
+                    String.valueOf(savedDataset.getId()), version.toString());
         } catch (FileSystemStorageException e) {
             throw new DatasetStorageException("An IOException prevented the Dataset from being created", e);
         }

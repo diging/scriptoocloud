@@ -4,7 +4,7 @@ import javax.validation.constraints.NotEmpty;
 
 public class DatasetForm {
     private Long id;
-    @NotEmpty(message="Please enter a name for this Dataset.")
+    @NotEmpty(message = "Please enter a name for this Dataset.")
     private String name;
     private String username;
     private Long version;
@@ -34,11 +34,11 @@ public class DatasetForm {
         this.id = id;
     }
 
-    public Long getVersion(){
+    public Long getVersion() {
         return version;
     }
 
-    public void setVersion(Long version){
+    public void setVersion(Long version) {
         this.version = version;
     }
 

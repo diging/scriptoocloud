@@ -43,11 +43,10 @@ public class FileSystemService implements IFileSystemService {
         if (username == null) {
             return false;
         }
-        if ((type == null || id == null || version == null) &&
-                (type != null || id != null || version != null)) {
+        Path path = createPath(username, type, id, version);
+        if (path == null){
             return false;
         }
-        Path path = createPath(username, type, id, version);
         File directory = path.toFile();
         // if the Path was created successfully, create the directory
         try {
@@ -73,7 +72,7 @@ public class FileSystemService implements IFileSystemService {
                 path = Paths.get(getRootLocationString(), username);
             } else if (username != null && (type != null && id != null && version != null)) {
                 path = Paths.get(getRootLocationString(), username, type, id, version);
-            } else if (username != null && (type != null && id != null)) {
+            } else if (username != null && type != null && id != null) {
                 path = Paths.get(getRootLocationString(), username, type, id);
             } else {
                 return null;

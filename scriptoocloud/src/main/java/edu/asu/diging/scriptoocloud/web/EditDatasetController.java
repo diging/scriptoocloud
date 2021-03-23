@@ -2,7 +2,6 @@ package edu.asu.diging.scriptoocloud.web;
 
 import edu.asu.diging.scriptoocloud.core.model.impl.Dataset;
 import edu.asu.diging.scriptoocloud.core.service.IDatasetService;
-import edu.asu.diging.scriptoocloud.web.forms.DatasetEditForm;
 import edu.asu.diging.scriptoocloud.web.forms.DatasetForm;
 import edu.asu.diging.simpleusers.core.model.IUser;
 import edu.asu.diging.simpleusers.core.service.IUserManager;
@@ -42,7 +41,7 @@ public class EditDatasetController {
     @RequestMapping(value = "auth/datasets/{id}/edit", method = RequestMethod.POST)
     @PreAuthorize("hasPermission(#datasetId, 'Dataset', 'edit')")
     public String edit(@PathVariable("id") Long datasetId,
-                       @Valid @ModelAttribute("datasetEditForm") DatasetEditForm datasetEditForm,
+                       @Valid @ModelAttribute("datasetEditForm") DatasetForm datasetEditForm,
                        BindingResult result,
                        RedirectAttributes redirectAttributes,
                        Model model,
@@ -69,7 +68,7 @@ public class EditDatasetController {
             model.addAttribute("errorId", datasetEditForm.getId());
             return "auth/datasets/list";
         } else {
-            iDatasetService.editDataset(datasetId, datasetEditForm.getNewName());
+            iDatasetService.editDataset(datasetId, datasetEditForm.getName());
         }
         redirectAttributes.addFlashAttribute("successMessage", "Dataset successfully edited");
         return "redirect:/auth/datasets/list";

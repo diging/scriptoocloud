@@ -73,6 +73,8 @@ public class DatasetServiceTest {
 
     private final Long DATASET_ID = 1L;
 
+    private final Long DATASET_VERSION = 1L;
+
     private final String DATASET_VERSION_STRING = "1";
 
     private final String DATASET_DESCRIPTION = "My Dataset Description";
@@ -109,7 +111,6 @@ public class DatasetServiceTest {
         dataset.setUser(user);
         dataset.setName(DATASET_NAME);
         dataset.setId(DATASET_ID);
-        Long DATASET_VERSION = 1L;
         dataset.setVersion(DATASET_VERSION);
     }
 
@@ -140,7 +141,7 @@ public class DatasetServiceTest {
         Mockito.when(datasetRepository.save(((Dataset) Mockito.argThat(
                 new DatasetServiceTest.DatasetArgMatcher(dataset))))).thenReturn((Dataset) dataset);
         Assertions.assertDoesNotThrow(() -> datasetService
-                .createDataset(DATASET_NAME, user, DATASET_VERSION_STRING, DATASET_DESCRIPTION));
+                .createDataset(DATASET_NAME, user, DATASET_VERSION, DATASET_DESCRIPTION));
         Assertions.assertEquals(dataset.getName(), DATASET_NAME);
         Assertions.assertEquals(dataset.getUsername(), USERNAME);
         Mockito.verify(fileSystemService)
@@ -154,7 +155,7 @@ public class DatasetServiceTest {
         Mockito.doThrow(new FileSystemStorageException("Error")).when(fileSystemService)
                 .addDirectories(USERNAME, TYPE, DATASET_ID_STRING, DATASET_VERSION_STRING);
         Assertions.assertThrows(DatasetStorageException.class, () ->
-                datasetService.createDataset(DATASET_NAME, user, DATASET_VERSION_STRING, DATASET_DESCRIPTION));
+                datasetService.createDataset(DATASET_NAME, user, DATASET_VERSION, DATASET_DESCRIPTION));
     }
 
     @Test
@@ -265,7 +266,7 @@ public class DatasetServiceTest {
                 .thenReturn(Optional.of((Dataset) dataset));
         Mockito.when(dataFileRepository.findById(DATA_FILE_ID))
                 .thenReturn(Optional.of((DataFile) dataFile));
-        Mockito.when(dataFileService.getIndexBasedFileName((DataFile)dataFile))
+        Mockito.when(dataFileService.getIndexBasedFileName((DataFile) dataFile))
                 .thenReturn(DATAFILE_NAME);
         Mockito.when(fileSystemService.createPath(USERNAME, TYPE,
                 DATASET_ID_STRING, DATASET_VERSION_STRING)).thenReturn(path);
@@ -311,7 +312,7 @@ public class DatasetServiceTest {
         Mockito.when(fileSystemService.createPath(USERNAME, TYPE, DATASET_ID_STRING, DATASET_VERSION_STRING))
                 .thenReturn(path);
         Mockito.doThrow(new FileSystemStorageException("FileSystemStorageException"))
-            .when(fileSystemService).createPath(USERNAME, TYPE, DATASET_ID_STRING, DATASET_VERSION_STRING);
+                .when(fileSystemService).createPath(USERNAME, TYPE, DATASET_ID_STRING, DATASET_VERSION_STRING);
 
         Assertions.assertThrows(DatasetStorageException.class,
                 () -> datasetService.deleteFileFromDataset(DATASET_ID, DATA_FILE_ID));

@@ -3,7 +3,6 @@ package edu.asu.diging.scriptoocloud.web;
 import edu.asu.diging.scriptoocloud.core.exceptions.DatasetStorageException;
 import edu.asu.diging.scriptoocloud.core.model.impl.Dataset;
 import edu.asu.diging.scriptoocloud.core.service.IDatasetService;
-import edu.asu.diging.scriptoocloud.web.forms.DatasetEditForm;
 import edu.asu.diging.scriptoocloud.web.forms.DatasetForm;
 import edu.asu.diging.simpleusers.core.model.IUser;
 import edu.asu.diging.simpleusers.core.service.IUserManager;
@@ -61,12 +60,12 @@ public class AddDatasetController {
                     .findDatasets(PageRequest.of(currentPage - 1, pageSize), user);
             model.addAttribute("dbDatasets", dbDatasets);
             model.addAttribute("dataset", datasetForm);
-            model.addAttribute("datasetEditForm", new DatasetEditForm());
+            model.addAttribute("datasetEditForm", new DatasetForm());
             return "auth/datasets/list";
         }
         try {
             Dataset savedDataset = iDatasetService
-                    .createDataset(datasetForm.getName(), user, "1",
+                    .createDataset(datasetForm.getName(), user, 1L,
                             datasetForm.getDescription());
             redirectAttributes
                     .addFlashAttribute("successMessage", "Dataset: " + savedDataset.getName()
@@ -76,7 +75,7 @@ public class AddDatasetController {
                     .findDatasets(PageRequest.of(currentPage - 1, pageSize), user);
             model.addAttribute("dbDatasets", dbDatasets);
             model.addAttribute("dataset", datasetForm);
-            model.addAttribute("datasetEditForm", new DatasetEditForm());
+            model.addAttribute("datasetEditForm", new DatasetForm());
             model.addAttribute("errorMessage", "There was an error creating the dataset");
             logger.error("ERROR: could not create Dataset", e);
             return "auth/datasets/list";

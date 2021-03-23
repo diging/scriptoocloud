@@ -25,7 +25,7 @@ public interface IDatasetService {
      * @return The Dataset which was created.
      * @throws DatasetStorageException Exception thrown if dataset cannot be created.
      */
-    Dataset createDataset(String name, IUser user, String version, String description)
+    Dataset createDataset(String name, IUser user, Long version, String description)
             throws DatasetStorageException;
 
     /**
