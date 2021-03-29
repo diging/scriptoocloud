@@ -21,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * The Service class associated with user-uploaded DataFiles.  The class handles storing the
  * files on the file system (using the FileSystemService) and storing DataFile data in the database.
+ *
+ * @author John Coronite
  */
 
 @Transactional(rollbackFor = Exception.class)
@@ -56,7 +58,8 @@ public class DataFileService implements IDataFileService {
             throw new DataFileStorageException("Dataset Id could not be parsed to a long", e);
         }
         if (dataset.isPresent()) {
-            version = dataset.get().getVersion().toString();
+
+            version = dataset.get().getVersion() != null ? dataset.get().getVersion().toString() : null;
             newFile.setDataset(dataset.get());
             newFile = dataFileRepository.save(newFile);
             dataset.get().addFile(newFile);

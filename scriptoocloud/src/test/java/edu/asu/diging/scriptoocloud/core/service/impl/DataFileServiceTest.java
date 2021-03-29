@@ -159,6 +159,20 @@ class DataFileServiceTest {
     }
 
     @Test
+    public void test_createFile_datasetWithNullVersion() throws FileSystemStorageException {
+        dataset.setVersion(null);
+        dataFile.setDataset((Dataset) dataset);
+        Mockito.when(datasetRepository.findById(DATASET_ID))
+                .thenReturn(Optional.of((Dataset) dataset));
+        Mockito.when(dataFileRepository.save((DataFile) Mockito.argThat(
+                new DataFileArgMatcher(dataFile)))).thenReturn((DataFile) dataFile);
+        Assertions.assertDoesNotThrow(() -> dataFileService.createFile(BYTES, DATASET_ID_STRING,
+                USERNAME, FILE_NAME, FILE_EXTENSION));
+        Mockito.verify(fileSystemService).createFileInDirectory(USERNAME, FILE_TYPE, DATASET_ID_STRING,
+                null, INDEX_BASED_FILENAME, BYTES);
+    }
+
+    @Test
     public void test_findFiles_success() {
         List<DataFile> files = new ArrayList<>();
         files.add((DataFile) dataFile);
@@ -194,17 +208,17 @@ class DataFileServiceTest {
     }
 
     @Test
-    public void test_getIndexBasedFileName_success(){
+    public void test_getIndexBasedFileName_success() {
         Assertions.assertEquals(INDEX_BASED_FILENAME, dataFileService
-                .getIndexBasedFileName((DataFile)dataFile));
+                .getIndexBasedFileName((DataFile) dataFile));
     }
 
     @Test
-    public void test_getIndexBasedFileName_failure(){
+    public void test_getIndexBasedFileName_failure() {
         dataFile.setName("foobar.txt");
         dataFile.setId(3L);
         Assertions.assertNotEquals(INDEX_BASED_FILENAME, dataFileService
-                .getIndexBasedFileName((DataFile)dataFile));
+                .getIndexBasedFileName((DataFile) dataFile));
     }
 
     class DataFileArgMatcher extends ArgumentMatcher<IDataFile> {

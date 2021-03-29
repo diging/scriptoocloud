@@ -17,6 +17,8 @@ import java.util.Objects;
 
 /**
  * The Service class which handles adding and deleting files on the server file system.
+ *
+ * @author John Coronite
  */
 @Service
 @PropertySource("classpath:/config.properties")
@@ -30,11 +32,7 @@ public class FileSystemService implements IFileSystemService {
     }
 
     public String getRootLocationString() {
-        if (rootLocationString != null) {
-            return rootLocationString;
-        } else {
-            return "";
-        }
+        return rootLocationString != null ? rootLocationString : "";
     }
 
     @Override
@@ -44,7 +42,7 @@ public class FileSystemService implements IFileSystemService {
             return false;
         }
         Path path = createPath(username, type, id, version);
-        if (path == null){
+        if (path == null) {
             return false;
         }
         File directory = path.toFile();
@@ -127,10 +125,16 @@ public class FileSystemService implements IFileSystemService {
     @Override
     public void createFileInDirectory(String username, String type, String id, String version,
                                       String filename, byte[] bytes) throws FileSystemStorageException {
-
-        Path destinationFile = Paths.get(getRootLocationString()).resolve(
-                Paths.get(username, type, id, version, filename))
-                .normalize().toAbsolutePath();
+        Path destinationFile;
+        if (version == null) {
+            destinationFile = Paths.get(getRootLocationString()).resolve(
+                    Paths.get(username, type, id, filename))
+                    .normalize().toAbsolutePath();
+        } else {
+            destinationFile = Paths.get(getRootLocationString()).resolve(
+                    Paths.get(username, type, id, version, filename))
+                    .normalize().toAbsolutePath();
+        }
         try (InputStream inputStream = new ByteArrayInputStream(bytes)) {
             Files.copy(inputStream, destinationFile, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {

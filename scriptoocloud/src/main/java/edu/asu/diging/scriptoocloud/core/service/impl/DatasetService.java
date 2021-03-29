@@ -27,6 +27,8 @@ import java.util.Optional;
 /**
  * The Service class associated with user Datasets.  The class handles the association between
  * Datasets and DataFiles they contain.
+ *
+ * @author John Coronite
  */
 @Transactional(rollbackFor = Exception.class)
 @Service

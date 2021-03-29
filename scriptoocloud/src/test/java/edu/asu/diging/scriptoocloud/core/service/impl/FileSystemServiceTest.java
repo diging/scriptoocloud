@@ -28,6 +28,10 @@ class FileSystemServiceTest {
 
     private final String VERSION = "1";
 
+    private final String fileName = "filename.txt";
+
+    private final byte[] bytes = "abc".getBytes();
+
     @InjectMocks
     private FileSystemService fileSystemService;
 
@@ -157,5 +161,25 @@ class FileSystemServiceTest {
         File file = new File("NotOnDrive");
         Assertions.assertFalse(file.exists());
         Assertions.assertDoesNotThrow(() -> fileSystemService.deleteDirectoryOrFile(file));
+    }
+
+    @Test
+    public void test_createFileInDirectory_version() throws FileSystemStorageException {
+        fileSystemService.addDirectories(username, type, id, VERSION);
+        fileSystemService.createFileInDirectory(username, type, id, VERSION, fileName, bytes);
+        Assertions.assertTrue(Files.exists(path.resolve(VERSION + File.separator + fileName)));
+    }
+
+    @Test
+    public void test_createFileInDirectory_nullVersion() throws FileSystemStorageException {
+        fileSystemService.addDirectories(username, type, id, null);
+        fileSystemService.createFileInDirectory(username, type, id, null, fileName, bytes);
+        Assertions.assertTrue(Files.exists(path.resolve(fileName)));
+    }
+
+    @Test
+    public void test_createFileInDirectory_failed() {
+        Assertions.assertThrows(FileSystemStorageException.class, () -> fileSystemService
+                .createFileInDirectory(username, type, id, VERSION, fileName, bytes));
     }
 }
