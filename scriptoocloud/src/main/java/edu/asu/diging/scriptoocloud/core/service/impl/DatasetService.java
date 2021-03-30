@@ -132,7 +132,7 @@ public class DatasetService implements IDatasetService {
             throw new DataFileNotFoundException("DataFile not found in the database");
         }
         String username = dataset.get().getUsername();
-        String version = dataset.get().getVersion().toString();
+        String version = dataset.get().getVersion() != null ? dataset.get().getVersion().toString() : null;
 
         // Remove join from dataset
         dataset.get().getFiles().remove(dataFile.get());
