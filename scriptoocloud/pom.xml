@@ -25,6 +25,7 @@
 
 		<git.repositories.path></git.repositories.path>
 		<testPathValue></testPathValue>
+		<uploadDirectory>uploadDirectory</uploadDirectory>
 
 		<log.level>info</log.level>
 
@@ -86,6 +87,12 @@
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
 			<version>1.10.19</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.4</version>
 		</dependency>
 
 		<!-- Spring Security -->
