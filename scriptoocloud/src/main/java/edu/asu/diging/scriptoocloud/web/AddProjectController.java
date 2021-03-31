@@ -30,18 +30,17 @@ public class AddProjectController {
     @Autowired
     private final IUserManager userManager;
 
-    @Autowired
     public AddProjectController(IUserManager userManager) {
         this.userManager = userManager;
     }
 
-    @RequestMapping(value = "/auth/add", method = RequestMethod.GET)
+    @RequestMapping(value = "/auth/projects/addProject", method = RequestMethod.GET)
     public String get(Model model) {
         model.addAttribute("project", new ProjectImpl());
-        return "/auth/add";
+        return "/auth/projects/addProject";
     }
 
-    @RequestMapping(value = "/auth/add", method = RequestMethod.POST)
+    @RequestMapping(value = "/auth/projects/addProject", method = RequestMethod.POST)
     public String post(@Valid @ModelAttribute("project") ProjectImpl projectImpl, BindingResult result, Model model,
             RedirectAttributes redirectAttrs, Principal principal) {
         if (result.hasErrors()) {
