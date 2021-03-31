@@ -2,6 +2,7 @@ package edu.asu.diging.scriptoocloud.web;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import edu.asu.diging.scriptoocloud.core.model.impl.YamlModel;
 import edu.asu.diging.scriptoocloud.core.service.GitRepositoryManager;
 import edu.asu.diging.scriptoocloud.core.service.IYamlParserService;
+import edu.asu.diging.scriptoocloud.core.service.impl.DockerService;
 @Controller
 public class RunRepositoryController {
 
@@ -29,46 +31,38 @@ public class RunRepositoryController {
     @Autowired
     private IYamlParserService yamlParserService;
 
+    @Autowired
+    private DockerService dockerService;
 
 
   @RequestMapping(value = "/auth/run/{repoId}/{projectID}", method = RequestMethod.GET)
-   // public String runRepo(@ModelAttribute("projectId") int projectId, @PathVariable("repoId") int repoId,  Model model) throws FileNotFoundException {
-    public String runRepo(Model model,@PathVariable("repoId") Long repoId, @PathVariable("repoId") Long projectID ) throws FileNotFoundException {
-    
-   
-      //System.out.println(attribute.getFlashAttributes().get("projectId"));
-     
-
-     
-        //parse yaml and generate model
-
-       
+    public String runRepo(Model model, @PathVariable("repoId") Long repoId, @PathVariable("projectID") Long projectID ) throws FileNotFoundException { 
+        
         String repoPath = gitRepositoryManager.getRepositoryPath(repoId);
-        
+     
         YamlModel yamlModel = yamlParserService.parseYamlInDirectory(repoPath);
-        
+      
         model.addAttribute("yamlModel", yamlModel);
+        model.addAttribute("repoId", repoId);
 
         return "/auth/run";
     }  
 
 
     @RequestMapping(value = "/auth/run/{repoId}", method = RequestMethod.POST)
-   // public String runRepo(@ModelAttribute("projectId") int projectId, @PathVariable("repoId") int repoId,  Model model) throws FileNotFoundException {
-    public String runRepoPost(Model model) throws FileNotFoundException {
-    
-    /* get model dynamic
-        System.out.println(projectId);
-        System.out.println(repoId);
-        yamlParserService.parseYaml(new File(gitRepositoryManager.getRepositoryPath((long)repoId)));
-      */
-      
-       // Map<String, Object> stcYamlKeyPair = yamlParserService.parseYamlFile(new File("C:/github_com_jormsby2_CloneTest/test.yml"));
+    public String runRepoPost(Model model, @ModelAttribute("yamlModel") YamlModel yamlModel, @PathVariable("repoId") Long repoId, @PathVariable("projectID") String projectID ) throws FileNotFoundException {
 
-        
-      
+        try {  
+        //build container using image relaeted to this repo, build it using user args 
+        String containerId = dockerService.buildContainer(gitRepositoryManager.getRepositoryImageId(repoId).toString(), yamlModel.getInputParams());
 
-        return "/auth/run";
+        //run container, expect results
+        dockerService.runContainer(containerId,projectID);
+
+       } catch (IOException e) {e.printStackTrace();}
+
+
+        return "redirect:/auth/projects";
     }  
 
     

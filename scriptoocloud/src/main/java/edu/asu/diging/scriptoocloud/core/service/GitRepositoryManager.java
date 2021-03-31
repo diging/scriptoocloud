@@ -20,4 +20,6 @@ public interface GitRepositoryManager {
 
     String getRepositoryPath(Long id);
 
+    Long getRepositoryImageId(Long id);
+
 }

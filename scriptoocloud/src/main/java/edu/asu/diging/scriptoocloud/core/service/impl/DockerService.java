@@ -5,11 +5,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
+
+import com.github.dockerjava.api.command.CreateVolumeResponse;
+import com.github.dockerjava.api.model.Volume;
 
 @Service
 @PropertySource("classpath:config.properties")
@@ -27,14 +31,21 @@ public class DockerService {
         return response;
     }
    
-    public void buildContainer(String imageId, String[] userArgs) throws IOException{   
-                             
-        String containerId = dockerRestConnection.dockerClient.createContainerCmd(imageId).withCmd(userArgs).exec().getId();
+    public String buildContainer(String imageId, List<String> arguments) throws IOException{   
+                                              
+        String containerId = dockerRestConnection.dockerClient.createContainerCmd(imageId.toString()).withCmd(arguments).exec().getId();
 
-        dockerRestConnection.dockerClient.startContainerCmd(containerId).exec();
+        return containerId; 
     }
     
-    public String runContainer(String projectName) throws IOException{
+    public String runContainer(String containerId, String ProjectId) throws IOException{
+        dockerRestConnection.dockerClient.startContainerCmd(containerId).exec();
+
+       /*results
+        dockerRestConnection.dockerClient.logContainerCmd(containerId).toString();
+        dockerRestConnection.dockerClient.copyArchiveFromContainerCmd(containerId, resource);
+       */
+       
         return "";
     }
     

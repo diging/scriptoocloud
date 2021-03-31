@@ -46,6 +46,7 @@ public class DockerRestConnection {
                         .sslConfig(dockerConfig.getSSLConfig())
                         .build(); 
                         
+                        
         dockerClient = DockerClientImpl.getInstance(dockerConfig, dockerHttpClient);
     }
     
