@@ -50,16 +50,16 @@ public class RunRepositoryController {
 
 
     @RequestMapping(value = "/auth/run/{repoId}", method = RequestMethod.POST)
-    public String runRepoPost(Model model, @ModelAttribute("yamlModel") YamlModel yamlModel, @PathVariable("repoId") Long repoId, @PathVariable("projectID") String projectID ) throws FileNotFoundException {
+    public String runRepoPost(Model model, @ModelAttribute("yamlModel") YamlModel yamlModel, @PathVariable("repoId") Long repoId) throws FileNotFoundException {
+        System.out.println(repoId);
 
         try {  
-        //build container using image relaeted to this repo, build it using user args 
-        String containerId = dockerService.buildContainer(gitRepositoryManager.getRepositoryImageId(repoId).toString(), yamlModel.getInputParams());
 
-        //run container, expect results
-        dockerService.runContainer(containerId,projectID);
+        String containerId = dockerService.buildContainer(gitRepositoryManager.getRepositoryImageId(repoId), yamlModel.getInputParams());
 
-       } catch (IOException e) {e.printStackTrace();}
+        dockerService.runContainer(containerId);
+
+       } catch (Exception e) {e.printStackTrace();}
 
 
         return "redirect:/auth/projects";

@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,14 +33,18 @@ public class DockerService {
     }
    
     public String buildContainer(String imageId, List<String> arguments) throws IOException{   
-                                              
-        String containerId = dockerRestConnection.dockerClient.createContainerCmd(imageId.toString()).withCmd(arguments).exec().getId();
-
-        return containerId; 
+               
+        String containerId = dockerRestConnection.dockerClient.createContainerCmd(imageId).withCmd("22").exec().getId();
+        dockerRestConnection.dockerClient.startContainerCmd(containerId).exec();
+        //InputStream stream = dockerRestConnection.dockerClient.copyArchiveFromContainerCmd(containerId, "out.txt").exec();
+      
+        return ""; 
     }
     
-    public String runContainer(String containerId, String ProjectId) throws IOException{
-        dockerRestConnection.dockerClient.startContainerCmd(containerId).exec();
+    public String runContainer(String containerId) throws IOException{
+        
+        
+  
 
        /*results
         dockerRestConnection.dockerClient.logContainerCmd(containerId).toString();

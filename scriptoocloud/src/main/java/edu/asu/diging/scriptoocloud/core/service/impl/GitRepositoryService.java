@@ -138,9 +138,9 @@ public class GitRepositoryService implements GitRepositoryManager {
  
     
     @Override
-    public Long getRepositoryImageId(Long id) {
+    public String getRepositoryImageId(Long id) {
         Optional<GitRepositoryImpl> repoModel = gitRepositoryJpa.findById(id);
-        return repoModel.get().getId();
+        return repoModel.get().getImageId();
     }
     
 }
