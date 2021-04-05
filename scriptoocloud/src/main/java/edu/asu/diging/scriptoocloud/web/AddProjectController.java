@@ -30,8 +30,9 @@ public class AddProjectController {
     @Autowired
     private final IUserManager userManager;
 
-    public AddProjectController(IUserManager userManager) {
-        this.userManager = userManager;
+    public AddProjectController() {
+        this.userManager = null;
+        
     }
 
     @RequestMapping(value = "/auth/projects/addProject", method = RequestMethod.GET)

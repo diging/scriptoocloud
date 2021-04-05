@@ -19,7 +19,7 @@
 		<admin.password>$2a$04$oQo44vqcDIFRoYKiAXoNheurzkwX9dcNmowvTX/hsWuBMwijqn44i</admin.password>
 
 		<db.driver>com.mysql.jdbc.Driver</db.driver>
-		<db.database.url>db-url</db.database.url>
+		<db.database.url>jdbc:mysql://localhost:3306/STCDB?useSSL=false&amp;allowPublicKeyRetrieval=true</db.database.url>
 		<db.user>db-user</db.user>
 		<db.password>db-password</db.password>
 
@@ -267,13 +267,6 @@
 			<groupId>org.eclipse.jgit</groupId>
 			<artifactId>org.eclipse.jgit</artifactId>
 			<version>3.5.0.201409260305-r</version>
-		</dependency>
-		
-		<!-- https://mvnrepository.com/artifact/org.yaml/snakeyaml -->
-		<dependency>
-		    <groupId>org.yaml</groupId>
-		    <artifactId>snakeyaml</artifactId>
-		    <version>1.28</version>
 		</dependency>
 
 	</dependencies>
