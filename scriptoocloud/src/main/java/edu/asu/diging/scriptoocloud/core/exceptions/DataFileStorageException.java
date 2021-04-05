@@ -1,6 +1,7 @@
 package edu.asu.diging.scriptoocloud.core.exceptions;
 
-public class DataFileStorageException extends RuntimeException {
+
+public class DataFileStorageException extends Exception {
 
     public DataFileStorageException(String message) {
         super(message);

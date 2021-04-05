@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.io.File;
 import java.net.MalformedURLException;
 
+import edu.asu.diging.scriptoocloud.core.exceptions.FileSystemStorageException;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.Repository;
 import org.junit.jupiter.api.AfterEach;
@@ -65,7 +66,7 @@ class JgitServiceImplTest {
     }
     
     @Test
-    public void test_clone_noSuchRepository() {
+    public void test_clone_noSuchRepository() throws FileSystemStorageException {
         String folderName = path + "no_such_repository";
         File file = new File(folderName);
 
@@ -79,7 +80,7 @@ class JgitServiceImplTest {
     }   
     
     @Test
-    public void test_clone_badUrl() {
+    public void test_clone_badUrl() throws FileSystemStorageException {
         String folderName = path + "bad_url";
         File file = new File(folderName);
 

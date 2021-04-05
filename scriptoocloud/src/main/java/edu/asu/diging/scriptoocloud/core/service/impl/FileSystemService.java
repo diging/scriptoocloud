@@ -1,7 +1,6 @@
 package edu.asu.diging.scriptoocloud.core.service.impl;
 
-import edu.asu.diging.scriptoocloud.core.exceptions.DataFileStorageException;
-import edu.asu.diging.scriptoocloud.core.exceptions.DatasetStorageException;
+import edu.asu.diging.scriptoocloud.core.exceptions.FileSystemStorageException;
 import edu.asu.diging.scriptoocloud.core.service.IFileSystemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +15,11 @@ import java.io.InputStream;
 import java.nio.file.*;
 import java.util.Objects;
 
+/**
+ * The Service class which handles adding and deleting files on the server file system.
+ *
+ * @author John Coronite
+ */
 @Service
 @PropertySource("classpath:/config.properties")
 public class FileSystemService implements IFileSystemService {
@@ -27,17 +31,20 @@ public class FileSystemService implements IFileSystemService {
     public FileSystemService() {
     }
 
-    /**
-     * Creates the dataset (and its required directories) on the filesystem.
-     *
-     * @param id       The id of the dataset.
-     * @param username The username of the dataset.
-     * @throws DatasetStorageException The exception thrown if the directory could not be created.
-     */
+    public String getRootLocationString() {
+        return rootLocationString != null ? rootLocationString : "";
+    }
+
     @Override
-    public void addDatasetDirectories(String id, String username) throws DatasetStorageException {
-        // First, the correct directory must be created
-        Path path = createPath(username, id);
+    public boolean addDirectories(String username, String type, String id, String version) throws
+            FileSystemStorageException {
+        if (username == null) {
+            return false;
+        }
+        Path path = createPath(username, type, id, version);
+        if (path == null) {
+            return false;
+        }
         File directory = path.toFile();
         // if the Path was created successfully, create the directory
         try {
@@ -45,71 +52,62 @@ public class FileSystemService implements IFileSystemService {
                 Files.createDirectories(path);
             }
         } catch (IOException e) {
-            throw new DatasetStorageException("IOException occurred when attempting to add the Dataset", e);
+            throw new FileSystemStorageException("IOException occurred when attempting to add the Dataset", e);
         } catch (UnsupportedOperationException e) {
-            throw new DatasetStorageException("UnsupportedOperationException occurred when attempting to add the Dataset", e);
+            throw new FileSystemStorageException("UnsupportedOperationException occurred when attempting to add the Dataset", e);
         } catch (SecurityException e) {
-            throw new DatasetStorageException("SecurityException occurred when attempting to add the Dataset", e);
+            throw new FileSystemStorageException("SecurityException occurred when attempting to add the Dataset", e);
         }
+        return true;
     }
 
-    /**
-     * A helper method to create a Path given a username and dataset name.
-     *
-     * @param username  The username of the owner of the dataset.
-     * @param datasetId The id of the dataset.
-     * @return Returns a Path.
-     */
     @Override
-    public Path createPath(String username, String datasetId) {
+    public Path createPath(String username, String type, String id, String version) throws
+            FileSystemStorageException {
         Path path;
         try {
-            if (datasetId != null) {
-                path = Paths.get(this.rootLocationString, username, datasetId);
+            if (username != null && (type == null && id == null && version == null)) {
+                path = Paths.get(getRootLocationString(), username);
+            } else if (username != null && (type != null && id != null && version != null)) {
+                path = Paths.get(getRootLocationString(), username, type, id, version);
+            } else if (username != null && type != null && id != null) {
+                path = Paths.get(getRootLocationString(), username, type, id);
             } else {
-                path = Paths.get(this.rootLocationString, username);
+                return null;
             }
             return Paths.get(StringUtils.cleanPath(Objects.requireNonNull(path).toString()));
         } catch (InvalidPathException e) {
-            throw new DatasetStorageException(
-                    "An InvalidPathException occurred in createPath with null datasetName", e);
+            throw new FileSystemStorageException("Path could not be created");
         }
     }
 
-    /**
-     * Deletes a dataset on the filesystem.
-     *
-     * @param id The id of the dataset.
-     * @throws SecurityException throws a storage exception if the directory could not be deleted.
-     */
     @Override
-    public void deleteDatasetDirectories(Long id, String username) throws SecurityException {
+    public void deleteDirectories(String username, String type, String id)
+            throws FileSystemStorageException {
 
-        Path path = createPath(username, String.valueOf(id));
-        File directory = path.toFile();
         try {
+            Path path = createPath(username, type, id, null);
+            File directory = path.toFile();
             deleteDirectoryOrFile(directory);
+        } catch (InvalidPathException e) {
+            throw new FileSystemStorageException(
+                    "The path could not be found when attempting to delete the Dataset from the file system", e);
         } catch (SecurityException e) {
-            throw new DatasetStorageException(
+            throw new FileSystemStorageException(
                     "A SecurityException occurred when attempting to delete the Dataset from the file system", e);
         }
     }
 
-    /**
-     * Helper method to recursively delete directories.
-     *
-     * @param directoryToBeDeleted The directory / File to be deleted.
-     * @return boolean indicating success of deleting directory.
-     * @throws DatasetStorageException if directory cannot be deleted.
-     */
     @Override
-    public boolean deleteDirectoryOrFile(File directoryToBeDeleted) throws DatasetStorageException {
+    public boolean deleteDirectoryOrFile(File directoryToBeDeleted) throws
+            FileSystemStorageException {
 
         File[] allContents;
         try {
             allContents = directoryToBeDeleted.listFiles();
         } catch (SecurityException e) {
-            throw new DatasetStorageException("A SecurityException occurred in deleteDirectory when generating file list", e);
+            throw new FileSystemStorageException(
+                    "A SecurityException occurred when generating list of files to be deleted", e);
         }
         if (allContents != null) {
             for (File file : allContents) {
@@ -119,40 +117,31 @@ public class FileSystemService implements IFileSystemService {
         try {
             return directoryToBeDeleted.delete();
         } catch (SecurityException e) {
-            throw new DatasetStorageException("A SecurityException occurred in deleteDirectory when deleting a directory", e);
+            throw new FileSystemStorageException(
+                    "A SecurityException occurred when deleting a directory", e);
         }
     }
 
-    /**
-     * Stores the user-uploaded file on the file system.
-     *
-     * @param username  The name (primary key) of the user / owner of the Dataset to which
-     *                  the file belongs.
-     * @param datasetId The id of the Dataset to which the file belongs.
-     * @param filename  The name of the file to be stored.
-     * @throws DataFileStorageException If the file could not be stored on the file system.
-     */
     @Override
-    public void createFileInDirectory(String username, String datasetId, String filename,
-                                      byte[] bytes) throws DataFileStorageException {
-
-        Path destinationFile = Paths.get(rootLocationString).resolve(
-                Paths.get(username, datasetId, filename))
-                .normalize().toAbsolutePath();
-        // make sure path structure is: /serverRoot/username/datasetId/file
-        if (!destinationFile.getParent().getParent().getParent()
-                .equals(Paths.get(rootLocationString).toAbsolutePath())) {
-            // This is a security check to make sure that the user cannot access
-            // unauthorized areas of the file system - e.g. by naming a file: "../../file"
-            throw new DataFileStorageException("Cannot store file at calculated location");
+    public void createFileInDirectory(String username, String type, String id, String version,
+                                      String filename, byte[] bytes) throws FileSystemStorageException {
+        Path destinationFile;
+        if (version == null) {
+            destinationFile = Paths.get(getRootLocationString()).resolve(
+                    Paths.get(username, type, id, filename))
+                    .normalize().toAbsolutePath();
+        } else {
+            destinationFile = Paths.get(getRootLocationString()).resolve(
+                    Paths.get(username, type, id, version, filename))
+                    .normalize().toAbsolutePath();
         }
         try (InputStream inputStream = new ByteArrayInputStream(bytes)) {
             Files.copy(inputStream, destinationFile, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            throw new DataFileStorageException(
+            throw new FileSystemStorageException(
                     "An IO Error occurred while copying the file to its directory", e);
         } catch (SecurityException e) {
-            throw new DataFileStorageException(
+            throw new FileSystemStorageException(
                     "A Security Exception occurred while copying the file to its directory", e);
         }
     }

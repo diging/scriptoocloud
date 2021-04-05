@@ -56,51 +56,75 @@
                 <a th:href="@{/}" class="app-title">ScripTooCloud</a>
             </div>
 
-            <!-- If Admin, show User List Link -->
-            <div class="pull-right nav header-nav" sec:authorize="hasRole('ADMIN')"
-                 role="presentation">
-                <a class="account-button sign-in-out" th:href="@{/admin/user/list}">Users</a>
-            </div>
-            
-            <!-- If Admin, show Repository links -->
-            <div class="pull-right nav header-nav" sec:authorize="hasRole('ADMIN')" role="presentation">
-              <button type="button" class="account-button sign-in-out dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Repositories
-              </button>
-              <div class="dropdown-menu">
-                <a class="dropdown-item" th:href="@{/admin/repositories/clone}">Clone</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" th:href="@{/admin/repositories/list}">Mange Repositories</a>
-              </div>
-            </div>
-            
-            <!-- If logged in, show logout -->
-            <div class="pull-right nav header-nav" sec:authorize="isAuthenticated()"
-                 role="presentation">
-                <form th:action="@{/logout}" method="POST">
-                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                    <button class="account-button sign-in-out" type="submit" title="Logout">Sign Out</button>
-                </form>
-            </div>
 
-            <!-- If not logged in, show Sign In -->
-            <div class="pull-right nav header-nav" sec:authorize="isAnonymous()"
-                 role="presentation">
-                <a class="account-button sign-in-out" th:href="@{/login}">Sign In</a>
-            </div>
+            <!-- Show Spring Security navigation links only if there is not an error response -->
+            <div
+                th:unless="${T(org.springframework.http.HttpStatus).valueOf(#response.status).isError()}">
 
-            <!-- If not logged in, show Register -->
-            <div class="pull-right nav header-nav" sec:authorize="isAnonymous()"
-                 role="presentation">
-                <a class="account-button sign-in-out" th:href="@{/register}">Register</a>
-            </div>
+                <!-- If Admin, show User List Link -->
+                <div class="pull-right nav header-nav" sec:authorize="hasRole('ADMIN')"
+                     role="presentation">
+                    <a class="account-button sign-in-out" th:href="@{/admin/user/list}">Users</a>
+                </div>
 
-            <!-- If logged in, show username -->
-            <div sec:authorize="isAuthenticated()" class="pull-right"
-                 th:text="${'Signed in as: ' + #authentication.principal.username}"></div>
+                <!-- If Admin, show Repository links -->
+                <div class="pull-right nav header-nav" sec:authorize="hasRole('ADMIN')"
+                     role="presentation">
+                    <button type="button" class="account-button sign-in-out dropdown-toggle"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Repositories
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" th:href="@{/admin/repositories/clone}">Clone</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" th:href="@{/admin/repositories/list}">Mange
+                            Repositories</a>
+                    </div>
+                </div>
+
+                <!-- If logged in, show logout -->
+                <div class="pull-right nav header-nav" sec:authorize="isAuthenticated()"
+                     role="presentation">
+                    <form th:action="@{/logout}" method="POST">
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                        <button class="account-button sign-in-out" type="submit" title="Logout">Sign
+                            Out
+                        </button>
+                    </form>
+                </div>
+
+                <!-- If not logged in, show Sign In -->
+                <div class="pull-right nav header-nav" sec:authorize="isAnonymous()"
+                     role="presentation">
+                    <a class="account-button sign-in-out" th:href="@{/login}">Sign In</a>
+                </div>
+
+                <!-- If not logged in, show Register -->
+                <div class="pull-right nav header-nav" sec:authorize="isAnonymous()"
+                     role="presentation">
+                    <a class="account-button sign-in-out" th:href="@{/register}">Register</a>
+                </div>
+
+                <!-- If logged in, show username -->
+                <div sec:authorize="isAuthenticated()" class="pull-right"
+                     th:text="${'Signed in as: ' + #authentication.principal.username}"></div>
+            </div>
         </nav>
     </div>
 </header>
+
+<div sec:authorize="hasRole('USER')" id="user-navigation">
+    <div class="container">
+        <ul class="breadcrumb">
+            <li class="notactive">
+                <a th:href="@{'/auth/datasets/list'}">My Datasets</a>
+            </li>
+            <li class="active">
+                My Projects
+            </li>
+        </ul>
+    </div>
+</div>
 
 <div th:if="${show_alert}" class="alert alert-${alert_type}" role="alert">${alert_msg}</div>
 
