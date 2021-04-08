@@ -3,6 +3,8 @@ package edu.asu.diging.scriptoocloud.web;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,25 +46,22 @@ public class RunRepositoryController {
       
         model.addAttribute("yamlModel", yamlModel);
         model.addAttribute("repoId", repoId);
-
+        
         return "/auth/run";
     }  
 
 
-    @RequestMapping(value = "/auth/run/{repoId}", method = RequestMethod.POST)
-    public String runRepoPost(Model model, @ModelAttribute("yamlModel") YamlModel yamlModel, @PathVariable("repoId") Long repoId) throws FileNotFoundException {
-        System.out.println(repoId);
-
+    @RequestMapping(value = "/auth/run/{repoId}/{name}", method = RequestMethod.POST)
+    public String runRepoPost(Model model, @PathVariable("name") String name, @RequestParam("list") ArrayList<String> argumentList, @PathVariable("repoId") Long repoId) throws FileNotFoundException {
+        argumentList.add(0,name);
+        String[] args = argumentList.toArray(new String[argumentList.size()]);
+     
         try {  
+            String containerId = dockerService.buildContainer(gitRepositoryManager.getRepositoryImageId(repoId),args);
+            dockerService.runContainer(containerId);
+        } catch (Exception e) {e.printStackTrace();}
 
-        String containerId = dockerService.buildContainer(gitRepositoryManager.getRepositoryImageId(repoId), yamlModel.getInputParams());
-
-        dockerService.runContainer(containerId);
-
-       } catch (Exception e) {e.printStackTrace();}
-
-
-        return "redirect:/auth/projects";
+         return "redirect:/auth/projects";
     }  
 
     

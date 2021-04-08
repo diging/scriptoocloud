@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,25 +33,20 @@ public class DockerService {
         return response;
     }
    
-    public String buildContainer(String imageId, List<String> arguments) throws IOException{   
-               
-        String containerId = dockerRestConnection.dockerClient.createContainerCmd(imageId).withCmd("22").exec().getId();
-        dockerRestConnection.dockerClient.startContainerCmd(containerId).exec();
-        //InputStream stream = dockerRestConnection.dockerClient.copyArchiveFromContainerCmd(containerId, "out.txt").exec();
-      
-        return ""; 
+    public String buildContainer(String imageId, String[] arguments) throws IOException{   
+    
+        System.out.print(arguments[0]);
+        System.out.print(arguments[1]);
+        
+        String containerId = 
+  dockerRestConnection.dockerClient.createContainerCmd(imageId).withCmd(arguments).exec().getId();
+        return containerId; 
     }
     
     public String runContainer(String containerId) throws IOException{
-        
-        
-  
-
-       /*results
-        dockerRestConnection.dockerClient.logContainerCmd(containerId).toString();
-        dockerRestConnection.dockerClient.copyArchiveFromContainerCmd(containerId, resource);
-       */
-       
+        dockerRestConnection.dockerClient.startContainerCmd(containerId).exec();   
+        // dockerRestConnection.dockerClient.startContainerCmd(containerId).exec();   
+        //InputStream stream = dockerRestConnection.dockerClient.copyArchiveFromContainerCmd(containerId, "/usr/src/app/out.txt").exec();
         return "";
     }
     
