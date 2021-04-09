@@ -7,14 +7,21 @@
 
 	<h2>Required Fields</h2>
 
-	<form th:action="@{|/auth/run/${repoId}/${yamlModel.name}|}" method="POST">
+	<form th:action="@{|/auth/run/${repoId}/${yamlModel.main}/${yamlModel.extension}|}" method="POST">
 		<ul class="list-group">
 		<li class="list-group-item clearfix">
 		<ul class="list-group">
 
+
+
 		<li class="list-group-item clearfix">
 		<span path="name" th:name="name"  th:text="${yamlModel.name}" ></span> 
 		</li>
+
+        <li class="list-group-item clearfix">
+        <span path="na" th:name="ame"  th:text="${yamlModel.extension}" ></span> 
+        </li>
+
 
 		<li class="list-group-item clearfix">
 		<span th:text="${yamlModel.author}" ></span> 

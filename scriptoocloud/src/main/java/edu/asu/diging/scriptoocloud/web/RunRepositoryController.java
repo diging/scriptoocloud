@@ -51,9 +51,9 @@ public class RunRepositoryController {
     }  
 
 
-    @RequestMapping(value = "/auth/run/{repoId}/{name}", method = RequestMethod.POST)
-    public String runRepoPost(Model model, @PathVariable("name") String name, @RequestParam("list") ArrayList<String> argumentList, @PathVariable("repoId") Long repoId) throws FileNotFoundException {
-        argumentList.add(0,name);
+    @RequestMapping(value = "/auth/run/{repoId}/{main}/{extension}", method = RequestMethod.POST)
+    public String runRepoPost(Model model, @PathVariable("main") String main, @PathVariable("extension") String extension,@RequestParam("list") ArrayList<String> argumentList, @PathVariable("repoId") Long repoId) throws FileNotFoundException {
+        argumentList.add(0,main + "." + extension);
         String[] args = argumentList.toArray(new String[argumentList.size()]);
      
         try {  

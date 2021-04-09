@@ -22,9 +22,16 @@ public class YamlModel  {
     private String description;
     private String author;
     private String main;
+    private String extension;
     private ArrayList<String> inputParams;
     private String outputContext;
-    
+  
+    public String getExtension() {
+        return extension;
+    }
+    public void setExtension(String extension) {
+        this.extension = extension;
+    }
     public long getId() {
         return id;
     }

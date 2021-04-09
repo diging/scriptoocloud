@@ -33,6 +33,7 @@ class YamlParserService implements IYamlParserService  {
         model.setAuthor((String)stcYamlKeyPair.get("author"));
         model.setDescription((String)stcYamlKeyPair.get("description"));
         model.setMain((String)stcYamlKeyPair.get("main"));
+        model.setExtension((String)stcYamlKeyPair.get("extension"));
         model.setName((String)stcYamlKeyPair.get("name"));
         model.setOutputContext((String)stcYamlKeyPair.get("output"));
         model.setInputParams((ArrayList<String>)stcYamlKeyPair.get("input"));
