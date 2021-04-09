@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{layouts/main}"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Datasets | ScripTooCloud</title>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".rename-dataset").on("click", function (e) {
+                e.preventDefault();
+                $(this).closest(".row").find(".hide-form").toggle();
+            });
+            $('.delModalBtn').on('click', function (e) {
+                e.preventDefault();
+                let id = $(this).data('id');
+                let append = id + "/delete";
+                $("#deleteForm").attr('action', function (i, value) {
+                    return value + append;
+                });
+            })
+        })
+    </script>
+</head>
+<body>
+<div layout:fragment="content">
+    <div id="wrapper">
+        <section class="container main-page-content ">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2>Your <strong>Datasets</strong></h2>
+                    <div>
+                        <form
+                            method="POST"
+                            class="simple_form white-row"
+                            th:action="@{/auth/datasets/add}"
+                            th:object="${dataset}">
+                            <div class="alert alert-danger" th:if="${#fields.hasErrors('*')}">
+                                <p th:each="err : ${#fields.errors('*')}" th:text="${err}"></p>
+                            </div>
+                            <div class="alert alert-success"
+                                 th:if="${not #strings.isEmpty(successMessage)}">
+                                <p th:text="${successMessage}">
+                            </div>
+                            <div class="alert alert-danger"
+                                 th:if="${not #strings.isEmpty(errorMessage)}">
+                                <p th:text="${errorMessage}">
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <div class="col-md-8">
+                                        <label
+                                            for="name">Add a Dataset
+                                        </label>
+                                        <input
+                                            th:field="*{name}"
+                                            class="form-control"
+                                            id="name"
+                                            name="name"
+                                            autofocus="autofocus"
+                                            type="text"
+                                            placeholder="Dataset Name"/>
+                                    </div>
+                                    <div class="col-md-4 mono">
+                                        Note:<br/>
+                                        Version number for new Datasets is: 1 <br/>
+                                        You can edit an existing Dataset
+                                        to create additional versions of it.
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <label
+                                            for="description">Description
+                                        </label>
+                                        <input
+                                            th:field="*{description}"
+                                            class="form-control"
+                                            id="description"
+                                            name="description"
+                                            type="text"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <input
+                                        class="btn pull-right red-form-button"
+                                        type="submit"
+                                        value="Create"/>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                    <div th:unless="${#lists.isEmpty(dbDatasets)}">
+                        <div class="row tabular-row" th:each="ds : ${dbDatasets}">
+                            <div class="col-md-8">
+                                <div class="col-md-8">
+                                    <div class="table">
+                                        <div class="tr">
+                                            <div class="td icon">
+                                                <span><i class="fas fa-folder fa-2x"></i></span>
+                                            </div>
+                                            <div class="td">
+                                                <a class="mono filename"
+                                                   th:href="@{/auth/datasets/{id}(id=${ds.id})}"
+                                                   th:text="${ds.name}"></a>
+                                                <div>
+                                                    <span
+                                                        class="metadata mono metadataLabel">Version: </span>
+                                                    <span class="metadata mono"
+                                                          th:text="${ds.version}"></span>
+                                                </div>
+                                                <div>
+                                                    <span class="metadata mono metadataLabel">Description: </span>
+                                                    <span class="metadata mono"
+                                                          th:text="${ds.description}"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tr">
+                                            <div class="td"></div>
+                                            <div class="hide-form td">
+                                                <form class="table"
+                                                      th:action="@{/auth/datasets/{id}/edit(id=${ds.id})}"
+                                                      th:object="${datasetEditForm}" method="POST">
+                                                    <div class="tr">
+                                                        <label class="td">
+                                                            <input type="text"
+                                                                   class="fieldInput"
+                                                                   th:name="name"
+                                                                   th:value="${ds.name}"/>
+                                                        </label>
+                                                        <input type="submit"
+                                                               class=" td btn red-form-button small-button"
+                                                               value="Save"/>
+                                                    </div>
+                                                    <div class="alert alert-danger"
+                                                         th:if="${#fields.hasErrors('*') and #strings.equals(ds.id, errorId)}">
+                                                        <p th:each="err : ${#fields.errors('*')}"
+                                                           th:text="${err}"></p>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 center">
+                                    <button type="submit" class="btn btn-clear rename-dataset">
+                                        <i class="fas fa-edit"></i> Rename/Edit Dataset
+                                    </button>
+                                </div>
+
+                            </div>
+                            <div class="col-md-2 center">
+                                <button type="button"
+                                        class="btn btn-clear delModalBtn"
+                                        data-toggle="modal"
+                                        data-target="#deleteDatasetModal"
+                                        th:attr="data-id=${ds.id}">
+                                    <i class="fas fa-trash-alt"></i> Delete Dataset
+                                </button>
+                            </div>
+                            <div class="col-md-2 center">
+                                <a class="link-btn" th:href="@{/auth/datasets/{id}(id=${ds.id})}">
+                                    <i class="fas fa-file"></i> View/Add Files To Dataset
+                                </a>
+                            </div>
+                        </div>
+                        <!-- Modal -->
+                        <div th:id="deleteDatasetModal" class="modal fade" tabindex="-1"
+                             role="dialog"
+                             aria-labelledby="deleteDatasetModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal"
+                                                aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        <h1 class="modal-title" id="deleteDatasetModalLabel">
+                                            WARNING</h1>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Are you sure you want to delete this dataset?</p>
+                                        <p>This will delete both the DIRECTORY and the FILES it
+                                            contains.</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <form method="POST" id="deleteForm"
+                                              th:action="@{/auth/datasets/}">
+                                            <button type="button" class="btn gray-form-button"
+                                                    data-dismiss="modal">
+                                                Cancel
+                                            </button>
+                                            <button type="submit"
+                                                    class="btn pull-right red-form-button">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End Modal -->
+                    </div>
+                    <div class="col-md-12">
+                        <ul th:if="${dbDatasets.totalPages > 0}" class="pagination">
+                            <li class="page-item" th:each="pageNumber : ${pageNumbers}"
+                                th:class="${pageNumber == dbDatasets.number + 1} ? active">
+                                <a th:href="@{auth/datasets/list(size=${dbDatasets.size}, page=${pageNumber})}"
+                                   th:text="${pageNumber}"></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+</div>
+</body>
+</html>

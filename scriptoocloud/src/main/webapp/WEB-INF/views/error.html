@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{layouts/main}"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Error | ScripTooCloud</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div id="wrapper">
+        <section class="container main-page-content ">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2>An <strong>Error</strong> Occurred</h2>
+                    <div class="alert alert-danger" th:if="${not #strings.isEmpty(httpErrorMessage)}">
+                        <p th:text="${httpErrorMessage}">
+                    </div>
+                    <div>
+                        <a th:href="@{/}">ScripTooCloud Homepage</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+</body>
+</html>
