@@ -74,20 +74,22 @@ public class ProjectManagerImpl implements ProjectManager {
 
     @Override
     public void updateProject(int id, String name, String description) {
-        Optional<ProjectImpl> project = getProject(id);
-        Project project1 = project.get();
-        project1.setName(name);
-        project1.setDescription(description);
-        project1.setLastModifiedDate(ZonedDateTime.now());
+        Project project = getProject(id);
+        project.setName(name);
+        project.setDescription(description);
+        project.setLastModifiedDate(ZonedDateTime.now());
 
-        projectRepo.save((ProjectImpl) project1);
+        projectRepo.save((ProjectImpl) project);
     }
 
     @Override
-    public Optional<ProjectImpl> getProject(int id) {
+    public Project getProject(int id) {
         Optional<ProjectImpl> project = Optional.ofNullable(new ProjectImpl());
         project = projectRepo.findById((long) id);
-        return project;
+        if (project.isPresent()){
+            return project.get();
+        } 
+        return null;
     }
 
 }

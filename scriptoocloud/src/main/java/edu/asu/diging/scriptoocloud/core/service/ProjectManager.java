@@ -15,7 +15,7 @@ public interface ProjectManager {
 
     List<Project> findAll();
 
-    Optional<ProjectImpl> getProject(int id);
+    Project getProject(int id);
 
     void updateProject(int id, String name, String description);
 
