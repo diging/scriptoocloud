@@ -28,9 +28,10 @@ public class RemoveProjectController {
     private ProjectManager projectManager;
 
     @RequestMapping(value = "/auth/projects/{id}/remove", method = RequestMethod.POST)
-    public String post(@PathVariable("id") Long id, Model model) {
+    public String post(@PathVariable("id") Long id, Model model, RedirectAttributes redirectAttrs) {
 
         projectManager.deleteProject(id);
+        redirectAttrs.addAttribute("delSuccessMessage", "Project sucessfully deleted.");
         return "redirect:/auth/projects";
     }
 }

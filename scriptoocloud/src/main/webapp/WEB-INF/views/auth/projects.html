@@ -1,10 +1,28 @@
 <html layout:decorate="~{layouts/main}">
 <head>
+<script type="text/javascript">
+$(document).ready(function () {
+    $(".confirm-delete").on("click", function (e) {
+        if(!confirm("Are you sure you want to delete this project?")){
+        	e.preventDefault();
+        }
+    });
+})
+</script>
+</script>
 <title>Authority Matcher</title>
 </head>
 <body>
     <div layout:fragment="content">
         <div class="text-danger" th:text="${deletionFailure}"></div>
+        <div class="alert alert-success"
+            th:if="${not #strings.isEmpty(param.addSuccessMessage)}">
+            <p th:text="${param.addSuccessMessage}">
+        </div>
+        <div class="alert alert-success"
+            th:if="${not #strings.isEmpty(param.delSuccessMessage)}">
+            <p th:text="${param.delSuccessMessage}">
+        </div>
         <h2>Project List:</h2>
         <ul class="list-group">
             <li th:each="project : ${projects}"
@@ -21,9 +39,9 @@
                 <div class="pull-right text-right"></div>
 
                 <form
-                    th:action="@{|/auth/projects/${project.getId()}/remove/|}"
+                    th:action="@{|/auth/projects/${project.getId()}/remove|}"
                     method="POST">
-                    <button style="padding: 0px" class="btn btn-link">
+                    <button style="padding: 0px" th:attr="data-id=${project.getId()}" class="btn btn-link confirm-delete">
                         <i class="fas fa-trash"></i> Delete Project
                     </button>
                 </form>

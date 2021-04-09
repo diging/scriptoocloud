@@ -61,6 +61,7 @@ public class AddProjectController {
         }
         
         Project project = projectManager.createProject(projectImpl.getName(), projectImpl.getDescription(), user);
+        redirectAttrs.addAttribute("addSuccessMessage", "Project sucessfully added.");
         return "redirect:/auth/projects";
     }
 }
