@@ -3,6 +3,7 @@ package edu.asu.diging.scriptoocloud.core.service;
 import edu.asu.diging.scriptoocloud.core.exceptions.FileSystemStorageException;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 
@@ -82,8 +83,8 @@ public interface IFileSystemService {
      * Stores the user-uploaded file on the file system in the form:
      * [root]/[username]/[directory_type]/[directory_id]/[version]/[filename]
      *
-     * @param username The name (primary key) of the user / owner of the Dataset to which
-     *                 the file belongs.
+     * @param username The name (primary key) of the user / owner of the type (e.g., Dataset) to
+     *                 which the file belongs.
      * @param type     The directory type (e.g., dataset, etc.)
      * @param id       The id of the type to which the file belongs.
      * @param version  The version of the type to which the file belongs.
@@ -93,4 +94,18 @@ public interface IFileSystemService {
      */
     void createFileInDirectory(String username, String type, String id, String version,
                                String filename, byte[] bytes) throws FileSystemStorageException;
+
+    /**
+     * Creates a zip file of the form:
+     * [root]/[username]/[directory_type]/[directory_id]/[version]/[type]_[id]_version_[version].zip
+     *
+     * @param username The name (primary key) of the user / owner of the type (e.g., Dataset).
+     * @param type     The directory type (e.g., dataset, etc.)
+     * @param id       The id of the type
+     * @param version  The version of the type
+     * @throws FileSystemStorageException If the directory could not be downloaded as a zip file.
+     * @throws IOException                If the streams cannot be closed.
+     */
+    void createZipFile(String username, String type, String id, String version)
+            throws FileSystemStorageException, IOException;
 }

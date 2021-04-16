@@ -8,12 +8,11 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.*;
 import java.util.Objects;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * The Service class which handles adding and deleting files on the server file system.
@@ -146,4 +145,37 @@ public class FileSystemService implements IFileSystemService {
         }
     }
 
+    @Override
+    public void createZipFile(String username, String type, String id, String version)
+            throws FileSystemStorageException, IOException {
+
+        Path pathOfZip = createPath(username, type, id, version);
+        if (pathOfZip != null) {
+            String directoryOfZip = pathOfZip.toString();
+            String zipFileName = directoryOfZip + File.separator + type + "_" + id + "_version_" +
+                    version + ".zip";
+            FileOutputStream fileOutputStream = new FileOutputStream(zipFileName);
+            ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
+            File fileToZip = new File(directoryOfZip);
+
+            File[] children = fileToZip.listFiles();
+            assert children != null;
+            for (File childFile : children) {
+                if (!zipFileName.contains(childFile.getName()) && !childFile.isHidden()) {
+                    FileInputStream fileInputStream = new FileInputStream(childFile);
+                    ZipEntry zipEntry = new ZipEntry(childFile.getName());
+                    zipOutputStream.putNextEntry(zipEntry);
+
+                    byte[] bytes = new byte[4096];
+                    int length;
+                    while ((length = fileInputStream.read(bytes)) >= 0) {
+                        zipOutputStream.write(bytes, 0, length);
+                    }
+                    fileInputStream.close();
+                }
+            }
+            zipOutputStream.close();
+            fileOutputStream.close();
+        }
+    }
 }

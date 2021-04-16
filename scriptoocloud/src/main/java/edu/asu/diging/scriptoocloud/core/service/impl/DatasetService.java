@@ -156,4 +156,13 @@ public class DatasetService implements IDatasetService {
             throw new DatasetStorageException("File was created, but could not be deleted", e);
         }
     }
+
+    @Override
+    public Integer getSize(Long datasetId) {
+        Optional<Dataset> dataset = datasetRepository.findById(datasetId);
+        if (dataset.isPresent()) {
+            return (dataset.get().getFiles() == null) ? 0 : dataset.get().getFiles().size();
+        }
+        return null;
+    }
 }

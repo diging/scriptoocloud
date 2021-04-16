@@ -182,4 +182,26 @@ class FileSystemServiceTest {
         Assertions.assertThrows(FileSystemStorageException.class, () -> fileSystemService
                 .createFileInDirectory(username, type, id, VERSION, fileName, bytes));
     }
+
+    @Test
+    public void test_createZipFile_success() throws FileSystemStorageException, IOException {
+        fileSystemService.addDirectories(username, type, id, VERSION);
+        fileSystemService.createFileInDirectory(username, type, id, VERSION, fileName, bytes);
+        fileSystemService.createZipFile(username, type, id, VERSION);
+        String fileName = fileSystemService.createPath(username, type, id, VERSION).toString() +
+                File.separator +
+                type + "_" + id + "_" + "version" + "_" + VERSION + ".zip";
+        Assertions.assertTrue(Files.exists(Paths.get(fileName)));
+    }
+
+    @Test
+    public void test_createZipFile_failure() throws FileSystemStorageException, IOException {
+        fileSystemService.addDirectories(username, type, id, VERSION);
+        fileSystemService.createFileInDirectory(username, type, id, VERSION, fileName, bytes);
+        fileSystemService.createZipFile(null, null, null, null);
+        String fileName = fileSystemService.createPath(username, type, id, VERSION).toString() +
+                File.separator +
+                type + "_" + id + "_" + "version" + "_" + VERSION + ".zip";
+        Assertions.assertFalse(Files.exists(Paths.get(fileName)));
+    }
 }

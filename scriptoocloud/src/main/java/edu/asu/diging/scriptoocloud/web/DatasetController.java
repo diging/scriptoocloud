@@ -51,6 +51,7 @@ public class DatasetController {
         IDataset dataset = iDatasetService.findById(id);
         Page<DataFile> filesPage = iDataFileService.findFiles(PageRequest.of(currentPage - 1, pageSize), id);
         model.addAttribute("dataset", dataset);
+        model.addAttribute("datasetSize", iDatasetService.getSize(id));
         model.addAttribute("filesPage", filesPage);
         int totalPages = filesPage.getTotalPages();
         if (totalPages > 0) {

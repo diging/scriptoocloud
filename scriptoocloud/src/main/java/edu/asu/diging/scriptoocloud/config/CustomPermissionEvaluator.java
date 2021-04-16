@@ -27,7 +27,8 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
     }
 
     @Override
-    public boolean hasPermission(Authentication auth, Serializable targetId, String targetType, Object permission) {
+    public boolean hasPermission(Authentication auth, Serializable targetId, String targetType,
+                                 Object permission) {
         if ((auth == null) || (targetType == null) || !(permission instanceof String)) {
             return false;
         }

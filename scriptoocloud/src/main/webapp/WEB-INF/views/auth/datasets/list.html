@@ -149,24 +149,25 @@
                                     </div>
                                 </div>
                                 <div class="col-md-4 center">
-                                    <button type="submit" class="btn btn-clear rename-dataset">
-                                        <i class="fas fa-edit"></i> Rename/Edit Dataset
+                                    <button type="submit" class="btn btn-clear rename-dataset mono">
+                                        <i class="fas fa-edit"></i><span> Rename/Edit Dataset</span>
                                     </button>
                                 </div>
 
                             </div>
                             <div class="col-md-2 center">
                                 <button type="button"
-                                        class="btn btn-clear delModalBtn"
+                                        class="btn btn-clear delModalBtn mono"
                                         data-toggle="modal"
                                         data-target="#deleteDatasetModal"
                                         th:attr="data-id=${ds.id}">
-                                    <i class="fas fa-trash-alt"></i> Delete Dataset
+                                    <i class="fas fa-trash-alt"></i><span> Delete Dataset</span>
                                 </button>
                             </div>
                             <div class="col-md-2 center">
-                                <a class="link-btn" th:href="@{/auth/datasets/{id}(id=${ds.id})}">
-                                    <i class="fas fa-file"></i> View/Add Files To Dataset
+                                <a class="link-btn mono"
+                                   th:href="@{/auth/datasets/{id}/download(id=${ds.id})}">
+                                    <i class="fas fa-file"></i><span> View/Add Files</span>
                                 </a>
                             </div>
                         </div>

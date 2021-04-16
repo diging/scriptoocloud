@@ -349,6 +349,43 @@ public class DatasetServiceTest {
         Mockito.verify(dataFileRepository).deleteById(DATA_FILE_ID);
     }
 
+    @Test
+    public void test_getSize_success() {
+
+        dataset.addFile((DataFile) dataFile);
+
+        DataFile newDataFile = new DataFile();
+        newDataFile.setId(3L);
+        newDataFile.setName("newDataFile");
+        newDataFile.setCreatedAt(CREATED_AT);
+        String DATA_FILE_EXTENSION = "txt";
+        newDataFile.setExtension(DATA_FILE_EXTENSION);
+        dataset.addFile((DataFile) newDataFile);
+
+        Mockito.when(datasetRepository.findById(DATASET_ID))
+                .thenReturn(Optional.of((Dataset) dataset));
+
+        Assertions.assertEquals(2, datasetService.getSize(DATASET_ID));
+    }
+
+    @Test
+    public void test_getSize_noFiles() {
+
+        Mockito.when(datasetRepository.findById(DATASET_ID))
+                .thenReturn(Optional.of((Dataset) dataset));
+
+        Assertions.assertEquals(0, datasetService.getSize(DATASET_ID));
+    }
+
+    @Test
+    public void test_getSize_noDataSet() {
+
+        Mockito.when(datasetRepository.findById(DATASET_ID))
+                .thenReturn(Optional.empty());
+
+        Assertions.assertNull(datasetService.getSize(DATASET_ID));
+    }
+
     class DatasetArgMatcher extends ArgumentMatcher<IDataset> {
 
         private final IDataset datasetToBeTested;

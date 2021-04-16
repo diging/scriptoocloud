@@ -663,6 +663,14 @@ span.file-name-span {
     background: transparent;
 }
 
+.btn-clear span, .link-btn span {
+    font-size:11px;
+}
+
+.btn-clear i, .link-btn i {
+    font-size:16px;
+}
+
 .btn-clear:hover {
     color:#8c1d40;
 }
@@ -674,6 +682,10 @@ span.file-name-span {
 .btn-file:hover {
     color: #2E363F;
     text-decoration: underline;
+}
+
+.download-link{
+    padding: 10px 0 15px 0;
 }
 
 .no-file {

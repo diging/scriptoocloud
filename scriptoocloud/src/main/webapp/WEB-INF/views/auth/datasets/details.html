@@ -47,6 +47,13 @@
                                       'MMMMM dd, yyyy K:mm a')}">
                                 </span>
                             </div>
+                            <div th:if="${datasetSize > 0}" class="download-link">
+                                <a class="link-btn mono"
+                                   th:href="@{/auth/datasets/{id}/download(id=${dataset.id})}">
+                                    <i class="fas fa-file-archive"></i>
+                                    <span> Download Dataset as Zip File</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
 

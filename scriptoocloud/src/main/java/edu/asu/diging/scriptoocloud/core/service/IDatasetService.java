@@ -83,4 +83,12 @@ public interface IDatasetService {
      */
     boolean deleteFileFromDataset(Long datasetId, Long fileId) throws DatasetStorageException,
             DatasetNotFoundException, DataFileNotFoundException;
+
+    /**
+     * Returns the number of DataFiles in a Dataset.
+     *
+     * @param datasetId The primary key of the Dataset
+     * @return The number of DataFiles in the Dataset or null if the Dataset cannot be found.
+     */
+    Integer getSize(Long datasetId);
 }
