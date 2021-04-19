@@ -24,6 +24,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.formLogin()
+                .defaultSuccessUrl("/", true)
                 .loginPage("/login").permitAll()
                 .and()
                 .logout()
@@ -37,7 +38,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
                 .antMatchers("/", "/resources/**",
                         "/register").permitAll()
                 // The rest of the our application is protected.
-                .antMatchers( "/users/**", "/admin/**").hasRole("ADMIN")
+                .antMatchers("/users/**", "/admin/**").hasRole("ADMIN")
                 .antMatchers("/auth/**").hasAnyRole("USER", "ADMIN")
                 .anyRequest().hasRole("USER");
     }

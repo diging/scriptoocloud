@@ -28,30 +28,40 @@ public class AddProjectController {
     private ProjectManager projectManager;
 
     @Autowired
-    private final IUserManager userManager;
+    private IUserManager userManager;
 
-    @Autowired
-    public AddProjectController(IUserManager userManager) {
-        this.userManager = userManager;
+    public AddProjectController() {
+        
     }
 
-    @RequestMapping(value = "/auth/add", method = RequestMethod.GET)
+    @RequestMapping(value = "/auth/projects/add", method = RequestMethod.GET)
     public String get(Model model) {
         model.addAttribute("project", new ProjectImpl());
-        return "/auth/add";
+        return "/auth/projects/add";
     }
 
-    @RequestMapping(value = "/auth/add", method = RequestMethod.POST)
+    @RequestMapping(value = "/auth/projects/add", method = RequestMethod.POST)
     public String post(@Valid @ModelAttribute("project") ProjectImpl projectImpl, BindingResult result, Model model,
             RedirectAttributes redirectAttrs, Principal principal) {
-        if (result.hasErrors()) {
-            model.addAttribute("project", projectImpl);
-        }
 
         String username = principal.getName();
         IUser user = userManager.findByUsername(username);
-
+        
+        if(projectImpl.getName().isEmpty() && projectImpl.getDescription().isEmpty()) {
+            model.addAttribute("errorMessage", "Please enter a name and description.");
+            return "/auth/projects/add";
+        }
+        if(projectImpl.getName().isEmpty()) {
+            model.addAttribute("errorMessage", "Please enter a name.");
+            return "/auth/projects/add";
+        }
+        if(projectImpl.getDescription().isEmpty()) {
+            model.addAttribute("errorMessage", "Please enter a description.");
+            return "/auth/projects/add";
+        }
+        
         Project project = projectManager.createProject(projectImpl.getName(), projectImpl.getDescription(), user);
+        redirectAttrs.addAttribute("addSuccessMessage", "Project sucessfully added.");
         return "redirect:/auth/projects";
     }
 }

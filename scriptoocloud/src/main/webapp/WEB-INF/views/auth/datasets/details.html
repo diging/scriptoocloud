@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{layouts/main}"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Dataset Details | ScripToo Cloud</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div id="wrapper">
+        <section class="container main-page-content ">
+            <div class="row">
+                <h2><strong>Dataset</strong> Details</h2>
+                <div class="alert alert-success"
+                     th:if="${not #strings.isEmpty(successMessage)}">
+                    <p th:text="${successMessage}">
+                </div>
+                <div class="alert alert-danger"
+                     th:if="${not #strings.isEmpty(errorMessage)}">
+                    <p th:text="${errorMessage}">
+                </div>
+                <div class="row tabular-row">
+                    <div class="col-md-12">
+                        <div>
+                            <div class="inline">
+                                <span><i class="fas fa-folder fa-2x"></i></span>
+                            </div>
+                            <div class="inline">
+                                <h3 class="mono" th:text="${dataset.name}"></h3>
+                            </div>
+                            <div>
+                                <span class="metadata mono metadataLabel">Version: </span>
+                                <span class="metadata mono"
+                                      th:text="${dataset.version}"></span>
+                            </div>
+                            <div>
+                                <span class="metadata mono metadataLabel">Description: </span>
+                                <span class="metadata mono"
+                                      th:text="${dataset.description}"></span>
+                            </div>
+                            <div>
+                                <span class="metadata mono metadataLabel">Created: </span>
+                                <span class="metadata mono"
+                                      th:text="${#calendars.format(dataset.creationDate,
+                                      'MMMMM dd, yyyy K:mm a')}">
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 file-list">
+                        <ul>
+                            <li th:each="uploadedFile : ${filesPage}">
+                                <span class="file-name-span">
+                                    <i class="fas fa-file"></i>
+                                </span>
+                                [[${uploadedFile.name} + ' (file id: ' + ${uploadedFile.id} + ')']]
+                                <form method="POST"
+                                      class="inline"
+                                      th:action="@{/auth/datasets/{id}/files/{fileId}/delete(id=${dataset.id}, fileId=${uploadedFile.id})}">
+                                    <input type="hidden" name="fileId"
+                                           th:value="${uploadedFile.id}"/>
+                                    <input type="hidden" name="datasetId"
+                                           th:value="${dataset.id}"/>
+                                    <button type="submit"
+                                            class="btn btn-file">
+                                        <i class="far fa-times-circle"></i>
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class=" row add-file">
+                        <div class="col-md-12">
+                            <form method="POST"
+                                  class="file-upload-form"
+                                  th:action="@{/auth/datasets/{id}/upload?{name}={token}(id=${dataset.id}, name=${_csrf.parameterName}, token=${_csrf.token})}"
+                                  enctype="multipart/form-data">
+                                <input type="file" name="file"/>
+                                <input type="hidden" name="fileUploadDatasetId"
+                                       th:value="${dataset.id}">
+                                <button type="submit" class="btn btn-file">
+                                    Add Files To Dataset
+                                    <i class="fas fa-file-medical"></i>
+                                </button>
+                                <div class="text-danger bg-danger no-file custom-error"
+                                     th:if="${not #strings.isEmpty(noFileMessage)}">
+                                    <p th:text="${noFileMessage}"></p>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <ul th:if="${filesPage.totalPages > 0}" class="pagination">
+                            <li class="page-item" th:each="pageNumber : ${pageNumbers}"
+                                th:class="${pageNumber == filesPage.number + 1} ? active">
+                                <a th:href="@{/auth/datasets/{id}(size=${filesPage.size}, page=${pageNumber}, id=${dataset.id})}"
+                                   th:text="${pageNumber}"></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+</body>
+</html>
