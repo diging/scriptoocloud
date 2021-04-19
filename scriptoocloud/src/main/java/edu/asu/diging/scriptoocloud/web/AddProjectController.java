@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,6 +19,7 @@ import edu.asu.diging.scriptoocloud.config.SimpleUsersConfig;
 import edu.asu.diging.scriptoocloud.core.model.Project;
 import edu.asu.diging.scriptoocloud.core.model.impl.ProjectImpl;
 import edu.asu.diging.scriptoocloud.core.service.ProjectManager;
+import edu.asu.diging.scriptoocloud.web.validation.ProjectValidator;
 import edu.asu.diging.simpleusers.core.model.IUser;
 import edu.asu.diging.simpleusers.core.model.impl.SimpleUser;
 import edu.asu.diging.simpleusers.core.service.IUserManager;
@@ -29,9 +32,13 @@ public class AddProjectController {
 
     @Autowired
     private IUserManager userManager;
-
-    public AddProjectController() {
-        
+    
+    @Autowired
+    private ProjectValidator projectValidator;
+    
+    @InitBinder
+    protected void initBinder(WebDataBinder binder) {
+       binder.addValidators(projectValidator);
     }
 
     @RequestMapping(value = "/auth/projects/add", method = RequestMethod.GET)
@@ -47,6 +54,11 @@ public class AddProjectController {
         String username = principal.getName();
         IUser user = userManager.findByUsername(username);
         
+        if(result.hasErrors()) {
+            return "/auth/projects/add";
+        }
+        
+        /*
         if(projectImpl.getName().isEmpty() && projectImpl.getDescription().isEmpty()) {
             model.addAttribute("errorMessage", "Please enter a name and description.");
             return "/auth/projects/add";
@@ -58,7 +70,7 @@ public class AddProjectController {
         if(projectImpl.getDescription().isEmpty()) {
             model.addAttribute("errorMessage", "Please enter a description.");
             return "/auth/projects/add";
-        }
+        }*/
         
         Project project = projectManager.createProject(projectImpl.getName(), projectImpl.getDescription(), user);
         redirectAttrs.addAttribute("addSuccessMessage", "Project sucessfully added.");
