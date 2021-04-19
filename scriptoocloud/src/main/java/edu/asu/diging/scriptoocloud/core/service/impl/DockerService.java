@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.github.dockerjava.api.command.CreateVolumeResponse;
 import com.github.dockerjava.api.model.Volume;
+import com.google.common.io.Files;
 
 @Service
 @PropertySource("classpath:config.properties")
@@ -33,20 +35,16 @@ public class DockerService {
         return response;
     }
    
-    public String buildContainer(String imageId, String[] arguments) throws IOException{   
-    
-        System.out.print(arguments[0]);
-        System.out.print(arguments[1]);
-        
-        String containerId = 
-  dockerRestConnection.dockerClient.createContainerCmd(imageId).withCmd(arguments).exec().getId();
+    public String buildContainer(String imageId, String[] arguments) throws IOException{
+        String containerId =  dockerRestConnection.dockerClient.createContainerCmd(imageId).withCmd(arguments).exec().getId();
         return containerId; 
     }
     
     public String runContainer(String containerId) throws IOException{
         dockerRestConnection.dockerClient.startContainerCmd(containerId).exec();   
-        // dockerRestConnection.dockerClient.startContainerCmd(containerId).exec();   
-        //InputStream stream = dockerRestConnection.dockerClient.copyArchiveFromContainerCmd(containerId, "/usr/src/app/out.txt").exec();
+        InputStream stream = dockerRestConnection.dockerClient
+                                .copyArchiveFromContainerCmd(containerId, "/usr/src/app/out.txt").exec();
+        
         return "";
     }
     

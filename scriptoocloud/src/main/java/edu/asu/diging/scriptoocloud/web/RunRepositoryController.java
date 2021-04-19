@@ -55,10 +55,9 @@ public class RunRepositoryController {
     public String runRepoPost(Model model, @PathVariable("main") String main, @PathVariable("extension") String extension,@RequestParam("list") ArrayList<String> argumentList, @PathVariable("repoId") Long repoId) throws FileNotFoundException {
         argumentList.add(0,main + "." + extension);
         String[] args = argumentList.toArray(new String[argumentList.size()]);
-     
         try {  
             String containerId = dockerService.buildContainer(gitRepositoryManager.getRepositoryImageId(repoId),args);
-            dockerService.runContainer(containerId);
+            String containerResults = dockerService.runContainer(containerId);
         } catch (Exception e) {e.printStackTrace();}
 
          return "redirect:/auth/projects";
