@@ -51,14 +51,25 @@ public class RunRepositoryController {
     }  
 
 
-    @RequestMapping(value = "/auth/run/{repoId}/{main}/{extension}", method = RequestMethod.POST)
-    public String runRepoPost(Model model, @PathVariable("main") String main, @PathVariable("extension") String extension,@RequestParam("list") ArrayList<String> argumentList, @PathVariable("repoId") Long repoId) throws FileNotFoundException {
+    @RequestMapping(value = "/auth/run/{repoId}/{main}/{extension}/{outputFileName}/{outputExtension}", method = RequestMethod.POST)
+    public String runRepoPost(Model model, 
+                                    @PathVariable("main") String main, 
+                                    @PathVariable("extension") String extension,
+                                    @RequestParam("list") ArrayList<String> argumentList,
+                                    @PathVariable("outputFileName") String outputFileName,
+                                    @PathVariable("outputExtension") String outputExtension,
+                                    @PathVariable("repoId") Long repoId) throws FileNotFoundException {
+        
         argumentList.add(0,main + "." + extension);
+        
         String[] args = argumentList.toArray(new String[argumentList.size()]);
+        
         try {  
             String containerId = dockerService.buildContainer(gitRepositoryManager.getRepositoryImageId(repoId),args);
-            String containerResults = dockerService.runContainer(containerId);
-        } catch (Exception e) {e.printStackTrace();}
+            String containerResults = dockerService.runContainer(containerId,outputFileName + "." +outputExtension);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
          return "redirect:/auth/projects";
     }  

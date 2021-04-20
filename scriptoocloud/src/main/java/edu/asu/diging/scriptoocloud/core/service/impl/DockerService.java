@@ -4,8 +4,10 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,11 +42,16 @@ public class DockerService {
         return containerId; 
     }
     
-    public String runContainer(String containerId) throws IOException{
+    public String runContainer(String containerId, String outputFileName) throws IOException{
         dockerRestConnection.dockerClient.startContainerCmd(containerId).exec();   
         InputStream stream = dockerRestConnection.dockerClient
-                                .copyArchiveFromContainerCmd(containerId, "/usr/src/app/out.txt").exec();
-        
+                                .copyArchiveFromContainerCmd(containerId, "/usr/src/app/" + outputFileName).exec();
+        byte[] outputBytes = IOUtils.toByteArray(stream);
+        //this dataset needs to be tied to a user before its written
+        //this dataset needs to be written to the dataset folder
+        FileOutputStream fos = new FileOutputStream("C:/"+outputFileName);
+        fos.write(outputBytes);
+        fos.close(); 
         return "";
     }
     

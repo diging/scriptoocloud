@@ -25,7 +25,14 @@ public class YamlModel  {
     private String extension;
     private ArrayList<String> inputParams;
     private String outputContext;
-  
+    private String outputExtension;
+    
+    public String getOutputExtension() {
+        return outputExtension;
+    }
+    public void setOutputExtension(String extension) {
+        this.outputExtension = extension;
+    }
     public String getExtension() {
         return extension;
     }

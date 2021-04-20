@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.*;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -23,29 +24,29 @@ class YamlParserService implements IYamlParserService  {
 
     @Override
     public YamlModel parseYamlInDirectory(String dirStringPath) throws FileNotFoundException{   
-        //what should the default stc yaml file be named?
-        File file = new File(dirStringPath + "/test.yml");
+        File file = new File(dirStringPath + "/STC.yml");
         
         Map<String, Object> stcYamlKeyPair = parseYamlFile(file);
         
         YamlModel model = new YamlModel();
         
+        //need checked excpetionf or incorrect yaml file
+        
         model.setAuthor((String)stcYamlKeyPair.get("author"));
         model.setDescription((String)stcYamlKeyPair.get("description"));
-        model.setMain((String)stcYamlKeyPair.get("main"));
-        model.setExtension((String)stcYamlKeyPair.get("extension"));
+        model.setMain(((String) stcYamlKeyPair.get("main")).split("\\.")[0]);
+        model.setExtension(((String) stcYamlKeyPair.get("main")).split("\\.")[1]);
         model.setName((String)stcYamlKeyPair.get("name"));
-        model.setOutputContext((String)stcYamlKeyPair.get("output"));
+        model.setOutputContext(((String)stcYamlKeyPair.get("output")).split("\\.")[0]);
+        model.setOutputExtension(((String)stcYamlKeyPair.get("output")).split("\\.")[1]);
         model.setInputParams((ArrayList<String>)stcYamlKeyPair.get("input"));
- 
+       
         return model;
     }
 
     @Override
     public Map<String,Object> parseYamlFile(File file) throws FileNotFoundException{
-        //maybe use a single method rather then two
-        Yaml snakeYaml = new Yaml();
-        Map<String, Object> yamlObject = snakeYaml.load(new FileInputStream(file));
+        Map<String, Object> yamlObject = (new Yaml()).load(new FileInputStream(file));
         return yamlObject;
     }
 }
