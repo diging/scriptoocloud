@@ -58,20 +58,6 @@ public class AddProjectController {
             return "/auth/projects/add";
         }
         
-        /*
-        if(projectImpl.getName().isEmpty() && projectImpl.getDescription().isEmpty()) {
-            model.addAttribute("errorMessage", "Please enter a name and description.");
-            return "/auth/projects/add";
-        }
-        if(projectImpl.getName().isEmpty()) {
-            model.addAttribute("errorMessage", "Please enter a name.");
-            return "/auth/projects/add";
-        }
-        if(projectImpl.getDescription().isEmpty()) {
-            model.addAttribute("errorMessage", "Please enter a description.");
-            return "/auth/projects/add";
-        }*/
-        
         Project project = projectManager.createProject(projectImpl.getName(), projectImpl.getDescription(), user);
         redirectAttrs.addAttribute("addSuccessMessage", "Project sucessfully added.");
         return "redirect:/auth/projects";

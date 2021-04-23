@@ -5,10 +5,6 @@
 <body>
     <div layout:fragment="content">
         <h2>Create a new project</h2>
-        <!--  <div class="alert alert-danger"
-            th:if="${not #strings.isEmpty(errorMessage)}">
-            <p th:text="${errorMessage}">
-        </div> -->
         <form th:action="@{|/auth/projects/add|}" method="POST"
             th:object="${project}">
 
@@ -22,6 +18,7 @@
                 th:field="*{description}" class="form-control input-sm"></input>
             <p class="text-danger">
                 <th:errors path="description" />
+                <form:errors path="description" />
             </p>
             
 

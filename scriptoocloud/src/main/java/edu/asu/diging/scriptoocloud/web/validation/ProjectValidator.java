@@ -24,16 +24,6 @@ public class ProjectValidator implements Validator {
       ValidationUtils.rejectIfEmpty(err, "name", "project.name.empty");
       ValidationUtils.rejectIfEmpty(err, "description", "project.description.empty");
 
-      /*
-      ProjectImpl project = (ProjectImpl) obj;
-
-      
-      Pattern pattern = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$",
-            Pattern.CASE_INSENSITIVE);
-      if (!(pattern.matcher(user.getEmail()).matches())) {
-         err.rejectValue("email", "user.email.invalid");
-      }*/
-
    }
 
 }

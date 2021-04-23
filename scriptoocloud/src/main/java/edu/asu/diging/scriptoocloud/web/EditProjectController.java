@@ -30,10 +30,9 @@ public class EditProjectController {
     private ProjectManager projectManager;
     
     @RequestMapping(value = "/auth/edit/{id}", method = RequestMethod.GET)
-    public String get(@Valid @ModelAttribute("project") ProjectImpl projectImpl, BindingResult result,
-            Model model, RedirectAttributes redirectAttrs, Principal principal, @PathVariable("id") int id) {
-        projectImpl = (@Valid ProjectImpl) projectManager.getProject(id);
-        model.addAttribute("project", projectImpl);
+    public String get(Model model,@PathVariable("id") int id) {
+        ProjectImpl project = (ProjectImpl) projectManager.getProject(id);
+        model.addAttribute("project", project);
         return "/auth/edit";
     }
 
@@ -44,8 +43,7 @@ public class EditProjectController {
             model.addAttribute("projectImpl", new ProjectImpl());
             return "/auth/edit/{id}";
         }
-        ProjectImpl project = projectImpl;
-        projectManager.updateProject((int) id, project.getName(), project.getDescription());
+        projectManager.updateProject(id, projectImpl.getName(), projectImpl.getDescription());
         redirectAttrs.addAttribute("successMessage", "Project sucessfully updated.");
         return "redirect:/auth/projects";
     }
