@@ -25,10 +25,4 @@ public class SpringWebConfig implements WebMvcConfigurer {
         return new CommonsMultipartResolver();
     }
     
-    @Bean
-    public MessageSource messageSource() {
-        ResourceBundleMessageSource source = new ResourceBundleMessageSource();
-        source.setBasename("messages");
-        return source;
-    }
 }

@@ -8,11 +8,11 @@
 	<form th:action="@{|/auth/edit/${project.getId()}|}" method="POST" th:object="${project}">
 		<label>Project Name: </label>
 		<input th:field="*{name}" class="form-control input-sm"></input>
-		<p class="text-danger"><th:errors path="name"/></p>
+		<p class="text-danger" th:errors ="*{name}"></p>
 		
 		<label>Project Description: </label>
 		<input th:field="*{description}" class="form-control input-sm"></input>
-		<p class="text-danger"><th:errors path="description"/></p>
+		<p class="text-danger" th:errors ="*{description}"></p>
 		
         <button style="padding:0" class="btn btn-link"><i class="fas"></i>Submit Updates</button>
 	  </form>

@@ -20,10 +20,8 @@ public class ProjectValidator implements Validator {
 
    @Override
    public void validate(Object obj, Errors err) {
-
-      ValidationUtils.rejectIfEmpty(err, "name", "project.name.empty");
-      ValidationUtils.rejectIfEmpty(err, "description", "project.description.empty");
-
+      ValidationUtils.rejectIfEmpty(err, "name", "project.name.empty", "Please enter a name.");
+      ValidationUtils.rejectIfEmpty(err, "description", "project.name.empty", "Please enter a description.");
    }
 
 }
