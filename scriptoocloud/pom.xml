@@ -28,6 +28,10 @@
 		<uploadDirectory>uploadDirectory</uploadDirectory>
 
 		<log.level>info</log.level>
+		
+		<docker.engine.host></docker.engine.host>
+		<docker.tls></docker.tls>
+		<docker.dockerfile.path></docker.dockerfile.path>
 
 		<tomcat.deploy.path></tomcat.deploy.path>
 		<tomcat.app.name>scriptoocloud</tomcat.app.name>
@@ -236,6 +240,17 @@
 			<version>3.0.4.RELEASE</version>
 		</dependency>
 
+        <!-- JSTL Dependency -->
+        <dependency>
+            <groupId>javax.servlet.jsp.jstl</groupId>
+            <artifactId>javax.servlet.jsp.jstl-api</artifactId>
+            <version>1.2.1</version>
+       </dependency>
+       <dependency>
+         <groupId>taglibs</groupId>
+         <artifactId>standard</artifactId>
+         <version>1.1.2</version>
+       </dependency>
 
 		<!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
 		<dependency>
@@ -244,12 +259,20 @@
 			<version>3.1.0</version>
 			<scope>provided</scope>
 		</dependency>
-
-		<dependency>
-			<groupId>org.eclipse.jgit</groupId>
-			<artifactId>org.eclipse.jgit</artifactId>
-			<version>3.5.0.201409260305-r</version>
-		</dependency>
+        
+	   <!-- JSP Dependency -->
+	   <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>javax.servlet.jsp-api</artifactId>
+            <version>2.3.1</version>
+            <scope>provided</scope>
+       </dependency>
+       
+       <dependency>
+            <groupId>org.eclipse.jgit</groupId>
+            <artifactId>org.eclipse.jgit</artifactId>
+            <version>3.5.0.201409260305-r</version>
+        </dependency>
 
 	</dependencies>
 
